@@ -29,5 +29,8 @@
             "de-DE": "Versendete Mails archivieren",
             "en-GB": "Archive send mails from Shop"
         }
+    },
+    "require": {
+        "shopware/core": "~6.1"
     }
 }
