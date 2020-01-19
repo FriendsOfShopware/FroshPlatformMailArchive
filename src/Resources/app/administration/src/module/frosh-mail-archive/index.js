@@ -3,11 +3,11 @@ import './page/frosh-mail-archive-detail/index';
 
 Shopware.Module.register('frosh-mail-archive', {
     type: 'plugin',
-    name: 'Mail Archive',
-    title: 'Mail Archive',
-    description: 'Description for your custom module',
+    name: 'frosh-mail-archive.title',
+    title: 'frosh-mail-archive.title',
+    description: '',
     color: '#62ff80',
-    icon: 'default-object-lab-flask',
+    icon: 'default-communication-envelope',
 
     routes: {
         list: {
@@ -24,9 +24,9 @@ Shopware.Module.register('frosh-mail-archive', {
     },
 
     navigation: [{
-        label: 'Mail Archive',
+        label: 'frosh-mail-archive.title',
         color: '#62ff80',
         path: 'frosh.mail.archive.list',
-        icon: 'default-object-lab-flask'
+        icon: 'default-communication-envelope'
     }]
 });

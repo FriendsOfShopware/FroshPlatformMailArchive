@@ -1,18 +1,33 @@
 {
-  "name": "frosh/mail-platform-archive",
-  "description": "Mail Archive",
-  "type": "shopware-platform-plugin",
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Frosh\\MailArchive\\": "src/"
+    "name": "frosh/mail-platform-archive",
+    "version": "0.1.0",
+    "description": "Mail Archive",
+    "type": "shopware-platform-plugin",
+    "license": "MIT",
+    "keywords": [
+        "mail",
+        "archive"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Frosh\\MailArchive\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "FriendsOfShopware",
+            "homepage": "https://friendsofshopware.de"
+        }
+    ],
+    "extra": {
+        "shopware-plugin-class": "Frosh\\MailArchive\\FroshPlatformMailArchive",
+        "label": {
+            "de-DE": "Mail Archive",
+            "en-GB": "Mail Archive"
+        },
+        "description": {
+            "de-DE": "Versendete Mails archivieren",
+            "en-GB": "Archive send mails from Shop"
+        }
     }
-  },
-  "extra": {
-    "shopware-plugin-class": "Frosh\\MailArchive\\FroshPlatformMailArchive",
-    "label": {
-      "de-DE": "Mail Archive",
-      "en-GB": "Mail Archive"
-    }
-  }
 }

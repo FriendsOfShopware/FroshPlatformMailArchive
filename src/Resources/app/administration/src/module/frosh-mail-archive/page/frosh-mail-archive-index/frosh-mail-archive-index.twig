@@ -1,6 +1,6 @@
 <sw-page>
     <template slot="smart-bar-header">
-        <h2>Mail Archive</h2>
+        <h2>{{ $tc('frosh-mail-archive.title') }}</h2>
     </template>
     <template slot="content">
         <sw-entity-listing
@@ -21,7 +21,7 @@
 
             <template slot="detail-action" slot-scope="{ item }">
                 <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
-                    Show
+                    {{ $tc('frosh-mail-archive.list.columns.action') }}
                 </sw-context-menu-item>
             </template>
 

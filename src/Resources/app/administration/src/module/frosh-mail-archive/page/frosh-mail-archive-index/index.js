@@ -30,19 +30,19 @@ Component.register('frosh-mail-archive-index', {
                 {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
-                    label: 'Send-Date',
+                    label: this.$tc('frosh-mail-archive.list.columns.sendDate'),
                     primary: true
                 },
                 {
                     property: 'subject',
                     dataIndex: 'subject',
-                    label: 'Subject',
+                    label: this.$tc('frosh-mail-archive.list.columns.subject'),
                     allowResize: true
                 },
                 {
                     property: 'receiver',
                     dataIndex: 'receiver',
-                    label: 'Receiver',
+                    label: this.$tc('frosh-mail-archive.list.columns.receiver'),
                     allowResize: true
                 }
             ]

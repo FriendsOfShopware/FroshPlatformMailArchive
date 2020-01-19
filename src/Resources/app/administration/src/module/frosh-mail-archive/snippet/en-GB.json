@@ -1,1 +1,29 @@
-{}
+{
+    "frosh-mail-archive":  {
+        "title": "Mail Archive",
+        "list": {
+            "columns":  {
+                "sendDate": "Send date",
+                "subject": "Subject",
+                "receiver": "Receiver",
+                "action": "Show"
+            }
+        },
+        "detail": {
+            "toolbar": {
+                "customer": "Open customer",
+                "resend": "Resend mail"
+            },
+            "metadata": {
+                "title": "Metadata",
+                "sender": "Sender",
+                "receiver": "Receiver",
+                "subject": "Subject",
+                "salesChannel": "Saleschannel"
+            },
+            "content": {
+                "title": "Content"
+            }
+        }
+    }
+}
