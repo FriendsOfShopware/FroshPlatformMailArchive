@@ -1,0 +1,3 @@
+frosh_mail_archive:
+    resource: ../../Controller/**/*Controller.php
+    type: annotation

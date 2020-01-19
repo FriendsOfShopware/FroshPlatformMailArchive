@@ -1,0 +1,30 @@
+<sw-page>
+    <template slot="smart-bar-header">
+        <h2>Mail Archive</h2>
+    </template>
+    <template slot="content">
+        <sw-entity-listing
+            v-if="items"
+            :items="items"
+            :columns="columns"
+            :repository="mailArchiveRepository"
+        >
+            <template slot="column-receiver" slot-scope="{ item }">
+                <span v-for="(element, index) in item.receiver">
+                    {{ element }} <<a :href='`mailto:${index}`'>{{ index }}</a>>
+                </span>
+            </template>
+
+            <template slot="column-createdAt" slot-scope="{ item }">
+                {{ item.createdAt | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+            </template>
+
+            <template slot="detail-action" slot-scope="{ item }">
+                <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
+                    Show
+                </sw-context-menu-item>
+            </template>
+
+        </sw-entity-listing>
+    </template>
+</sw-page>

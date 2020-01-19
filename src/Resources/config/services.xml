@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition">
+            <tag name="shopware.entity.definition" entity="frosh_mail_archive"/>
+        </service>
+
+        <service id="Frosh\MailArchive\Services\MailSender" public="true" decorates="Shopware\Core\Content\MailTemplate\Service\MailSender">
+            <argument type="service" id="Frosh\MailArchive\Services\MailSender.inner"/>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="frosh_mail_archive.repository"/>
+            <argument type="service" id="customer.repository"/>
+        </service>
+
+        <service id="Frosh\MailArchive\Controller\Api\MailResendController" public="true">
+            <argument type="service" id="frosh_mail_archive.repository"/>
+            <argument type="service" id="Shopware\Core\Content\MailTemplate\Service\MailSender"/>
+        </service>
+    </services>
+</container>

@@ -1,0 +1,33 @@
+<sw-page class="frosh-mail-archive-detail">
+    <template slot="smart-bar-header">
+        <h2>{{ archive.subject }}</h2>
+    </template>
+
+    <template slot="smart-bar-actions">
+        <sw-button variant="ghost" v-if="archive.customer" @click="openCustomer">
+            Open Customer
+        </sw-button>
+
+        <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" @click="resendMail">
+            Resend Mail
+        </sw-button-process>
+    </template>
+
+    <template slot="content">
+        <sw-card-view v-if="archive">
+            <sw-card title="Metadaten">
+                <sw-text-field label="Sender" :disabled="true" v-model="archive.sender"></sw-text-field>
+                <sw-text-field label="Receiver" :disabled="true" v-model="receiverText"></sw-text-field>
+                <sw-text-field label="Subject" :disabled="true" v-model="archive.subject"></sw-text-field>
+                <sw-text-field v-if="archive.salesChannel" label="Sales-Channel" :disabled="true" v-model="archive.salesChannel.name"></sw-text-field>
+            </sw-card>
+            <sw-card title="Inhalt">
+                <h4>HTML</h4>
+                <iframe :src="htmlText" sandbox frameborder="0"></iframe>
+                <h4>Plain</h4>
+
+                <iframe :src="plainText" sandbox frameborder="0"></iframe>
+            </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>
