@@ -1,10 +1,10 @@
 <sw-page class="frosh-mail-archive-detail">
     <template slot="smart-bar-header">
-        <h2>{{ archive.subject }}</h2>
+        <h2 v-if="archive">{{ archive.subject }}</h2>
     </template>
 
     <template slot="smart-bar-actions">
-        <sw-button variant="ghost" v-if="archive.customer" @click="openCustomer">
+        <sw-button variant="ghost" v-if="archive && archive.customer" @click="openCustomer">
             {{ $tc('frosh-mail-archive.detail.toolbar.customer') }}
         </sw-button>
 

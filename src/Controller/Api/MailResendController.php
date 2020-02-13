@@ -2,14 +2,17 @@
 
 namespace Frosh\MailArchive\Controller\Api;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Shopware\Core\Content\MailTemplate\Service\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MailResendController extends AbstractController
@@ -24,10 +27,16 @@ class MailResendController extends AbstractController
      */
     private $mailSender;
 
-    public function __construct(EntityRepositoryInterface $mailArchiveRepository, MailSender $mailSender)
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    public function __construct(EntityRepositoryInterface $mailArchiveRepository, MailSender $mailSender, RequestStack $requestStack)
     {
         $this->mailArchiveRepository = $mailArchiveRepository;
         $this->mailSender = $mailSender;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -42,27 +51,30 @@ class MailResendController extends AbstractController
             throw new \RuntimeException('mailId not given');
         }
 
+        /** @var MailArchiveEntity|null $mailArchive */
         $mailArchive = $this->mailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
 
         if (!$mailArchive) {
             throw new \RuntimeException('Cannot find mailArchive');
         }
 
+        $this->requestStack->getMasterRequest()->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
+
         $message = new \Swift_Message();
 
-        foreach ($mailArchive->offsetGet('receiver') as $mail => $name) {
+        foreach ($mailArchive->getReceiver() as $mail => $name) {
             $message->addTo($mail, $name);
         }
 
-        $message->addFrom($mailArchive->offsetGet('sender'));
-        $message->setSubject($mailArchive->offsetGet('subject'));
+        $message->addFrom($mailArchive->getSender());
+        $message->setSubject($mailArchive->getSubject());
 
-        if (!empty($mailArchive->offsetGet('plainText'))) {
-            $message->addPart($mailArchive->offsetGet('plainText'), 'text/plain');
+        if (!empty($mailArchive->getPlainText())) {
+            $message->addPart($mailArchive->getPlainText(), 'text/plain');
         }
 
-        if (!empty($mailArchive->offsetGet('htmlText'))) {
-            $message->addPart($mailArchive->offsetGet('htmlText'), 'text/html');
+        if (!empty($mailArchive->getHtmlText())) {
+            $message->addPart($mailArchive->getHtmlText(), 'text/html');
         }
 
         $this->mailSender->send($message);

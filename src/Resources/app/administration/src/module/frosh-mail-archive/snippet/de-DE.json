@@ -7,6 +7,16 @@
                 "subject": "Betreff",
                 "receiver": "Empfänger",
                 "action": "Anzeigen"
+            },
+            "sidebar": {
+                "refresh": "Neuladen",
+                "filter": "Filter",
+                "filters": {
+                    "search": "Suche",
+                    "customer": "Kunde",
+                    "salesChannel": "Sales-Channel",
+                    "resetFilter": "Filter zurücksetzen"
+                }
             }
         },
         "detail": {

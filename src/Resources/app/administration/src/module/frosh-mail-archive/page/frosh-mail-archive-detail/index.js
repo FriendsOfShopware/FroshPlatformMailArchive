@@ -26,7 +26,7 @@ Component.register('frosh-mail-archive-detail', {
             let text = [];
 
             Object.keys(this.archive.receiver).forEach(key => {
-                text.push(`${key} <${this.archive.receiver[key]}>`);
+                text.push(`${this.archive.receiver[key]} <${key}>`);
             });
 
             return text.join(',');

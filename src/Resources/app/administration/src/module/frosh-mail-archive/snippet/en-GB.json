@@ -7,6 +7,16 @@
                 "subject": "Subject",
                 "receiver": "Receiver",
                 "action": "Show"
+            },
+            "sidebar": {
+                "refresh": "Refresh",
+                "filter": "Filter",
+                "filters": {
+                    "search": "Search",
+                    "customer": "Customer",
+                    "salesChannel": "Sales-Channel",
+                    "resetFilter": "Reset filter"
+                }
             }
         },
         "detail": {

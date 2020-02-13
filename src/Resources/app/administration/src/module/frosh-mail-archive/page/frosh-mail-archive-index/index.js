@@ -1,6 +1,8 @@
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
+const utils = Shopware.Utils;
 import template from './frosh-mail-archive-index.twig';
+import './frosh-mail-archive-index.scss';
 
 Component.register('frosh-mail-archive-index', {
     template,
@@ -17,10 +19,17 @@ Component.register('frosh-mail-archive-index', {
 
     data() {
         return {
+            page: 1,
+            limit: 25,
+            total: 0,
             repository: null,
-            items: [],
+            items: null,
             isLoading: true,
-            total: 0
+            filter: {
+                salesChannelId: null,
+                customerId: null,
+                term: null
+            }
         }
     },
 
@@ -30,19 +39,19 @@ Component.register('frosh-mail-archive-index', {
                 {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
-                    label: this.$tc('frosh-mail-archive.list.columns.sendDate'),
+                    label: 'frosh-mail-archive.list.columns.sendDate',
                     primary: true
                 },
                 {
                     property: 'subject',
                     dataIndex: 'subject',
-                    label: this.$tc('frosh-mail-archive.list.columns.subject'),
+                    label: 'frosh-mail-archive.list.columns.subject',
                     allowResize: true
                 },
                 {
                     property: 'receiver',
                     dataIndex: 'receiver',
-                    label: this.$tc('frosh-mail-archive.list.columns.receiver'),
+                    label: 'frosh-mail-archive.list.columns.receiver',
                     allowResize: true
                 }
             ]
@@ -56,7 +65,21 @@ Component.register('frosh-mail-archive-index', {
         getList() {
             this.isLoading = true;
 
-            return this.mailArchiveRepository.search(new Criteria(), Shopware.Context.api)
+            let criteria = new Criteria();
+
+            if (this.filter.salesChannelId) {
+                criteria.addFilter(Criteria.equals('salesChannelId', this.filter.salesChannelId));
+            }
+
+            if (this.filter.customerId) {
+                criteria.addFilter(Criteria.equals('customerId', this.filter.customerId));
+            }
+
+            if (this.filter.term) {
+                criteria.setTerm(this.filter.term);
+            }
+
+            return this.mailArchiveRepository.search(criteria, Shopware.Context.api)
                 .then((searchResult) => {
                     this.items = searchResult;
                     this.total = searchResult.total;
@@ -64,8 +87,23 @@ Component.register('frosh-mail-archive-index', {
                 });
         },
 
-        updateTotal({ total }) {
-            this.total = total;
+        resetFilter() {
+            this.filter = {
+                salesChannelId: null,
+                customerId: null,
+                term: null
+            };
+
+            this.getList();
+        }
+    },
+
+    watch: {
+        filter: {
+            deep: true,
+            handler: utils.debounce(function () {
+                this.getList();
+            }, 400)
         }
     }
 });
