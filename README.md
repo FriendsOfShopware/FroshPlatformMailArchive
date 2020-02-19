@@ -27,4 +27,4 @@ Feel free to fork and send [pull requests](https://github.com/FriendsOfShopware/
 
 ## Licence
 
-This project uses the [MIT License](LICENCE.md).
+This project uses the [MIT License](LICENSE.md).
