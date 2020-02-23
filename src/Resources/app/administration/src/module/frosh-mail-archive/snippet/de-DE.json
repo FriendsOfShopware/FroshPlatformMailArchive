@@ -1,8 +1,8 @@
 {
-    "frosh-mail-archive":  {
+    "frosh-mail-archive": {
         "title": "Mail Archiv",
         "list": {
-            "columns":  {
+            "columns": {
                 "sendDate": "Versanddatum",
                 "subject": "Betreff",
                 "receiver": "Empfänger",
@@ -14,7 +14,7 @@
                 "filters": {
                     "search": "Suche",
                     "customer": "Kunde",
-                    "salesChannel": "Sales-Channel",
+                    "salesChannel": "Verkaufskanal",
                     "resetFilter": "Filter zurücksetzen"
                 }
             }
@@ -22,7 +22,7 @@
         "detail": {
             "toolbar": {
                 "customer": "Kunden öffnen",
-                "resend": "Mail erneut versenden"
+                "resend": "E-Mail erneut versenden"
             },
             "metadata": {
                 "title": "Metadaten",

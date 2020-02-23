@@ -1,9 +1,9 @@
 {
-    "frosh-mail-archive":  {
+    "frosh-mail-archive": {
         "title": "Mail Archive",
         "list": {
-            "columns":  {
-                "sendDate": "Send date",
+            "columns": {
+                "sendDate": "Sent date",
                 "subject": "Subject",
                 "receiver": "Receiver",
                 "action": "Show"
@@ -14,7 +14,7 @@
                 "filters": {
                     "search": "Search",
                     "customer": "Customer",
-                    "salesChannel": "Sales-Channel",
+                    "salesChannel": "Sales Channel",
                     "resetFilter": "Reset filter"
                 }
             }
@@ -29,7 +29,7 @@
                 "sender": "Sender",
                 "receiver": "Receiver",
                 "subject": "Subject",
-                "salesChannel": "Saleschannel"
+                "salesChannel": "Sales Channel"
             },
             "content": {
                 "title": "Content"
