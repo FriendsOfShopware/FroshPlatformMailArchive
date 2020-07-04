@@ -12,7 +12,7 @@
         >
             <template slot="column-receiver" slot-scope="{ item }">
                 <span v-for="(element, index) in item.receiver">
-                    {{ element }} <<a :href='`mailto:${index}`'>{{ index }}</a>>
+                    {{ element }} <a :href='`mailto:${index}`'>{{ index }}</a>>
                 </span>
             </template>
 
