@@ -29,4 +29,10 @@ jobs:
                 run: php frosh-plugin-upload.phar ext:zip ${PLUGIN_NAME}
             
             -   name: Validate Zip
-                run: php frosh-plugin-upload.phar ext:validate ${PLUGIN_NAME}*.zip
+                run: php frosh-plugin-upload.phar ext:validate $(pwd)/${PLUGIN_NAME}*.zip
+            
+            - name: Upload a Build Artifact
+              uses: actions/upload-artifact@v2
+              with:
+                name: ${PLUGIN_NAME}.zip
+                path: ${PLUGIN_NAME}*.zip
