@@ -5,7 +5,7 @@
             "columns": {
                 "sendDate": "Sent date",
                 "subject": "Subject",
-                "receiver": "Receiver",
+                "receiver": "Recipients",
                 "action": "Show"
             },
             "sidebar": {
@@ -27,7 +27,7 @@
             "metadata": {
                 "title": "Metadata",
                 "sender": "Sender",
-                "receiver": "Receiver",
+                "receiver": "Recipients",
                 "subject": "Subject",
                 "salesChannel": "Sales Channel"
             },
