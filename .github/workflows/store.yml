@@ -1,0 +1,32 @@
+name: StoreCheck
+on:
+    push:
+        branches:
+            - master
+        tags:
+            - '*'
+
+env:
+    PLUGIN_NAME: FroshPlatformMailArchive
+    ACCOUNT_USER: ${{ secrets.ACCOUNT_USER }}
+    ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
+
+jobs:
+    buildZip:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2.3.1
+                with:
+                    path: ${{ env.PLUGIN_NAME }}
+            -   name: getPluginUploader
+                run: wget 'https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/0.3.0/frosh-plugin-upload.phar' -O frosh-plugin-upload.phar
+
+            -   name: Build files for Admin
+                run: cd ${PLUGIN_NAME}; npm install shopware-plugin-compiler; node node_modules/.bin/spc .
+            
+            -   name: Build Zip
+                run: php frosh-plugin-upload.phar ext:zip ${PLUGIN_NAME}
+            
+            -   name: Validate Zip
+                run: php frosh-plugin-upload.phar ext:validate ${PLUGIN_NAME}*.zip
