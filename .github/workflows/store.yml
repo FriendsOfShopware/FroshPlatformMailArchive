@@ -23,7 +23,7 @@ jobs:
                 run: wget 'https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/0.3.0/frosh-plugin-upload.phar' -O frosh-plugin-upload.phar
 
             -   name: Build files for Admin
-                run: cd ${PLUGIN_NAME}; npm install shopware-plugin-compiler; node node_modules/.bin/spc .
+                run: cd ${PLUGIN_NAME}; npm install shopware-plugin-compiler; node node_modules/.bin/spc .; rm -rf node_modules
             
             -   name: Build Zip
                 run: php frosh-plugin-upload.phar ext:zip ${PLUGIN_NAME}
