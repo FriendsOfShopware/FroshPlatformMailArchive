@@ -1,3 +1,7 @@
+# 0.1.2
+
+* Add compability for Shopware 6.2
+
 # 0.1.1
 
 * Add sidebar for searching and filtering
