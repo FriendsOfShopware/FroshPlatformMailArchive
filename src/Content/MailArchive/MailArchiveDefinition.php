@@ -10,9 +10,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\SearchRanking;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextWithHtmlField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
@@ -42,9 +43,9 @@ class MailArchiveDefinition extends EntityDefinition
             (new StringField('sender', 'sender'))->addFlags(new Required()),
             (new JsonField('receiver', 'receiver'))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
             (new StringField('subject', 'subject'))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
-            (new LongTextWithHtmlField('plainText', 'plainText')),
-            (new LongTextWithHtmlField('htmlText', 'htmlText'))->addFlags(new SearchRanking(SearchRanking::LOW_SEARCH_RAKING)),
-            (new LongTextWithHtmlField('eml', 'eml')),
+            (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml()),
+            (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml())->addFlags(new SearchRanking(SearchRanking::LOW_SEARCH_RAKING)),
+            (new LongTextField('eml', 'eml'))->addFlags(new AllowHtml()),
 
             new FkField('salesChannelId', 'salesChannelId', SalesChannelDefinition::class),
             new ManyToOneAssociationField('salesChannel', 'salesChannelId', SalesChannelDefinition::class, 'id', true),
