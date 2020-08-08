@@ -23,10 +23,12 @@ Shopware.Module.register('frosh-mail-archive', {
         }
     },
 
-    navigation: [{
-        label: 'frosh-mail-archive.title',
-        color: '#62ff80',
-        path: 'frosh.mail.archive.list',
-        icon: 'default-communication-envelope'
-    }]
+    settingsItem: [
+        {
+            group: 'plugins',
+            to: 'frosh.mail.archive.list',
+            icon: 'default-communication-envelope',
+            name: 'frosh-mail-archive.title'
+        }
+    ]
 });
