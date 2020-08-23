@@ -66,7 +66,7 @@ class MailResendController extends AbstractController
             $message->addTo($mail, $name);
         }
 
-        $message->addFrom($mailArchive->getSender());
+        $message->setFrom($mailArchive->getSender());
         $message->setSubject($mailArchive->getSubject());
 
         if (!empty($mailArchive->getPlainText())) {

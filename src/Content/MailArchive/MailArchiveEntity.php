@@ -14,7 +14,7 @@ class MailArchiveEntity extends Entity
     use EntityIdTrait;
 
     /**
-     * @var string
+     * @var array
      */
     protected $sender;
 
@@ -63,12 +63,12 @@ class MailArchiveEntity extends Entity
      */
     protected $customer;
 
-    public function getSender(): string
+    public function getSender(): array
     {
         return $this->sender;
     }
 
-    public function setSender(string $sender): void
+    public function setSender(array $sender): void
     {
         $this->sender = $sender;
     }

@@ -1,3 +1,8 @@
+# 0.2.1
+
+* Added senderName
+* Added default sorting to newest entries
+
 # 0.2.0
 
 * Kompatiblität zu 6.3

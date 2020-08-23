@@ -40,7 +40,7 @@ class MailArchiveDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
-            (new StringField('sender', 'sender'))->addFlags(new Required()),
+            (new JsonField('sender', 'sender'))->addFlags(new Required()),
             (new JsonField('receiver', 'receiver'))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
             (new StringField('subject', 'subject'))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
             (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml()),

@@ -31,6 +31,15 @@ Component.register('frosh-mail-archive-detail', {
 
             return text.join(',');
         },
+        senderText() {
+            let text = [];
+
+            Object.keys(this.archive.sender).forEach(key => {
+                text.push(`${this.archive.sender[key]} <${key}>`);
+            });
+
+            return text.join(',');
+        },
         htmlText() {
             return this.getContent(this.archive.htmlText);
         },

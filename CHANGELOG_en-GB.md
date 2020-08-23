@@ -1,6 +1,10 @@
+# 0.2.1
+
+* Absender Name hinzugefügt
+* Standardsortierung zu neueste Einträge geändert
+
 # 0.2.0
 
-* Add compability for Shopware 6.3
 * Add compability for Shopware 6.3
 
 # 0.1.2

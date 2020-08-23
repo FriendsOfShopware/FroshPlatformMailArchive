@@ -67,11 +67,10 @@ class MailSender extends ShopwareMailSender
             }
         }
 
-        $from = array_keys($message->getFrom())[0];
         $this->mailArchiveRepository->create([
             [
                 'id' => Uuid::randomHex(),
-                'sender' => $from,
+                'sender' => $message->getFrom(),
                 'receiver' => $message->getTo(),
                 'subject' => $message->getSubject(),
                 'plainText' => nl2br($plain),
