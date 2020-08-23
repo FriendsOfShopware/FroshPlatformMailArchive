@@ -40,13 +40,15 @@ Component.register('frosh-mail-archive-index', {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
                     label: 'frosh-mail-archive.list.columns.sendDate',
-                    primary: true
+                    primary: true,
+                    routerLink: 'frosh.mail.archive.detail'
                 },
                 {
                     property: 'subject',
                     dataIndex: 'subject',
                     label: 'frosh-mail-archive.list.columns.subject',
-                    allowResize: true
+                    allowResize: true,
+                    routerLink: 'frosh.mail.archive.detail'
                 },
                 {
                     property: 'receiver',
@@ -78,6 +80,8 @@ Component.register('frosh-mail-archive-index', {
             if (this.filter.term) {
                 criteria.setTerm(this.filter.term);
             }
+
+            criteria.addSorting(Criteria.sort('createdAt', 'DESC'))
 
             return this.mailArchiveRepository.search(criteria, Shopware.Context.api)
                 .then((searchResult) => {
