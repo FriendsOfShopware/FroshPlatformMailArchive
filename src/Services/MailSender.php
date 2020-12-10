@@ -93,9 +93,9 @@ class MailSender extends ShopwareMailSender
 
     private function getCustomerIdByMail(array $mails)
     {
-        $critera = new Criteria();
+        $criteria = new Criteria();
 
-        $critera->addFilter(new EqualsAnyFilter('email', $mails));
-        return $this->customerRepository->searchIds($critera, Context::createDefaultContext())->firstId();
+        $criteria->addFilter(new EqualsAnyFilter('email', $mails));
+        return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
     }
 }
