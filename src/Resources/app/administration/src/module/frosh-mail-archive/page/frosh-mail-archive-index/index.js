@@ -39,7 +39,7 @@ Component.register('frosh-mail-archive-index', {
                 {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
-                    label: 'frosh-mail-archive.list.columns.sendDate',
+                    label: 'frosh-mail-archive.list.columns.sentDate',
                     primary: true,
                     routerLink: 'frosh.mail.archive.detail'
                 },

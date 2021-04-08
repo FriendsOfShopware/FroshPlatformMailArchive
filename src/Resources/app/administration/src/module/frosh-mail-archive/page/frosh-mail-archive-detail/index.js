@@ -1,5 +1,4 @@
-const { Component, Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
+const { Component } = Shopware;
 import template from './frosh-mail-archive-detail.twig';
 import './frosh-mail-archive-detail.scss';
 
@@ -22,6 +21,19 @@ Component.register('frosh-mail-archive-detail', {
         })
     },
     computed: {
+        createdAtDate() {
+            const locale = Shopware.State.getters.adminLocaleLanguage || 'en';
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+
+            return new Intl.DateTimeFormat(locale, options).format(new Date(this.archive.createdAt));
+        },
         receiverText() {
             let text = [];
 

@@ -3,6 +3,7 @@
         "detail": {
             "metadata": {
                 "title": "Métadonnées",
+                "sentDate": "Date d'envoi",
                 "salesChannel": "Canal de vente",
                 "subject": "Objet",
                 "receiver": "Destinataire",
@@ -31,7 +32,7 @@
                 "action": "Afficher",
                 "receiver": "Destinataire",
                 "subject": "Objet",
-                "sendDate": "Date d'envoi"
+                "sentDate": "Date d'envoi"
             }
         },
         "title": "Archives E-mail"
