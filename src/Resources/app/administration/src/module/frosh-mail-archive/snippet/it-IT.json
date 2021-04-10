@@ -6,6 +6,7 @@
             },
             "metadata": {
                 "salesChannel": "Canale di vendita",
+                "sentDate": "Data di invio",
                 "title": "Metadati",
                 "subject": "Oggetto",
                 "receiver": "Destinatari",
@@ -31,7 +32,7 @@
                 "action": "Visualizza",
                 "receiver": "Destinatari",
                 "subject": "Oggetto",
-                "sendDate": "Data di invio"
+                "sentDate": "Data di invio"
             }
         },
         "title": "E-mail archivio"

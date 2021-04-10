@@ -3,7 +3,7 @@
         "title": "Mail Archive",
         "list": {
             "columns": {
-                "sendDate": "Sent date",
+                "sentDate": "Sent date",
                 "subject": "Subject",
                 "receiver": "Recipients",
                 "action": "Show"
@@ -26,6 +26,7 @@
             },
             "metadata": {
                 "title": "Metadata",
+                "sentDate": "Sent date",
                 "sender": "Sender",
                 "receiver": "Recipients",
                 "subject": "Subject",
