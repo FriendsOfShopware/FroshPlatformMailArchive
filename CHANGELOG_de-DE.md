@@ -1,3 +1,8 @@
+# 0.2.2
+* Um die Lesbarkeit zu erhöhen, wurden die Boxen für HTML- und TEXT-Mail erhöht
+* In den Mail-Details wird nun auch die Uhrzeit des Versands angezeigt
+* Ein Fehler bei der Darstellung von E-Mail-Adressen wurde behoben
+
 # 0.2.1
 
 * Added senderName
