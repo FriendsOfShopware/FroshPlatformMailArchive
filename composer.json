@@ -1,44 +1,45 @@
 {
-    "name": "frosh/mail-platform-archive",
-    "version": "0.2.1",
-    "description": "Mail Archive",
-    "type": "shopware-platform-plugin",
-    "license": "MIT",
-    "keywords": [
-        "mail",
-        "archive"
-    ],
-    "autoload": {
-        "psr-4": {
-            "Frosh\\MailArchive\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "FriendsOfShopware",
-            "homepage": "https://friendsofshopware.de"
-        }
-    ],
-    "extra": {
-        "shopware-plugin-class": "Frosh\\MailArchive\\FroshPlatformMailArchive",
-        "label": {
-            "de-DE": "Mail Archive",
-            "en-GB": "Mail Archive"
-        },
-        "description": {
-            "de-DE": "Versendete Mails archivieren",
-            "en-GB": "Archive send mails from Shop"
-        },
-        "manufacturerLink": {
-            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
-            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
-        },
-        "supportLink": {
-            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
-            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
-        }
-    },
-    "require": {
-        "shopware/core": "~6.3"
+  "name": "frosh/mail-platform-archive",
+  "version": "0.2.2",
+  "description": "Mail Archive",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "keywords": [
+    "mail",
+    "archive"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Frosh\\MailArchive\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "FriendsOfShopware",
+      "homepage": "https://friendsofshopware.de"
+    }
+  ],
+  "extra": {
+    "shopware-plugin-class": "Frosh\\MailArchive\\FroshPlatformMailArchive",
+    "plugin-icon": "src/Resources/config/plugin.png",
+    "label": {
+      "de-DE": "Mail Archive",
+      "en-GB": "Mail Archive"
+    },
+    "description": {
+      "de-DE": "Versendete Mails archivieren",
+      "en-GB": "Archive send mails from Shop"
+    },
+    "manufacturerLink": {
+      "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
+      "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
+    },
+    "supportLink": {
+      "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
+      "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
+    }
+  },
+  "require": {
+    "shopware/core": "~6.3"
+  }
 }

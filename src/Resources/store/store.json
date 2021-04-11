@@ -1,8 +1,21 @@
 {
-    "storeAvailabilities": ["International"],
-    "standardLocale": "en_GB",
-    "localizations": ["de_DE","en_GB","fr_FR","nl_NL","es_ES","it_IT"],
-    "categories": ["BackendBearbeitung"],
-    "productType": "extension",
-    "responsive": true
+  "storeAvailabilities": [
+    "International",
+    "German"
+  ],
+  "standardLocale": "en_GB",
+  "localizations": ["de_DE","en_GB","fr_FR","nl_NL","es_ES","it_IT"],
+  "categories": ["BackendBearbeitung"],
+  "productType": "extension",
+  "responsive": true,
+  "tags": {
+    "en": [
+      "mail",
+      "archive"
+    ],
+    "de": [
+      "mail",
+      "archive"
+    ]
+  }
 }
