@@ -30,9 +30,6 @@ jobs:
             -   name: Validate Zip
                 run: /opt/bin/plugin-uploader ext:validate $(pwd)/${PLUGIN_NAME}.zip
 
-            -   name: Update store informations
-                run: /opt/bin/plugin-uploader ext:update $(pwd)/${PLUGIN_NAME}/
-
             -   name: Upload to store
                 if: startsWith(github.ref, 'refs/tags/')
                 run: /opt/bin/plugin-uploader ext:upload $(pwd)/${PLUGIN_NAME}.zip --createRelease
