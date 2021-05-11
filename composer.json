@@ -1,6 +1,6 @@
 {
   "name": "frosh/mail-platform-archive",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Mail Archive",
   "type": "shopware-platform-plugin",
   "license": "MIT",
@@ -40,6 +40,6 @@
     }
   },
   "require": {
-    "shopware/core": "~6.3"
+    "shopware/core": "~6.4.0"
   }
 }

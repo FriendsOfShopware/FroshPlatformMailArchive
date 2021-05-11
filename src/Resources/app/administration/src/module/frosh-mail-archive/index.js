@@ -6,7 +6,7 @@ Shopware.Module.register('frosh-mail-archive', {
     name: 'frosh-mail-archive.title',
     title: 'frosh-mail-archive.title',
     description: '',
-    color: '#62ff80',
+    color: '#243758',
     icon: 'default-communication-envelope',
 
     routes: {

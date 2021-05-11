@@ -3,7 +3,7 @@
 namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
-use Shopware\Core\Content\MailTemplate\Service\MailSender;
+use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -13,24 +13,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MailResendController extends AbstractController
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mailArchiveRepository;
+    private EntityRepositoryInterface $mailArchiveRepository;
 
-    /**
-     * @var MailSender
-     */
-    private $mailSender;
+    private MailSender $mailSender;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(EntityRepositoryInterface $mailArchiveRepository, MailSender $mailSender, RequestStack $requestStack)
     {
@@ -41,7 +34,7 @@ class MailResendController extends AbstractController
 
     /**
      * @RouteScope(scopes={"api"})
-     * @Route(path="/api/v{version}/_action/frosh-mail-archive/resend-mail")
+     * @Route(path="/api/_action/frosh-mail-archive/resend-mail")
      */
     public function resend(Request $request)
     {
@@ -60,22 +53,20 @@ class MailResendController extends AbstractController
 
         $this->requestStack->getMasterRequest()->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
 
-        $message = new \Swift_Message();
+        $message = new Email();
 
         foreach ($mailArchive->getReceiver() as $mail => $name) {
-            $message->addTo($mail, $name);
+            $message->addTo(new Address($mail, $name));
         }
 
-        $message->setFrom($mailArchive->getSender());
-        $message->setSubject($mailArchive->getSubject());
-
-        if (!empty($mailArchive->getPlainText())) {
-            $message->addPart($mailArchive->getPlainText(), 'text/plain');
+        foreach ($mailArchive->getSender() as $mail => $name) {
+            $message->from(new Address($mail, $name));
         }
 
-        if (!empty($mailArchive->getHtmlText())) {
-            $message->addPart($mailArchive->getHtmlText(), 'text/html');
-        }
+        $message->subject($mailArchive->getSubject());
+
+        $message->html($mailArchive->getHtmlText());
+        $message->text($mailArchive->getPlainText());
 
         $this->mailSender->send($message);
 

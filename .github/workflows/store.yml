@@ -2,7 +2,7 @@ name: PackPlugin
 on:
     push:
         branches:
-            - 0.2
+            - 0.3
         tags:
             - '*'
 

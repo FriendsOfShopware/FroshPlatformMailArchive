@@ -2,79 +2,58 @@
 
 namespace Frosh\MailArchive\Services;
 
-use Shopware\Core\Content\MailTemplate\Service\MailSender as ShopwareMailSender;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Content\Mail\Service\AbstractMailSender;
+use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mailer\Envelope;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
-class MailSender extends ShopwareMailSender
+class MailSender extends AbstractMailSender
 {
-    /**
-     * @var MailSender
-     */
-    private $mailSender;
+    private AbstractMailSender $mailSender;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mailArchiveRepository;
+    private EntityRepositoryInterface $mailArchiveRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $customerRepository;
+    private EntityRepositoryInterface $customerRepository;
 
     public function __construct(
-        ShopwareMailSender $mailSender,
+        AbstractMailSender $mailSender,
         RequestStack $requestStack,
         EntityRepositoryInterface $mailArchiveRepository,
         EntityRepositoryInterface $customerRepository
-    )
-    {
+    ) {
         $this->mailSender = $mailSender;
         $this->requestStack = $requestStack;
         $this->mailArchiveRepository = $mailArchiveRepository;
         $this->customerRepository = $customerRepository;
     }
 
-    public function send(\Swift_Message $message): void
+    public function send(Email $email, ?Envelope $envelope = null): void
     {
-        $this->saveMail($message);
+        $this->saveMail($email);
 
-        $this->mailSender->send($message);
+        $this->mailSender->send($email, $envelope);
     }
 
-    private function saveMail(\Swift_Message $message): void
+    private function saveMail(Email $message): void
     {
-        $plain = null;
-        $html = null;
-
-        foreach ($message->getChildren() as $child) {
-            if ($child->getBodyContentType() === 'text/html') {
-                $html = $child->getBody();
-                continue;
-            }
-            if ($child->getBodyContentType() === 'text/plain') {
-                $plain = $child->getBody();
-            }
-        }
-
         $this->mailArchiveRepository->create([
             [
                 'id' => Uuid::randomHex(),
-                'sender' => $message->getFrom(),
-                'receiver' => $message->getTo(),
+                'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
+                'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
-                'plainText' => nl2br($plain),
-                'htmlText' => $html,
+                'plainText' => nl2br($message->getTextBody()),
+                'htmlText' => $message->getHtmlBody(),
                 'eml' => $message->toString(),
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo()))
@@ -91,11 +70,31 @@ class MailSender extends ShopwareMailSender
         return $this->requestStack->getMasterRequest()->attributes->get('sw-sales-channel-id');
     }
 
-    private function getCustomerIdByMail(array $mails)
+    private function getCustomerIdByMail(array $mails): ?string
     {
         $criteria = new Criteria();
 
         $criteria->addFilter(new EqualsAnyFilter('email', $mails));
         return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
+    }
+
+    public function getDecorated(): AbstractMailSender
+    {
+        return $this->mailSender;
+    }
+
+    /**
+     * @param Address[] $addresses
+     * @return array
+     */
+    private function convertAddress(array $addresses): array
+    {
+        $list = [];
+
+        foreach ($addresses as $address) {
+            $list[$address->getAddress()] = $address->getName();
+        }
+
+        return $list;
     }
 }

@@ -14,8 +14,8 @@ class Migration1598204175SenderToJson extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeUpdate('UPDATE frosh_mail_archive SET sender = JSON_OBJECT(sender, \'\')');
-        $connection->executeUpdate('ALTER TABLE `frosh_mail_archive`
+        $connection->executeStatement('UPDATE frosh_mail_archive SET sender = JSON_OBJECT(sender, \'\')');
+        $connection->executeStatement('ALTER TABLE `frosh_mail_archive`
 CHANGE `sender` `sender` json NOT NULL AFTER `id`;');
     }
 

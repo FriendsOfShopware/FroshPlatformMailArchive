@@ -1,3 +1,6 @@
+# 0.3.0
+* Kompatiblität zu 6.4
+
 # 0.2.2
 * Um die Lesbarkeit zu erhöhen, wurden die Boxen für HTML- und TEXT-Mail erhöht
 * In den Mail-Details wird nun auch die Uhrzeit des Versands angezeigt
