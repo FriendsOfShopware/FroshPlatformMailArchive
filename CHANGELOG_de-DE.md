@@ -1,3 +1,6 @@
+# 0.3.1
+* Aufräum Job hinzugefügt um ältere Nachrichten zu löschen
+
 # 0.3.0
 * Kompatiblität zu 6.4
 

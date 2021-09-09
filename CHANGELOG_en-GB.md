@@ -1,7 +1,8 @@
+# 0.3.1
+* Cleanup job added to delete older messages
+
 # 0.3.0
-
 * Add compatibility for Shopware 6.4
-
 
 # 0.2.2
 * To improve readability, the boxes for HTML and TEXT mail have been raised
