@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+    <card>
+        <title>Cleanup</title>
+        <title lang="de-DE">Aufräumen</title>
+        <input-field type="int">
+            <name>deleteMessageAfterDays</name>
+            <label>Delete messages after x days</label>
+            <label lang="de-DE">Nachrichten nach x Tagen löschen</label>
+            <placeholder>Use 0 to disable this</placeholder>
+            <placeholder lang="de-DE">Benutze 0 Tage um dieses Feature zu deaktivieren</placeholder>
+        </input-field>
+    </card>
+</config>

@@ -21,5 +21,15 @@
         <service id="Frosh\MailArchive\Controller\Api\MailResendController" public="true">
             <argument key="$mailArchiveRepository" type="service" id="frosh_mail_archive.repository"/>
         </service>
+
+        <service id="Frosh\MailArchive\Task\CleanupTask">
+            <tag name="shopware.scheduled.task" />
+        </service>
+
+        <service id="Frosh\MailArchive\Task\CleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository" />
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <tag name="messenger.message_handler" />
+        </service>
     </services>
 </container>
