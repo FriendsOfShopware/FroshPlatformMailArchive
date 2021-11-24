@@ -1,5 +1,6 @@
 # 0.3.1
 * Aufräum Job hinzugefügt um ältere Nachrichten zu löschen
+* Nur Mails speichern, die tatsächlich gesendet wurden
 
 # 0.3.0
 * Kompatiblität zu 6.4
