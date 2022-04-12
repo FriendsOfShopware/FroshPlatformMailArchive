@@ -1,6 +1,9 @@
+# 0.3.2
+* Save only mails that were indeed sent
+* Support for 6.4.10
+
 # 0.3.1
 * Cleanup job added to delete older messages
-* Save only mails that were indeed sent
 
 # 0.3.0
 * Add compatibility for Shopware 6.4
