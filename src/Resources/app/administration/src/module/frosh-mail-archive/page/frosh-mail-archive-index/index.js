@@ -97,8 +97,6 @@ Component.register('frosh-mail-archive-index', {
                 customerId: null,
                 term: null
             };
-
-            this.getList();
         }
     },
 
