@@ -1,3 +1,7 @@
+# 0.3.3
+* Entferne Deprecations
+* Entferne doppeltes Laden beim Filtern
+
 # 0.3.2
 * Nur Mails speichern, die tatsächlich gesendet wurden
 * Support für 6.4.10

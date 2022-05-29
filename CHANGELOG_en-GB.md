@@ -1,3 +1,7 @@
+# 0.3.3
+* Remove Deprecations
+* Remove duplicated loading when loading filter
+
 # 0.3.2
 * Save only mails that were indeed sent
 * Support for 6.4.10
