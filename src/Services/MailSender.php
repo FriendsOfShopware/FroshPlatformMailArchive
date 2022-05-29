@@ -64,11 +64,11 @@ class MailSender extends AbstractMailSender
 
     private function getCurrentSalesChannelId(): ?string
     {
-        if ($this->requestStack->getMasterRequest() === null) {
+        if ($this->requestStack->getMainRequest() === null) {
             return null;
         }
 
-        return $this->requestStack->getMasterRequest()->attributes->get('sw-sales-channel-id');
+        return $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
     }
 
     private function getCustomerIdByMail(array $mails): ?string

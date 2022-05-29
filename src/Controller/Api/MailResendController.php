@@ -51,7 +51,7 @@ class MailResendController extends AbstractController
             throw new \RuntimeException('Cannot find mailArchive');
         }
 
-        $this->requestStack->getMasterRequest()->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
+        $this->requestStack->getMainRequest()->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
 
         $message = new Email();
 
