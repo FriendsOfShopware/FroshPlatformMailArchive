@@ -1,3 +1,7 @@
+# 0.3.4
+* Add Search bar
+* Search in archive mail entity through a search bar 
+
 # 0.3.3
 * Remove Deprecations
 * Remove duplicated loading when loading filter
