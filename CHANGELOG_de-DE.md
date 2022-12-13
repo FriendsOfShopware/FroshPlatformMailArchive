@@ -1,3 +1,7 @@
+# 0.3.4
+* Suchleiste hinzufügen
+* Suchen Sie in der Archiv-E-Mail-Entität über eine Suchleiste
+
 # 0.3.3
 * Entferne Deprecations
 * Entferne doppeltes Laden beim Filtern

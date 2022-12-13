@@ -1,4 +1,11 @@
 <sw-page>
+    <template slot="search-bar">
+        <sw-search-bar
+            initialSearchType="Mail Archive"
+            :initialSearch="term"
+            @search="onSearch">
+        </sw-search-bar>
+    </template>
     <template slot="smart-bar-header">
         <h2>{{ $tc('frosh-mail-archive.title') }}</h2>
     </template>
