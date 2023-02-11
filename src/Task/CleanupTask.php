@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Task;
 
@@ -6,7 +6,7 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 
 class CleanupTask extends ScheduledTask
 {
-    public const NAME = 'frosh.mail_archive.cleanup';
+    final public const NAME = 'frosh.mail_archive.cleanup';
 
     public static function getTaskName(): string
     {

@@ -67,7 +67,7 @@ Component.register('frosh-mail-archive-index', {
         getList() {
             this.isLoading = true;
 
-            let criteria = new Criteria();
+            const criteria = new Criteria(this.page, this.limit);
             criteria.setTerm(this.term);
 
             if (this.filter.salesChannelId) {

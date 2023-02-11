@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Content\MailArchive;
 
@@ -19,7 +19,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class MailArchiveDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'frosh_mail_archive';
+    final public const ENTITY_NAME = 'frosh_mail_archive';
 
     public function getEntityName(): string
     {

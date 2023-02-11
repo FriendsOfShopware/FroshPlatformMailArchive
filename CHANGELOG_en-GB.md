@@ -1,3 +1,6 @@
+# 1.0.0
+* Shopware 6.5 compatibility
+
 # 0.3.4
 * Add Search bar
 * Search in archive mail entity through a search bar 

@@ -1,3 +1,6 @@
+# 1.0.0
+* Shopware 6.5 Kompatibilität
+
 # 0.3.4
 * Suchleiste hinzufügen
 * Suchen Sie in der Archiv-E-Mail-Entität über eine Suchleiste

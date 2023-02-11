@@ -1,6 +1,6 @@
 {
   "name": "frosh/mail-platform-archive",
-  "version": "0.3.3",
+  "version": "1.0",
   "description": "Mail Archive",
   "type": "shopware-platform-plugin",
   "license": "MIT",
@@ -37,9 +37,9 @@
     "supportLink": {
       "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
       "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
+    },
+    "require": {
+       "shopware/core": "~6.5.0"
     }
-  },
-  "require": {
-    "shopware/core": "~6.4.10"
   }
 }
