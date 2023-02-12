@@ -1,12 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Services;
 
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
-use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -17,22 +15,16 @@ use Symfony\Component\Mime\Email;
 
 class MailSender extends AbstractMailSender
 {
-    private AbstractMailSender $mailSender;
+    private readonly EntityRepository $mailArchiveRepository;
 
-    private RequestStack $requestStack;
-
-    private EntityRepositoryInterface $mailArchiveRepository;
-
-    private EntityRepositoryInterface $customerRepository;
+    private readonly EntityRepository $customerRepository;
 
     public function __construct(
-        AbstractMailSender $mailSender,
-        RequestStack $requestStack,
-        EntityRepositoryInterface $mailArchiveRepository,
-        EntityRepositoryInterface $customerRepository
+        private readonly AbstractMailSender $mailSender,
+        private readonly RequestStack $requestStack,
+        EntityRepository $mailArchiveRepository,
+        EntityRepository $customerRepository
     ) {
-        $this->mailSender = $mailSender;
-        $this->requestStack = $requestStack;
         $this->mailArchiveRepository = $mailArchiveRepository;
         $this->customerRepository = $customerRepository;
     }
@@ -45,6 +37,11 @@ class MailSender extends AbstractMailSender
         $this->saveMail($email);
     }
 
+    public function getDecorated(): AbstractMailSender
+    {
+        return $this->mailSender;
+    }
+
     private function saveMail(Email $message): void
     {
         $this->mailArchiveRepository->create([
@@ -53,12 +50,12 @@ class MailSender extends AbstractMailSender
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
-                'plainText' => nl2br($message->getTextBody()),
+                'plainText' => nl2br((string) $message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
                 'eml' => $message->toString(),
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
-                'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo()))
-            ]
+                'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo())),
+            ],
         ], Context::createDefaultContext());
     }
 
@@ -68,7 +65,12 @@ class MailSender extends AbstractMailSender
             return null;
         }
 
-        return $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
+        $salesChannelId = $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
+        if(!is_string($salesChannelId)) {
+            return null;
+        }
+
+        return $salesChannelId;
     }
 
     private function getCustomerIdByMail(array $mails): ?string
@@ -76,17 +78,12 @@ class MailSender extends AbstractMailSender
         $criteria = new Criteria();
 
         $criteria->addFilter(new EqualsAnyFilter('email', $mails));
-        return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
-    }
 
-    public function getDecorated(): AbstractMailSender
-    {
-        return $this->mailSender;
+        return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
     }
 
     /**
      * @param Address[] $addresses
-     * @return array
      */
     private function convertAddress(array $addresses): array
     {

@@ -1,36 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Task;
 
-use DateInterval;
-use DateTime;
 use Doctrine\DBAL\Connection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use function Doctrine\DBAL\Query\QueryBuilder;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler(handles: CleanupTask::class)]
 class CleanupTaskHandler extends ScheduledTaskHandler
 {
-    private SystemConfigService $configService;
-    private Connection $connection;
-
     public function __construct(
-        EntityRepositoryInterface $scheduledTaskRepository,
-        SystemConfigService $configService,
-        Connection $connection
+        EntityRepository $scheduledTaskRepository,
+        private readonly SystemConfigService $configService,
+        private readonly Connection $connection
     ) {
         parent::__construct($scheduledTaskRepository);
-        $this->configService = $configService;
-        $this->connection = $connection;
-    }
-
-    public static function getHandledMessages(): iterable
-    {
-        return [
-            CleanupTask::class
-        ];
     }
 
     public function run(): void
@@ -41,12 +29,18 @@ class CleanupTaskHandler extends ScheduledTaskHandler
             return;
         }
 
-        $time = (new DateTime())->sub(DateInterval::createFromDateString(sprintf('%s days', $days)));
+        $time = new \DateTime();
+        $time->modify(sprintf('-%s days', $days));
 
         $query = $this->connection->createQueryBuilder();
         $query->delete(MailArchiveDefinition::ENTITY_NAME);
-        $query->where($query->expr()->lte('created_at', $query->createNamedParameter($time->format('Y-m-d H:i:s'))));
+        $query->where(
+            $query->expr()->lte(
+                'created_at',
+                $query->createNamedParameter($time->format(Defaults::STORAGE_DATE_TIME_FORMAT))
+            )
+        );
 
-        $query->execute();
+        $query->executeQuery();
     }
 }

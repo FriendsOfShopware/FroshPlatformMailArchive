@@ -1,13 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,39 +18,36 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MailResendController extends AbstractController
 {
-    private EntityRepositoryInterface $mailArchiveRepository;
+    private readonly EntityRepository $mailArchiveRepository;
 
-    private MailSender $mailSender;
-
-    private RequestStack $requestStack;
-
-    public function __construct(EntityRepositoryInterface $mailArchiveRepository, MailSender $mailSender, RequestStack $requestStack)
-    {
+    public function __construct(
+        EntityRepository $mailArchiveRepository,
+        private readonly MailSender $mailSender,
+        private readonly RequestStack $requestStack
+    ) {
         $this->mailArchiveRepository = $mailArchiveRepository;
-        $this->mailSender = $mailSender;
-        $this->requestStack = $requestStack;
     }
 
-    /**
-     * @RouteScope(scopes={"api"})
-     * @Route(path="/api/_action/frosh-mail-archive/resend-mail")
-     */
-    public function resend(Request $request)
+    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', defaults: ['_routeScope' => ['api']])]
+    public function resend(Request $request): JsonResponse
     {
         $mailId = $request->request->get('mailId');
 
-        if (!$mailId) {
+        if (!is_string($mailId)) {
             throw new \RuntimeException('mailId not given');
         }
 
-        /** @var MailArchiveEntity|null $mailArchive */
         $mailArchive = $this->mailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
-
-        if (!$mailArchive) {
+        if (!$mailArchive instanceof MailArchiveEntity) {
             throw new \RuntimeException('Cannot find mailArchive');
         }
 
-        $this->requestStack->getMainRequest()->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
+        $mainRequest = $this->requestStack->getMainRequest();
+        if (!$mainRequest instanceof Request) {
+            throw new \RuntimeException('Cannot get mainRequest');
+        }
+
+        $mainRequest->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
 
         $message = new Email();
 
@@ -71,7 +67,7 @@ class MailResendController extends AbstractController
         $this->mailSender->send($message);
 
         return new JsonResponse([
-            'success' => true
+            'success' => true,
         ]);
     }
 }

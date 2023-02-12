@@ -1,18 +1,11 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                   add(MailArchiveEntity $entity)
- * @method void                   set(string $key, MailArchiveEntity $entity)
- * @method MailArchiveEntity[]    getIterator()
- * @method MailArchiveEntity[]    getElements()
- * @method MailArchiveEntity|null get(string $key)
- * @method MailArchiveEntity|null first()
- * @method MailArchiveEntity|null last()
+ * @extends EntityCollection<MailArchiveEntity>
  */
 class MailArchiveCollection extends EntityCollection
 {
