@@ -1,45 +1,45 @@
 {
-  "name": "frosh/mail-platform-archive",
-  "version": "1.0.0",
-  "description": "Mail Archive",
-  "type": "shopware-platform-plugin",
-  "license": "MIT",
-  "keywords": [
-    "mail",
-    "archive"
-  ],
-  "autoload": {
-    "psr-4": {
-      "Frosh\\MailArchive\\": "src/"
-    }
-  },
-  "authors": [
-    {
-      "name": "FriendsOfShopware",
-      "homepage": "https://friendsofshopware.de"
-    }
-  ],
-  "extra": {
-    "shopware-plugin-class": "Frosh\\MailArchive\\FroshPlatformMailArchive",
-    "plugin-icon": "src/Resources/config/plugin.png",
-    "label": {
-      "de-DE": "Mail Archive",
-      "en-GB": "Mail Archive"
+    "name": "frosh/mail-platform-archive",
+    "version": "1.0.0",
+    "description": "Mail Archive",
+    "type": "shopware-platform-plugin",
+    "license": "MIT",
+    "keywords": [
+        "mail",
+        "archive"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Frosh\\MailArchive\\": "src/"
+        }
     },
-    "description": {
-      "de-DE": "Mit diesem Plugin erhalten Sie ein einfaches durchsuchbares Archiv für E-Mails, die aus Shopware versendet werden. Die E-Mails sind erreichbar: Einstellungen/Erweiterungen/Main Archiv.",
-      "en-GB": "With this plugin you get a simple searchable archive for emails that are sent from Shopware. The e-mails can be found via the menu path Settings/Extensions/Main Archive.."
-    },
-    "manufacturerLink": {
-      "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
-      "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
-    },
-    "supportLink": {
-      "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
-      "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
+    "authors": [
+        {
+            "name": "FriendsOfShopware",
+            "homepage": "https://friendsofshopware.de"
+        }
+    ],
+    "extra": {
+        "shopware-plugin-class": "Frosh\\MailArchive\\FroshPlatformMailArchive",
+        "plugin-icon": "src/Resources/config/plugin.png",
+        "label": {
+            "de-DE": "Mail Archive",
+            "en-GB": "Mail Archive"
+        },
+        "description": {
+            "de-DE": "Mit diesem Plugin erhalten Sie ein einfaches durchsuchbares Archiv für E-Mails, die aus Shopware versendet werden. Die E-Mails sind erreichbar: Einstellungen/Erweiterungen/Main Archiv.",
+            "en-GB": "With this plugin you get a simple searchable archive for emails that are sent from Shopware. The e-mails can be found via the menu path Settings/Extensions/Main Archive.."
+        },
+        "manufacturerLink": {
+            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive"
+        },
+        "supportLink": {
+            "de-DE": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues",
+            "en-GB": "https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues"
+        }
     },
     "require": {
-       "shopware/core": "~6.5.0"
+        "shopware/core": "~6.5.0"
     }
-  }
 }
