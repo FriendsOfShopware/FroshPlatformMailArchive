@@ -1,4 +1,7 @@
-# 1.0.0
+# 1.0.1
+* Fix dal validation
+
+* # 1.0.0
 * Shopware 6.5 compatibility
 
 # 0.3.4
