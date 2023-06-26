@@ -11,6 +11,14 @@
             <tag name="shopware.entity.definition" entity="frosh_mail_archive"/>
         </service>
 
+        <service id="Frosh\MailArchive\Extension\System\SalesChannel\SalesChannelExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="Frosh\MailArchive\Extension\Checkout\Customer\CustomerExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
         <service id="Frosh\MailArchive\Services\MailSender" public="true" decorates="Shopware\Core\Content\Mail\Service\MailSender">
             <argument type="service" id="Frosh\MailArchive\Services\MailSender.inner"/>
             <argument type="service" id="request_stack"/>
