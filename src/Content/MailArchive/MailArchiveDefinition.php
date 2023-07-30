@@ -46,6 +46,7 @@ class MailArchiveDefinition extends EntityDefinition
             (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml()),
             (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING)),
             (new LongTextField('eml', 'eml'))->addFlags(new AllowHtml()),
+            (new StringField('eml_path', 'emlPath', 2048)),
 
             new FkField('salesChannelId', 'salesChannelId', SalesChannelDefinition::class),
             new ManyToOneAssociationField('salesChannel', 'salesChannelId', SalesChannelDefinition::class, 'id', true),

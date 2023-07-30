@@ -4,6 +4,7 @@ namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Services\MailSender;
+use League\Flysystem\FilesystemOperator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -15,6 +16,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use ZBateson\MailMimeParser\Header\AddressHeader;
+use ZBateson\MailMimeParser\Header\DateHeader;
+use ZBateson\MailMimeParser\Header\Part\AddressPart;
+use ZBateson\MailMimeParser\MailMimeParser;
 
 class MailResendController extends AbstractController
 {
@@ -23,7 +28,8 @@ class MailResendController extends AbstractController
     public function __construct(
         EntityRepository $mailArchiveRepository,
         private readonly MailSender $mailSender,
-        private readonly RequestStack $requestStack
+        private readonly RequestStack $requestStack,
+        private readonly FilesystemOperator $privateFilesystem
     ) {
         $this->mailArchiveRepository = $mailArchiveRepository;
     }
@@ -33,7 +39,7 @@ class MailResendController extends AbstractController
     {
         $mailId = $request->request->get('mailId');
 
-        if (!is_string($mailId)) {
+        if (!\is_string($mailId)) {
             throw new \RuntimeException('mailId not given');
         }
 
@@ -49,25 +55,65 @@ class MailResendController extends AbstractController
 
         $mainRequest->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
 
-        $message = new Email();
+        $email = new Email();
 
-        foreach ($mailArchive->getReceiver() as $mail => $name) {
-            $message->addTo(new Address($mail, $name));
+        if (!empty($mailArchive->getEmlPath())
+            && $this->privateFilesystem->has($mailArchive->getEmlPath())) {
+            $this->loadFromEml($email, $mailArchive);
+        }
+
+        //TODO: implement check for old data
+        /*foreach ($mailArchive->getReceiver() as $mail => $name) {
+            $email->addTo(new Address($mail, $name));
         }
 
         foreach ($mailArchive->getSender() as $mail => $name) {
-            $message->from(new Address($mail, $name));
+            $email->from(new Address($mail, $name));
         }
 
-        $message->subject($mailArchive->getSubject());
+        $email->subject($mailArchive->getSubject());
 
-        $message->html($mailArchive->getHtmlText());
-        $message->text($mailArchive->getPlainText());
+        $email->html($mailArchive->getHtmlText());
+        $email->text($mailArchive->getPlainText());
+        */
 
-        $this->mailSender->send($message);
+        $this->mailSender->send($email);
 
         return new JsonResponse([
             'success' => true,
         ]);
+    }
+
+    private function loadFromEml(Email $email, MailArchiveEntity $mailArchive): void
+    {
+        $eml = $this->privateFilesystem->readStream($mailArchive->getEmlPath());
+        $parser = new MailMimeParser();
+        $message = $parser->parse($eml, false);
+
+        $email->html($message->getHtmlContent());
+        $email->text($message->getTextContent());
+
+        foreach ($message->getAllHeaders() as $header) {
+            $value = $header->getValue();
+
+            if ($header instanceof AddressHeader) {
+                /** @var AddressPart[] $addParts */
+                $addParts = $header->getParts();
+
+                $value = \array_map(function (AddressPart $part) {
+                    return new Address($part->getEmail(), $part->getName());
+                }, $addParts);
+            }
+
+            if ($header instanceof DateHeader) {
+                $value = $header->getDateTimeImmutable();
+            }
+
+            $email->getHeaders()->addHeader($header->getName(), $value);
+        }
+
+        foreach ($message->getAllAttachmentParts() as $attachment) {
+            $email->attach($attachment->getContent(), $attachment->getFilename(), $attachment->getContentType());
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Frosh\MailArchive\Services;
 
+use League\Flysystem\FilesystemOperator;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -23,7 +24,8 @@ class MailSender extends AbstractMailSender
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
         EntityRepository $mailArchiveRepository,
-        EntityRepository $customerRepository
+        EntityRepository $customerRepository,
+        private readonly FilesystemOperator $privateFilesystem
     ) {
         $this->mailArchiveRepository = $mailArchiveRepository;
         $this->customerRepository = $customerRepository;
@@ -44,15 +46,20 @@ class MailSender extends AbstractMailSender
 
     private function saveMail(Email $message): void
     {
+        $id = Uuid::randomHex();
+        $emlPath = 'mails/' . $id . '.eml';
+
+        $this->privateFilesystem->write($emlPath, $message->toString());
+
         $this->mailArchiveRepository->create([
             [
-                'id' => Uuid::randomHex(),
+                'id' => $id,
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
                 'plainText' => nl2br((string) $message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
-                'eml' => $message->toString(),
+                'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo())),
             ],
@@ -66,7 +73,7 @@ class MailSender extends AbstractMailSender
         }
 
         $salesChannelId = $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
-        if(!is_string($salesChannelId)) {
+        if (!\is_string($salesChannelId)) {
             return null;
         }
 

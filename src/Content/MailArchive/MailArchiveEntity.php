@@ -11,55 +11,30 @@ class MailArchiveEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var array
-     */
-    protected $sender;
+    protected array $sender;
+
+    protected array $receiver;
+
+    protected string $subject;
+
+    protected ?string $plainText;
+
+    protected ?string $htmlText;
 
     /**
-     * @var array
+     * @decrecated will not be filled anyone. Use emlPath instead
      */
-    protected $receiver;
+    protected ?string $eml;
 
-    /**
-     * @var string
-     */
-    protected $subject;
+    protected ?string $emlPath;
 
-    /**
-     * @var string
-     */
-    protected $plainText;
+    protected ?string $salesChannelId;
 
-    /**
-     * @var string
-     */
-    protected $htmlText;
+    protected ?SalesChannelEntity $salesChannel;
 
-    /**
-     * @var string
-     */
-    protected $eml;
+    protected ?string $customerId;
 
-    /**
-     * @var string|null
-     */
-    protected $salesChannelId;
-
-    /**
-     * @var SalesChannelEntity|null
-     */
-    protected $salesChannel;
-
-    /**
-     * @var string
-     */
-    protected $customerId;
-
-    /**
-     * @var CustomerEntity
-     */
-    protected $customer;
+    protected ?CustomerEntity $customer;
 
     public function getSender(): array
     {
@@ -91,34 +66,50 @@ class MailArchiveEntity extends Entity
         $this->subject = $subject;
     }
 
-    public function getPlainText(): string
+    public function getPlainText(): ?string
     {
         return $this->plainText;
     }
 
-    public function setPlainText(string $plainText): void
+    public function setPlainText(?string $plainText): void
     {
         $this->plainText = $plainText;
     }
 
-    public function getHtmlText(): string
+    public function getHtmlText(): ?string
     {
         return $this->htmlText;
     }
 
-    public function setHtmlText(string $htmlText): void
+    public function setHtmlText(?string $htmlText): void
     {
         $this->htmlText = $htmlText;
     }
 
-    public function getEml(): string
+    /**
+     * @decrecated will not be filled anyone. Use emlPath instead
+     */
+    public function getEml(): ?string
     {
         return $this->eml;
     }
 
-    public function setEml(string $eml): void
+    /**
+     * @decrecated should not be filled anyone. Save on disk and use emlPath instead
+     */
+    public function setEml(?string $eml): void
     {
         $this->eml = $eml;
+    }
+
+    public function getEmlPath(): ?string
+    {
+        return $this->emlPath;
+    }
+
+    public function setEmlPath(?string $emlPath): void
+    {
+        $this->emlPath = $emlPath;
     }
 
     public function getSalesChannelId(): ?string
@@ -141,22 +132,22 @@ class MailArchiveEntity extends Entity
         $this->salesChannel = $salesChannel;
     }
 
-    public function getCustomerId(): string
+    public function getCustomerId(): ?string
     {
         return $this->customerId;
     }
 
-    public function setCustomerId(string $customerId): void
+    public function setCustomerId(?string $customerId): void
     {
         $this->customerId = $customerId;
     }
 
-    public function getCustomer(): CustomerEntity
+    public function getCustomer(): ?CustomerEntity
     {
         return $this->customer;
     }
 
-    public function setCustomer(CustomerEntity $customer): void
+    public function setCustomer(?CustomerEntity $customer): void
     {
         $this->customer = $customer;
     }
