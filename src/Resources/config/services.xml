@@ -43,6 +43,7 @@
         <service id="Frosh\MailArchive\Task\CleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository" />
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$privateFilesystem" type="service" id="frosh_platform_mail_archive.filesystem.private"/>
             <tag name="messenger.message_handler" />
         </service>
     </services>
