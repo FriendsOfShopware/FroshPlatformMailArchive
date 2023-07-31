@@ -9,8 +9,10 @@ Component.register('frosh-mail-archive-detail', {
     data() {
         return {
             archive: null,
-            isLoading: false,
-            isSuccessful: false,
+            resendIsLoading: false,
+            resendIsSuccessful: false,
+            downloadIsLoading: false,
+            downloadIsSuccessful: false,
         }
     },
 
@@ -73,14 +75,25 @@ Component.register('frosh-mail-archive-detail', {
             });
         },
         resendMail() {
-            this.isLoading = true;
+            this.resendIsLoading = true;
 
             this.froshMailArchiveService.resendMail(this.archive.id).then(() => {
-                this.isLoading = false;
-                this.isSuccessful = true;
+                this.resendIsLoading = false;
+                this.resendIsSuccessful = true;
             }).catch(() => {
-                this.isLoading = false;
-                this.isSuccessful = false;
+                this.resendIsLoading = false;
+                this.resendIsSuccessful = false;
+            });
+        },
+        downloadMail() {
+            this.downloadIsLoading = true;
+
+            this.froshMailArchiveService.downloadMail(this.archive.id).then(() => {
+                this.downloadIsLoading = false;
+                this.downloadIsSuccessful = true;
+            }).catch(() => {
+                this.downloadIsLoading = false;
+                this.downloadIsSuccessful = false;
             });
         }
     }

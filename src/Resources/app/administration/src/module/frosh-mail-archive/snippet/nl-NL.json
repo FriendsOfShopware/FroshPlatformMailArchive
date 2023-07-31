@@ -3,7 +3,8 @@
         "detail": {
             "toolbar": {
                 "resend": "E-mail opnieuw verzenden",
-                "customer": "Klant openen"
+                "customer": "Klant openen",
+                "downloadEml": "E-mail downloaden"
             },
             "content": {
                 "title": "Inhoud"

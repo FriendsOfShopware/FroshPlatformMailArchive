@@ -22,7 +22,8 @@
         "detail": {
             "toolbar": {
                 "customer": "Open customer",
-                "resend": "Resend mail"
+                "resend": "Resend mail",
+                "downloadEml": "Download mail"
             },
             "metadata": {
                 "title": "Metadata",

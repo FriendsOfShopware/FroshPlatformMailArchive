@@ -14,7 +14,8 @@
             },
             "toolbar": {
                 "resend": "Rinvia l'e-mail",
-                "customer": "Apri cliente"
+                "customer": "Apri cliente",
+                "downloadEml": "Scarica l'e-mail"
             }
         },
         "list": {

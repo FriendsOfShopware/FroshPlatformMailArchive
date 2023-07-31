@@ -22,7 +22,8 @@
         "detail": {
             "toolbar": {
                 "customer": "Kunden öffnen",
-                "resend": "E-Mail erneut versenden"
+                "resend": "E-Mail erneut versenden",
+                "downloadEml": "Download E-Mail"
             },
             "metadata": {
                 "title": "Metadaten",
