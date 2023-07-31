@@ -90,11 +90,16 @@ class MailResendController extends AbstractController
         $emlPath = $mailArchive->getEmlPath();
         $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->has($emlPath);
 
-        if (!$isEml) {
-            throw new \RuntimeException('Cannot find eml file');
+        $content = $mailArchive->getEml();
+
+        if ($isEml) {
+            $content = $this->privateFilesystem->read($emlPath);
         }
 
-        $content = $this->privateFilesystem->read($emlPath);
+        if (empty($content)) {
+            throw new \RuntimeException('Eml content is empty');
+        }
+
         $fileName = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s') . ' ' . $mailArchive->getSubject() . '.eml';
 
         return new JsonResponse([
