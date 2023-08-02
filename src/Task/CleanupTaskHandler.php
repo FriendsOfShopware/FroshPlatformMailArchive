@@ -53,7 +53,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         }
 
         foreach ($result as $item) {
-            if ($this->privateFilesystem->has($item['eml_path'])) {
+            if ($this->privateFilesystem->fileExists($item['eml_path'])) {
                 $this->privateFilesystem->delete($item['eml_path']);
             }
         }

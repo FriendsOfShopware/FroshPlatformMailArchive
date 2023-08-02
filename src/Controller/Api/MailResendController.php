@@ -58,7 +58,7 @@ class MailResendController extends AbstractController
 
         $email = new Email();
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->has($emlPath);
+        $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->fileExists($emlPath);
 
         if ($isEml) {
             $this->enrichFromEml($emlPath, $email);
@@ -87,10 +87,11 @@ class MailResendController extends AbstractController
             throw new \RuntimeException('Cannot find mailArchive');
         }
 
-        $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->has($emlPath);
-
+        // for backward compatibility
         $content = $mailArchive->getEml();
+
+        $emlPath = $mailArchive->getEmlPath();
+        $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->fileExists($emlPath);
 
         if ($isEml) {
             $content = $this->privateFilesystem->read($emlPath);

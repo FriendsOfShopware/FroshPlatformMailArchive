@@ -22,7 +22,7 @@ class MailArchiveEntity extends Entity
     protected ?string $htmlText;
 
     /**
-     * @decrecated will not be filled anyone. Use emlPath instead
+     * @deprecated will not be filled anyone. Use emlPath instead
      */
     protected ?string $eml;
 
@@ -87,7 +87,7 @@ class MailArchiveEntity extends Entity
     }
 
     /**
-     * @decrecated will not be filled anyone. Use emlPath instead
+     * @deprecated Will not be filled anyone. Use emlPath instead
      */
     public function getEml(): ?string
     {
@@ -95,7 +95,7 @@ class MailArchiveEntity extends Entity
     }
 
     /**
-     * @decrecated should not be filled anyone. Save on disk and use emlPath instead
+     * @deprecated should not be filled anyone. Save on disk and use emlPath instead
      */
     public function setEml(?string $eml): void
     {
