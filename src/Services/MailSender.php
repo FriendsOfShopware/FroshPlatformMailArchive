@@ -15,19 +15,14 @@ use Symfony\Component\Mime\Email;
 
 class MailSender extends AbstractMailSender
 {
-    private readonly EntityRepository $mailArchiveRepository;
-
-    private readonly EntityRepository $customerRepository;
 
     public function __construct(
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
-        EntityRepository $mailArchiveRepository,
-        EntityRepository $customerRepository,
+        private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly EntityRepository $customerRepository,
         private readonly EmlFileManager $emlFileManager
     ) {
-        $this->mailArchiveRepository = $mailArchiveRepository;
-        $this->customerRepository = $customerRepository;
     }
 
     public function send(Email $email, ?Envelope $envelope = null): void
@@ -49,7 +44,7 @@ class MailSender extends AbstractMailSender
 
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
-        $this->mailArchiveRepository->create([
+        $this->froshMailArchiveRepository->create([
             [
                 'id' => $id,
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],

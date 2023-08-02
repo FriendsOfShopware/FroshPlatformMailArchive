@@ -25,7 +25,7 @@ use ZBateson\MailMimeParser\Header\Part\AddressPart;
 class MailResendController extends AbstractController
 {
     public function __construct(
-        #[Autowire(service: 'frosh_mail_archive.repository')] private readonly EntityRepository $mailArchiveRepository,
+        private readonly EntityRepository $froshMailArchiveRepository,
         private readonly MailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager
@@ -41,7 +41,7 @@ class MailResendController extends AbstractController
             throw new \RuntimeException('mailId not given');
         }
 
-        $mailArchive = $this->mailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw new \RuntimeException('Cannot find mail in archive');
         }
@@ -79,7 +79,7 @@ class MailResendController extends AbstractController
             throw new \RuntimeException('mailId not given');
         }
 
-        $mailArchive = $this->mailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw new \RuntimeException('Cannot find mailArchive');
         }

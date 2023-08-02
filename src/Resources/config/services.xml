@@ -22,9 +22,6 @@
 
         <service id="Frosh\MailArchive\Services\MailSender" public="true" decorates="Shopware\Core\Content\Mail\Service\MailSender">
             <argument type="service" id="Frosh\MailArchive\Services\MailSender.inner"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="frosh_mail_archive.repository"/>
-            <argument type="service" id="customer.repository"/>
         </service>
 
         <service id="Frosh\MailArchive\Controller\Api\MailResendController" public="true">

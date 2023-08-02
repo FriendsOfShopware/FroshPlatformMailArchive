@@ -23,7 +23,7 @@ class MigrateMailCommand extends Command
     public function __construct(
         private readonly MigrateMailHandler $migrateMailHandler,
         private readonly MessageBusInterface $messageBus,
-        #[Autowire(service: 'frosh_mail_archive.repository')] private readonly EntityRepository $mailArchiveRepository
+        private readonly EntityRepository $froshMailArchiveRepository
     ) {
         parent::__construct();
     }
@@ -38,7 +38,7 @@ class MigrateMailCommand extends Command
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('emlPath', null));
 
-        $ids = $this->mailArchiveRepository->searchIds($criteria, Context::createDefaultContext())->getIds();
+        $ids = $this->froshMailArchiveRepository->searchIds($criteria, Context::createDefaultContext())->getIds();
 
         if (\count($ids) === 0) {
             $output->writeln('No mails to migrate');
