@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,15 +24,12 @@ use ZBateson\MailMimeParser\Header\Part\AddressPart;
 
 class MailResendController extends AbstractController
 {
-    private readonly EntityRepository $mailArchiveRepository;
-
     public function __construct(
-        EntityRepository $mailArchiveRepository,
+        #[Autowire(service: 'frosh_mail_archive.repository')] private readonly EntityRepository $mailArchiveRepository,
         private readonly MailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager
     ) {
-        $this->mailArchiveRepository = $mailArchiveRepository;
     }
 
     #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', defaults: ['_routeScope' => ['api']])]
@@ -45,7 +43,7 @@ class MailResendController extends AbstractController
 
         $mailArchive = $this->mailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
-            throw new \RuntimeException('Cannot find mailArchive');
+            throw new \RuntimeException('Cannot find mail in archive');
         }
 
         $mainRequest = $this->requestStack->getMainRequest();
@@ -121,7 +119,14 @@ class MailResendController extends AbstractController
         $email->text($message->getTextContent());
 
         foreach ($message->getAllHeaders() as $header) {
-            $email->getHeaders()->addHeader($header->getName(), $this->getHeaderValue($header));
+            $headerValue = $this->getHeaderValue($header);
+
+            // skip multipart/alternative header due to multiple content types breaking the resent email
+            if ($header->getName() === 'Content-Type' && $headerValue === 'multipart/alternative') {
+                continue;
+            }
+
+            $email->getHeaders()->addHeader($header->getName(), $headerValue);
         }
 
         foreach ($message->getAllAttachmentParts() as $attachment) {

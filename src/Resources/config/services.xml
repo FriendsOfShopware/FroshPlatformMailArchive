@@ -5,7 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults autowire="true"/>
+        <defaults autowire="true" autoconfigure="true"/>
+        <prototype namespace="Frosh\MailArchive\" resource="../../" />
 
         <service id="Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition">
             <tag name="shopware.entity.definition" entity="frosh_mail_archive"/>
@@ -27,16 +28,9 @@
         </service>
 
         <service id="Frosh\MailArchive\Controller\Api\MailResendController" public="true">
-            <argument key="$mailArchiveRepository" type="service" id="frosh_mail_archive.repository"/>
-            <argument key="$emlFileManager" type="service" id="Frosh\MailArchive\Services\EmlFileManager"/>
-
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
-        </service>
-
-        <service id="Frosh\MailArchive\Services\EmlFileManager">
-            <argument type="service" id="frosh_platform_mail_archive.filesystem.private"/>
         </service>
 
         <service id="Frosh\MailArchive\Task\CleanupTask">
@@ -47,6 +41,7 @@
             <argument type="service" id="scheduled_task.repository" />
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument key="$privateFilesystem" type="service" id="frosh_platform_mail_archive.filesystem.private"/>
+
             <tag name="messenger.message_handler" />
         </service>
     </services>

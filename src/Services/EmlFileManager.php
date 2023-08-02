@@ -3,13 +3,14 @@
 namespace Frosh\MailArchive\Services;
 
 use League\Flysystem\FilesystemOperator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use ZBateson\MailMimeParser\IMessage;
 use ZBateson\MailMimeParser\MailMimeParser;
 
 class EmlFileManager
 {
     public function __construct(
-        private readonly FilesystemOperator $filesystem
+        #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')] private readonly FilesystemOperator $filesystem
     ) {
     }
 
@@ -43,7 +44,7 @@ class EmlFileManager
             return false;
         }
 
-        $content = $this->getEmlFileContent($emlFilePath);
+        $content = $this->getEmlFileAsString($emlFilePath);
 
         if (empty($content)) {
             return false;
