@@ -2,7 +2,6 @@
 
 namespace Frosh\MailArchive\Services;
 
-use League\Flysystem\FilesystemOperator;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -25,7 +24,7 @@ class MailSender extends AbstractMailSender
         private readonly RequestStack $requestStack,
         EntityRepository $mailArchiveRepository,
         EntityRepository $customerRepository,
-        private readonly FilesystemOperator $privateFilesystem
+        private readonly EmlFileManager $emlFileManager
     ) {
         $this->mailArchiveRepository = $mailArchiveRepository;
         $this->customerRepository = $customerRepository;
@@ -47,9 +46,8 @@ class MailSender extends AbstractMailSender
     private function saveMail(Email $message): void
     {
         $id = Uuid::randomHex();
-        $emlPath = 'mails/' . $id . '.eml';
 
-        $this->privateFilesystem->write($emlPath, $message->toString());
+        $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
         $this->mailArchiveRepository->create([
             [

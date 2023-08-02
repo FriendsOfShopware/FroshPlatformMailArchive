@@ -3,8 +3,8 @@
 namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
+use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
-use League\Flysystem\FilesystemOperator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -20,7 +20,6 @@ use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\Header\IHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
-use ZBateson\MailMimeParser\MailMimeParser;
 
 class MailResendController extends AbstractController
 {
@@ -30,7 +29,7 @@ class MailResendController extends AbstractController
         EntityRepository $mailArchiveRepository,
         private readonly MailSender $mailSender,
         private readonly RequestStack $requestStack,
-        private readonly FilesystemOperator $privateFilesystem
+        private readonly EmlFileManager $emlFileManager
     ) {
         $this->mailArchiveRepository = $mailArchiveRepository;
     }
@@ -58,7 +57,7 @@ class MailResendController extends AbstractController
 
         $email = new Email();
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->fileExists($emlPath);
+        $isEml = !empty($emlPath) && \is_string($emlPath);
 
         if ($isEml) {
             $this->enrichFromEml($emlPath, $email);
@@ -91,14 +90,14 @@ class MailResendController extends AbstractController
         $content = $mailArchive->getEml();
 
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath) && $this->privateFilesystem->fileExists($emlPath);
+        $isEml = !empty($emlPath) && \is_string($emlPath);
 
         if ($isEml) {
-            $content = $this->privateFilesystem->read($emlPath);
+            $content = $this->emlFileManager->getEmlFileAsString($emlPath);
         }
 
         if (empty($content)) {
-            throw new \RuntimeException('Eml content is empty');
+            throw new \RuntimeException('Cannot read eml file or file is empty');
         }
 
         $fileName = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s') . ' ' . $mailArchive->getSubject() . '.eml';
@@ -112,9 +111,11 @@ class MailResendController extends AbstractController
 
     private function enrichFromEml(string $emlPath, Email $email): void
     {
-        $eml = $this->privateFilesystem->readStream($emlPath);
-        $parser = new MailMimeParser();
-        $message = $parser->parse($eml, false);
+        $message = $this->emlFileManager->getEmlAsMessage($emlPath);
+
+        if ($message === false) {
+            throw new \RuntimeException('Cannot read eml file');
+        }
 
         $email->html($message->getHtmlContent());
         $email->text($message->getTextContent());

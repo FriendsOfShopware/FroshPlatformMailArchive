@@ -48,7 +48,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
 
         $result = $query->executeQuery()->fetchAllAssociative();
 
-        if (count($result) === 0) {
+        if (\count($result) === 0) {
             return;
         }
 
@@ -63,7 +63,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         $deleteQuery->where(
             $query->expr()->in(
                 'LOWER(HEX(id))',
-                \array_map(fn($item) => '"' . Uuid::fromBytesToHex($item['id']) . '"', $result)
+                \array_map(fn ($item) => '"' . Uuid::fromBytesToHex($item['id']) . '"', $result)
             )
         );
 
