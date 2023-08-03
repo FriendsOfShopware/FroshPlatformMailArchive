@@ -23,23 +23,5 @@
         <service id="Frosh\MailArchive\Services\MailSender" public="true" decorates="Shopware\Core\Content\Mail\Service\MailSender">
             <argument type="service" id="Frosh\MailArchive\Services\MailSender.inner"/>
         </service>
-
-        <service id="Frosh\MailArchive\Controller\Api\MailResendController" public="true">
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="Frosh\MailArchive\Task\CleanupTask">
-            <tag name="shopware.scheduled.task" />
-        </service>
-
-        <service id="Frosh\MailArchive\Task\CleanupTaskHandler">
-            <argument type="service" id="scheduled_task.repository" />
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-            <argument key="$privateFilesystem" type="service" id="frosh_platform_mail_archive.filesystem.private"/>
-
-            <tag name="messenger.message_handler" />
-        </service>
     </services>
 </container>
