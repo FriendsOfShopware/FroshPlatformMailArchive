@@ -1,3 +1,9 @@
+# UNRELEASED
+* Change MailResendController to MailArchiveController
+* Change storage of EML from database to private filesystem (please run command "frosh-mailarchive:migrate-mails" to migrate)
+* Change EML content to gzipped content
+* Add function to download EML file
+
 # 1.0.1
 * Fix dal validation
 

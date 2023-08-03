@@ -4,7 +4,7 @@ namespace Frosh\MailArchive\Task;
 
 use Doctrine\DBAL\Connection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
-use League\Flysystem\FilesystemOperator;
+use Frosh\MailArchive\Services\EmlFileManager;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
@@ -19,7 +19,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         EntityRepository $scheduledTaskRepository,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
-        private readonly FilesystemOperator $privateFilesystem
+        private readonly EmlFileManager $emlFileManager
     ) {
         parent::__construct($scheduledTaskRepository);
     }
@@ -53,9 +53,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         }
 
         foreach ($result as $item) {
-            if ($this->privateFilesystem->fileExists($item['eml_path'])) {
-                $this->privateFilesystem->delete($item['eml_path']);
-            }
+            $this->emlFileManager->deleteEmlFile($item['eml_path']);
         }
 
         $deleteQuery = $this->connection->createQueryBuilder();

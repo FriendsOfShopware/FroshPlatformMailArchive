@@ -57,4 +57,13 @@ class EmlFileManager
 
         return $parser->parse($emlResource, false);
     }
+
+    public function deleteEmlFile(string $emlFilePath): void
+    {
+        if (!$this->filesystem->fileExists($emlFilePath)) {
+            return;
+        }
+
+        $this->filesystem->delete($emlFilePath);
+    }
 }
