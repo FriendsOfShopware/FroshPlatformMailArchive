@@ -35,6 +35,7 @@ class MigrateMailHandler
             $updates[] = [
                 'id' => $mail->getId(),
                 'emlPath' => $this->emlFileManager->writeFile($mail->getId(), $emlContent),
+                'eml' => null,
             ];
         }
 
