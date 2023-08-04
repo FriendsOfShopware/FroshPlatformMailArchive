@@ -15,6 +15,7 @@ use Symfony\Component\Mime\Email;
 
 class MailSender extends AbstractMailSender
 {
+
     public function __construct(
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,

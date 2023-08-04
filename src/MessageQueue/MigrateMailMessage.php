@@ -2,9 +2,7 @@
 
 namespace Frosh\MailArchive\MessageQueue;
 
-use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
-
-class MigrateMailMessage implements AsyncMessageInterface
+class MigrateMailMessage
 {
     /**
      * @param string[] $ids
