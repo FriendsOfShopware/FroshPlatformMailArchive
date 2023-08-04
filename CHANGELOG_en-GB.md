@@ -1,6 +1,6 @@
 # UNRELEASED
 * Change MailResendController to MailArchiveController
-* Change storage of EML from database to private filesystem (please run command "frosh-mailarchive:migrate-mails" to migrate)
+* Change storage of EML from database to private filesystem
 * Change EML content to gzipped content
 * Add function to download EML file
 
