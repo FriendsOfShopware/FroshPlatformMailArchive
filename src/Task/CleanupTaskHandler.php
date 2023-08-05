@@ -58,12 +58,8 @@ class CleanupTaskHandler extends ScheduledTaskHandler
 
         $deleteQuery = $this->connection->createQueryBuilder();
         $deleteQuery->delete(MailArchiveDefinition::ENTITY_NAME);
-        $deleteQuery->where(
-            $query->expr()->in(
-                'LOWER(HEX(id))',
-                \array_map(fn ($item) => '"' . Uuid::fromBytesToHex($item['id']) . '"', $result)
-            )
-        );
+        $deleteQuery->where('id IN (:ids)');
+        $deleteQuery->setParameter('ids', Uuid::fromHexToBytesList(\array_column($result, 'id')), Connection::PARAM_STR_ARRAY);
 
         $deleteQuery->executeQuery();
     }

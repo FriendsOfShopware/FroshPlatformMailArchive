@@ -4,10 +4,8 @@ namespace Frosh\MailArchive\Command;
 
 use Frosh\MailArchive\MessageQueue\MigrateMailHandler;
 use Frosh\MailArchive\MessageQueue\MigrateMailMessage;
-use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Common\IteratorFactory;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -22,7 +20,8 @@ class MigrateMailCommand extends Command
     public function __construct(
         private readonly MigrateMailHandler $migrateMailHandler,
         private readonly MessageBusInterface $messageBus,
-        private readonly EntityRepository $froshMailArchiveRepository
+        private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly IteratorFactory $iteratorFactory
     ) {
         parent::__construct();
     }
@@ -34,22 +33,21 @@ class MigrateMailCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('emlPath', null));
+        $iterator = $this->iteratorFactory->createIterator($this->froshMailArchiveRepository->getDefinition());
 
-        $ids = $this->froshMailArchiveRepository->searchIds($criteria, Context::createDefaultContext())->getIds();
+        $count = $iterator->fetchCount();
 
-        if (\count($ids) === 0) {
+        if ($count === 0) {
             $output->writeln('No mails to migrate');
 
             return Command::SUCCESS;
         }
 
-        $progressBar = new ProgressBar($output, \count($ids));
+        $progressBar = new ProgressBar($output, $count);
         $progressBar->start();
 
-        foreach (array_chunk($ids, 50) as $chunkedIds) {
-            $message = new MigrateMailMessage($chunkedIds);
+        while ($ids = $iterator->fetch()) {
+            $message = new MigrateMailMessage($ids);
 
             if ($input->getOption('sync')) {
                 $this->migrateMailHandler->__invoke($message);
@@ -57,7 +55,7 @@ class MigrateMailCommand extends Command
                 $this->messageBus->dispatch($message);
             }
 
-            $progressBar->advance(\count($chunkedIds));
+            $progressBar->advance(\count($ids));
         }
 
         $progressBar->finish();

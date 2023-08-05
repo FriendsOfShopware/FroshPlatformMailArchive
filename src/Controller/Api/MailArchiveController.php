@@ -3,6 +3,7 @@
 namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
@@ -21,6 +22,7 @@ use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\Header\IHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
 
+#[Route(defaults: ['_routeScope' => ['api']])]
 class MailArchiveController extends AbstractController
 {
     public function __construct(
@@ -31,18 +33,18 @@ class MailArchiveController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', defaults: ['_routeScope' => ['api']])]
+    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail')]
     public function resend(Request $request): JsonResponse
     {
         $mailId = $request->request->get('mailId');
 
         if (!\is_string($mailId)) {
-            throw new \RuntimeException('mailId not given');
+            throw MailArchiveException::parameterMissing('mailId');
         }
 
         $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
-            throw new \RuntimeException('Cannot find mail in archive');
+            throw MailArchiveException::notFound();
         }
 
         $mainRequest = $this->requestStack->getMainRequest();
@@ -69,18 +71,18 @@ class MailArchiveController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/download-mail', defaults: ['_routeScope' => ['api']])]
+    #[Route(path: '/api/_action/frosh-mail-archive/download-mail')]
     public function download(Request $request): JsonResponse
     {
         $mailId = $request->request->get('mailId');
 
         if (!\is_string($mailId)) {
-            throw new \RuntimeException('mailId not given');
+            throw MailArchiveException::parameterMissing('mailId');
         }
 
         $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
-            throw new \RuntimeException('Cannot find mailArchive');
+            throw MailArchiveException::notFound();
         }
 
         // for backward compatibility
@@ -147,6 +149,8 @@ class MailArchiveController extends AbstractController
 
         $email->html($mailArchive->getHtmlText());
         $email->text($mailArchive->getPlainText());
+
+        $this->emlFileManager->migrateMailToFilesystem([$mailArchive->getId()]);
     }
 
     private function getHeaderValue(IHeader $header): string|array|null|\DateTimeImmutable
