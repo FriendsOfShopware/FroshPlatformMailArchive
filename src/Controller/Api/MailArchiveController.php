@@ -2,6 +2,7 @@
 
 namespace Frosh\MailArchive\Controller\Api;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
@@ -27,6 +28,7 @@ class MailArchiveController extends AbstractController
 {
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly EntityRepository $froshMailArchiveAttachmentRepository,
         private readonly MailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager
@@ -71,7 +73,7 @@ class MailArchiveController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/download-mail')]
+    #[Route(path: '/api/_action/frosh-mail-archive/content')]
     public function download(Request $request): JsonResponse
     {
         $mailId = $request->request->get('mailId');
@@ -104,6 +106,61 @@ class MailArchiveController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'content' => $content,
+            'fileName' => preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $fileName),
+        ]);
+    }
+
+    #[Route(path: '/api/_action/frosh-mail-archive/attachment', name: 'api.action.frosh-mail-archive.attachment')]
+    public function attachment(Request $request): JsonResponse
+    {
+        $attachmentId = $request->request->get('attachmentId');
+        if (!\is_string($attachmentId)) {
+            throw MailArchiveException::parameterMissing('attachmentId');
+        }
+
+        $criteria = new Criteria([$attachmentId]);
+        $criteria->addAssociation('mailArchive');
+
+        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, Context::createDefaultContext())->first();
+        if (!$attachment instanceof MailArchiveAttachmentEntity) {
+            throw MailArchiveException::notFound();
+        }
+
+        $mailArchive = $attachment->getMailArchive();
+
+        $emlPath = $mailArchive->getEmlPath();
+        $isEml = !empty($emlPath) && \is_string($emlPath);
+
+        if (!$isEml) {
+            throw new \RuntimeException('Cannot read eml file or file is empty');
+        }
+
+        $message = $this->emlFileManager->getEmlAsMessage($emlPath);
+
+        if (empty($message)) {
+            throw new \RuntimeException('Cannot read eml file or file is empty');
+        }
+
+        $content = null;
+
+        foreach ($message->getAllAttachmentParts() as $part) {
+            if ($part->getFilename() === $attachment->getFileName()) {
+                $content = $part->getContent();
+
+                break;
+            }
+        }
+
+        if (empty($content)) {
+            throw new \RuntimeException('Cannot find attachment in eml file');
+        }
+
+        $fileName = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s') . ' ' . $mailArchive->getSubject() . ' ' . $attachment->getFileName();
+
+        return new JsonResponse([
+            'success' => true,
+            'content' => \base64_encode($content),
+            'contentType' => $attachment->getContentType(),
             'fileName' => preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $fileName),
         ]);
     }

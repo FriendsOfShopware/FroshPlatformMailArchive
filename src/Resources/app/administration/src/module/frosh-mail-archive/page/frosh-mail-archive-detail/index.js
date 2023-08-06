@@ -120,6 +120,9 @@ Component.register('frosh-mail-archive-detail', {
                 this.downloadIsSuccessful = false;
             });
         },
+        downloadAttachment(attachmentId) {
+            this.froshMailArchiveService.downloadAttachment(attachmentId);
+        },
         formatSize(bytes) {
             const thresh = 1024;
             const dp = 1;

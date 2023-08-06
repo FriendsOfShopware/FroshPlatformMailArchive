@@ -11,6 +11,8 @@ class MailArchiveAttachmentEntity extends Entity
 
     protected string $mailArchiveId;
 
+    protected ?MailArchiveEntity $mailArchive;
+
     protected string $fileName;
 
     protected string $contentType;
@@ -25,6 +27,16 @@ class MailArchiveAttachmentEntity extends Entity
     public function setMailArchiveId(string $mailArchiveId): void
     {
         $this->mailArchiveId = $mailArchiveId;
+    }
+
+    public function getMailArchive(): ?MailArchiveEntity
+    {
+        return $this->mailArchive;
+    }
+
+    public function setMailArchive(?MailArchiveEntity $mailArchive): void
+    {
+        $this->mailArchive = $mailArchive;
     }
 
     public function getFileName(): string

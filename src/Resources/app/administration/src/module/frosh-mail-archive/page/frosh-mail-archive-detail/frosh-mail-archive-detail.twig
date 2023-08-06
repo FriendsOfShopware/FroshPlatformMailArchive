@@ -46,7 +46,6 @@
                     :showSelection="false"
                     :dataSource="archive.attachments"
                     :columns="attachmentsColumns"
-                    :showActions="false"
                 >
                     <template #column-fileSize="{ item }">
                         <template v-if="item.fileSize < 0">
@@ -56,6 +55,13 @@
                             {{ formatSize(item.fileSize) }}
                         </template>
                     </template>
+
+                    <template slot="actions" slot-scope="{ item }">
+                        <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" @click="downloadAttachment(item.id)">
+                            Download
+                        </sw-context-menu-item>
+                    </template>
+
                 </sw-data-grid>
             </sw-card>
         </sw-card-view>

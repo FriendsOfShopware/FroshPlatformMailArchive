@@ -1,6 +1,6 @@
 const ApiService = Shopware.Classes.ApiService;
 
-class ApiClient extends ApiService{
+class ApiClient extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'frosh-mail-archive') {
         super(httpClient, loginService, apiEndpoint);
     }
@@ -24,7 +24,7 @@ class ApiClient extends ApiService{
         const headers = this.getBasicHeaders({});
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/download-mail`, {
+            .post(`_action/${this.getApiBasePath()}/content`, {
                 mailId,
             }, {
                 ...this.basicConfig,
@@ -41,6 +41,31 @@ class ApiClient extends ApiService{
 
                 const link = document.createElement('a');
                 link.href = objectUrl;
+                link.setAttribute('download', handledResponse.fileName);
+                document.body.appendChild(link);
+                link.click();
+            });
+    }
+
+    downloadAttachment(attachmentId) {
+        const headers = this.getBasicHeaders({});
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/attachment`, {
+                attachmentId
+            }, {
+                ...this.basicConfig,
+                headers
+            })
+            .then((response) => {
+                const handledResponse = ApiService.handleResponse(response);
+
+                if (!handledResponse.success) {
+                    return handledResponse;
+                }
+
+                const link = document.createElement('a');
+                link.href = 'data:' + handledResponse.contentType + ';base64,' + handledResponse.content
                 link.setAttribute('download', handledResponse.fileName);
                 document.body.appendChild(link);
                 link.click();
