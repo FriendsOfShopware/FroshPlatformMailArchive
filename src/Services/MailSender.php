@@ -45,6 +45,16 @@ class MailSender extends AbstractMailSender
 
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
+        $attachments = [];
+
+        foreach ($message->getAttachments() as $attachment) {
+            $attachments[] = [
+                'fileName' => $attachment->getFilename(),
+                'contentType' => $attachment->getContentType(),
+                'fileSize' => \strlen($attachment->bodyToString()),
+            ];
+        }
+
         $this->froshMailArchiveRepository->create([
             [
                 'id' => $id,
@@ -56,6 +66,7 @@ class MailSender extends AbstractMailSender
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo())),
+                'attachments' => $attachments,
             ],
         ], Context::createDefaultContext());
     }

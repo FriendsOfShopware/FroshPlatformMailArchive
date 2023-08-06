@@ -36,6 +36,8 @@ class MailArchiveEntity extends Entity
 
     protected ?CustomerEntity $customer;
 
+    protected ?MailArchiveAttachmentCollection $attachments = null;
+
     public function getSender(): array
     {
         return $this->sender;
@@ -150,5 +152,15 @@ class MailArchiveEntity extends Entity
     public function setCustomer(?CustomerEntity $customer): void
     {
         $this->customer = $customer;
+    }
+
+    public function getAttachments(): ?MailArchiveAttachmentCollection
+    {
+        return $this->attachments;
+    }
+
+    public function setAttachments(?MailArchiveAttachmentCollection $attachments): void
+    {
+        $this->attachments = $attachments;
     }
 }

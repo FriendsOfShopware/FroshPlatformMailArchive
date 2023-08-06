@@ -1,4 +1,5 @@
 const { Component } = Shopware;
+const { Criteria } = Shopware.Data;
 import template from './frosh-mail-archive-detail.twig';
 import './frosh-mail-archive-detail.scss';
 
@@ -18,7 +19,11 @@ Component.register('frosh-mail-archive-detail', {
 
     created() {
         this.repository = this.repositoryFactory.create('frosh_mail_archive');
-        this.repository.get(this.$route.params.id, Shopware.Context.api).then(archive => {
+
+        const criteria = new Criteria();
+        criteria.addAssociation('attachments');
+
+        this.repository.get(this.$route.params.id, Shopware.Context.api, criteria).then(archive => {
             this.archive = archive;
         })
     },
@@ -59,7 +64,26 @@ Component.register('frosh-mail-archive-detail', {
         },
         plainText() {
             return this.getContent(this.archive.plainText);
-        }
+        },
+        attachmentsColumns() {
+            return [
+                {
+                    property: 'fileName',
+                    label: 'Name',
+                    rawData: true
+                },
+                {
+                    property: 'fileSize',
+                    label: 'Size',
+                    rawData: true
+                },
+                {
+                    property: 'contentType',
+                    label: 'ContentType',
+                    rawData: true
+                }
+            ];
+        },
     },
 
     methods: {
@@ -95,6 +119,26 @@ Component.register('frosh-mail-archive-detail', {
                 this.downloadIsLoading = false;
                 this.downloadIsSuccessful = false;
             });
-        }
+        },
+        formatSize(bytes) {
+            const thresh = 1024;
+            const dp = 1;
+            let formatted = bytes
+
+            if (Math.abs(bytes) < thresh) {
+                return bytes + ' B';
+            }
+
+            const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+            let index = -1;
+            const reach = 10**dp;
+
+            do {
+                formatted /= thresh;
+                ++index;
+            } while (Math.round(Math.abs(formatted) * reach) / reach >= thresh && index < units.length - 1);
+
+            return formatted.toFixed(dp) + ' ' + units[index];
+        },
     }
 });

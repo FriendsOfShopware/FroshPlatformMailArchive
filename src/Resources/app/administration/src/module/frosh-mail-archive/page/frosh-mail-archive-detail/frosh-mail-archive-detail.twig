@@ -38,6 +38,25 @@
 
                 <h4>Plain</h4>
                 <iframe :src="plainText" sandbox frameborder="0"></iframe>
+
+                <h4>Attachments: {{ archive.attachments.length }}</h4>
+
+                <sw-data-grid
+                    v-if="archive.attachments.length > 0"
+                    :showSelection="false"
+                    :dataSource="archive.attachments"
+                    :columns="attachmentsColumns"
+                    :showActions="false"
+                >
+                    <template #column-fileSize="{ item }">
+                        <template v-if="item.fileSize < 0">
+                            unknown
+                        </template>
+                        <template v-else>
+                            {{ formatSize(item.fileSize) }}
+                        </template>
+                    </template>
+                </sw-data-grid>
             </sw-card>
         </sw-card-view>
     </template>
