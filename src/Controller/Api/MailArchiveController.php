@@ -179,8 +179,8 @@ class MailArchiveController extends AbstractController
         foreach ($message->getAllHeaders() as $header) {
             $headerValue = $this->getHeaderValue($header);
 
-            // skip multipart/alternative header due to multiple content types breaking the resent email
-            if ($header->getName() === 'Content-Type' && $headerValue === 'multipart/alternative') {
+            // skip multipart/ headers due to multiple content types breaking the resent email
+            if ($header->getName() === 'Content-Type' && \in_array($headerValue, ['multipart/alternative', 'multipart/mixed'])) {
                 continue;
             }
 
