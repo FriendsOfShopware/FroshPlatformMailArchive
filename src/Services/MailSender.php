@@ -65,7 +65,7 @@ class MailSender extends AbstractMailSender
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
-                'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo())),
+                'customerId' => $this->getCustomerIdByMail($message->getTo()),
                 'attachments' => $attachments,
             ],
         ], Context::createDefaultContext());
@@ -85,11 +85,18 @@ class MailSender extends AbstractMailSender
         return $salesChannelId;
     }
 
-    private function getCustomerIdByMail(array $mails): ?string
+    /**
+     * @param Address[] $to
+     */
+    private function getCustomerIdByMail(array $to): ?string
     {
         $criteria = new Criteria();
 
-        $criteria->addFilter(new EqualsAnyFilter('email', $mails));
+        $addresses = \array_map(function (Address $mail) {
+            return $mail->getAddress();
+        }, $to);
+
+        $criteria->addFilter(new EqualsAnyFilter('email', $addresses));
 
         return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
     }
