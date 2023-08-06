@@ -159,7 +159,7 @@ class MailArchiveEntity extends Entity
         return $this->attachments;
     }
 
-    public function setAttachments(?MailArchiveAttachmentCollection $attachments): void
+    public function setAttachments(MailArchiveAttachmentCollection $attachments): void
     {
         $this->attachments = $attachments;
     }
