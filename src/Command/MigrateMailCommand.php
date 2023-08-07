@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[AsCommand('frosh-mailarchive:migrate-mails', 'Migrate mails from database to private filesystem')]
+#[AsCommand('frosh:mailarchive:migrate-mails', 'Migrate mails from database to private filesystem')]
 class MigrateMailCommand extends Command
 {
     public function __construct(
