@@ -11,7 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
+#[AutoconfigureTag('shopware.entity.definition', attributes: ['entityName' => self::ENTITY_NAME])]
 class MailArchiveAttachmentDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'frosh_mail_archive_attachment';

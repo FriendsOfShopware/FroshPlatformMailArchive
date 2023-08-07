@@ -7,21 +7,5 @@
     <services>
         <defaults autowire="true" autoconfigure="true"/>
         <prototype namespace="Frosh\MailArchive\" resource="../../" />
-
-        <service id="Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition">
-            <tag name="shopware.entity.definition" entity="frosh_mail_archive"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Extension\System\SalesChannel\SalesChannelExtension">
-            <tag name="shopware.entity.extension"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Extension\Checkout\Customer\CustomerExtension">
-            <tag name="shopware.entity.extension"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentDefinition">
-            <tag name="shopware.entity.definition" entity="frosh_mail_archive_attachment"/>
-        </service>
     </services>
 </container>
