@@ -20,7 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('shopware.entity.definition', attributes: ['entityName' => self::ENTITY_NAME])]
+#[AutoconfigureTag('shopware.entity.definition')]
 class MailArchiveDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'frosh_mail_archive';
