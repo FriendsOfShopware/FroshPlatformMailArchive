@@ -10,6 +10,7 @@ use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -180,7 +181,7 @@ class MailArchiveController extends AbstractController
             $headerValue = $this->getHeaderValue($header);
 
             // skip multipart/ headers due to multiple content types breaking the resent email
-            if ($header->getName() === 'Content-Type' && \in_array($headerValue, ['multipart/alternative', 'multipart/mixed'])) {
+            if ($header->getName() === 'Content-Type' && \in_array($headerValue, ['multipart/alternative', 'multipart/mixed'], true)) {
                 continue;
             }
 

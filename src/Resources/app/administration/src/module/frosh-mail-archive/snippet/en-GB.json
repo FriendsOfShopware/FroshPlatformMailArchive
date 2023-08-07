@@ -36,6 +36,10 @@
             "content": {
                 "title": "Content"
             }
+        },
+        "missingMigration": {
+            "title": "FroshMailArchive must be migrated",
+            "description": "We have optimized the stored emails. These should be stored on the file system instead of the database.<br>Please migrate the mails via CLI with the command:<br> bin/console frosh:mailarchive:migrate"
         }
     }
 }
