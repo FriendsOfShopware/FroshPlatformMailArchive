@@ -8,7 +8,11 @@
             {{ $tc('frosh-mail-archive.detail.toolbar.customer') }}
         </sw-button>
 
-        <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" @click="resendMail">
+        <sw-button-process :isLoading="downloadIsLoading" :processSuccess="downloadIsSuccessful" @click="downloadMail">
+            {{ $tc('frosh-mail-archive.detail.toolbar.downloadEml') }}
+        </sw-button-process>
+
+        <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail">
             {{ $tc('frosh-mail-archive.detail.toolbar.resend') }}
         </sw-button-process>
     </template>
@@ -34,6 +38,31 @@
 
                 <h4>Plain</h4>
                 <iframe :src="plainText" sandbox frameborder="0"></iframe>
+
+                <h4>Attachments: {{ archive.attachments.length }}</h4>
+
+                <sw-data-grid
+                    v-if="archive.attachments.length > 0"
+                    :showSelection="false"
+                    :dataSource="archive.attachments"
+                    :columns="attachmentsColumns"
+                >
+                    <template #column-fileSize="{ item }">
+                        <template v-if="item.fileSize < 0">
+                            unknown
+                        </template>
+                        <template v-else>
+                            {{ formatSize(item.fileSize) }}
+                        </template>
+                    </template>
+
+                    <template slot="actions" slot-scope="{ item }">
+                        <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" @click="downloadAttachment(item.id)">
+                            Download
+                        </sw-context-menu-item>
+                    </template>
+
+                </sw-data-grid>
             </sw-card>
         </sw-card-view>
     </template>

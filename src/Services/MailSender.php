@@ -8,25 +8,22 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
+#[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
 {
-    private readonly EntityRepository $mailArchiveRepository;
-
-    private readonly EntityRepository $customerRepository;
-
     public function __construct(
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
-        EntityRepository $mailArchiveRepository,
-        EntityRepository $customerRepository
+        private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly EntityRepository $customerRepository,
+        private readonly EmlFileManager $emlFileManager
     ) {
-        $this->mailArchiveRepository = $mailArchiveRepository;
-        $this->customerRepository = $customerRepository;
     }
 
     public function send(Email $email, ?Envelope $envelope = null): void
@@ -44,17 +41,32 @@ class MailSender extends AbstractMailSender
 
     private function saveMail(Email $message): void
     {
-        $this->mailArchiveRepository->create([
+        $id = Uuid::randomHex();
+
+        $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
+
+        $attachments = [];
+
+        foreach ($message->getAttachments() as $attachment) {
+            $attachments[] = [
+                'fileName' => $attachment->getFilename(),
+                'contentType' => $attachment->getContentType(),
+                'fileSize' => \strlen($attachment->bodyToString()),
+            ];
+        }
+
+        $this->froshMailArchiveRepository->create([
             [
-                'id' => Uuid::randomHex(),
+                'id' => $id,
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
                 'plainText' => nl2br((string) $message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
-                'eml' => $message->toString(),
+                'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
-                'customerId' => $this->getCustomerIdByMail(array_keys($message->getTo())),
+                'customerId' => $this->getCustomerIdByMail($message->getTo()),
+                'attachments' => $attachments,
             ],
         ], Context::createDefaultContext());
     }
@@ -66,18 +78,25 @@ class MailSender extends AbstractMailSender
         }
 
         $salesChannelId = $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
-        if(!is_string($salesChannelId)) {
+        if (!\is_string($salesChannelId)) {
             return null;
         }
 
         return $salesChannelId;
     }
 
-    private function getCustomerIdByMail(array $mails): ?string
+    /**
+     * @param Address[] $to
+     */
+    private function getCustomerIdByMail(array $to): ?string
     {
         $criteria = new Criteria();
 
-        $criteria->addFilter(new EqualsAnyFilter('email', $mails));
+        $addresses = \array_map(function (Address $mail) {
+            return $mail->getAddress();
+        }, $to);
+
+        $criteria->addFilter(new EqualsAnyFilter('email', $addresses));
 
         return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
     }

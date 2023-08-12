@@ -22,7 +22,8 @@
         "detail": {
             "toolbar": {
                 "customer": "Kunden öffnen",
-                "resend": "E-Mail erneut versenden"
+                "resend": "E-Mail erneut versenden",
+                "downloadEml": "Download E-Mail"
             },
             "metadata": {
                 "title": "Metadaten",
@@ -35,6 +36,10 @@
             "content": {
                 "title": "Inhalt"
             }
+        },
+        "missingMigration": {
+            "title": "FroshMailArchive muss migriert werden",
+            "description":"Wir haben die gespeicherten E-Mail optimiert. Diese sollten auf dem Speicher ablegt werden, anstelle der Datenbank.<br>Bitte migrieren Sie die Mails über die CLI mit dem Befehl:<br>bin/console frosh:mailarchive:migrate"
         }
     }
 }

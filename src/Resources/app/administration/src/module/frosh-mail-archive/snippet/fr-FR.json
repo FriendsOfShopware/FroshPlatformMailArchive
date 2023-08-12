@@ -10,8 +10,9 @@
                 "sender": "Expéditeur"
             },
             "toolbar": {
-                "resend": "Renvoyer l'email",
-                "customer": "Ouvrir le client"
+                "resend": "Renvoyer l'e-mail",
+                "customer": "Ouvrir le client",
+                "downloadEml": "Télécharger l'e-mail"
             },
             "content": {
                 "title": "Contenu"

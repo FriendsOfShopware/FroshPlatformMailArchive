@@ -5,43 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults autowire="true"/>
-
-        <service id="Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition">
-            <tag name="shopware.entity.definition" entity="frosh_mail_archive"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Extension\System\SalesChannel\SalesChannelExtension">
-            <tag name="shopware.entity.extension"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Extension\Checkout\Customer\CustomerExtension">
-            <tag name="shopware.entity.extension"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Services\MailSender" public="true" decorates="Shopware\Core\Content\Mail\Service\MailSender">
-            <argument type="service" id="Frosh\MailArchive\Services\MailSender.inner"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="frosh_mail_archive.repository"/>
-            <argument type="service" id="customer.repository"/>
-        </service>
-
-        <service id="Frosh\MailArchive\Controller\Api\MailResendController" public="true">
-            <argument key="$mailArchiveRepository" type="service" id="frosh_mail_archive.repository"/>
-
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="Frosh\MailArchive\Task\CleanupTask">
-            <tag name="shopware.scheduled.task" />
-        </service>
-
-        <service id="Frosh\MailArchive\Task\CleanupTaskHandler">
-            <argument type="service" id="scheduled_task.repository" />
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-            <tag name="messenger.message_handler" />
-        </service>
+        <defaults autowire="true" autoconfigure="true"/>
+        <prototype namespace="Frosh\MailArchive\" resource="../../" />
     </services>
 </container>
