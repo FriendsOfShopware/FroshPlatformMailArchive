@@ -4,6 +4,7 @@ namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
@@ -36,7 +37,8 @@ class MailArchiveEntity extends Entity
 
     protected ?CustomerEntity $customer;
 
-    protected ?MailArchiveAttachmentCollection $attachments = null;
+    /** @var EntityCollection<MailArchiveAttachmentEntity>|null $attachments */
+    protected ?EntityCollection $attachments = null;
 
     public function getSender(): array
     {
@@ -154,12 +156,18 @@ class MailArchiveEntity extends Entity
         $this->customer = $customer;
     }
 
-    public function getAttachments(): ?MailArchiveAttachmentCollection
+    /**
+     * @return EntityCollection<MailArchiveAttachmentEntity>|null
+     */
+    public function getAttachments(): ?EntityCollection
     {
         return $this->attachments;
     }
 
-    public function setAttachments(MailArchiveAttachmentCollection $attachments): void
+    /**
+     * @param EntityCollection<MailArchiveAttachmentEntity> $attachments
+     */
+    public function setAttachments(EntityCollection $attachments): void
     {
         $this->attachments = $attachments;
     }

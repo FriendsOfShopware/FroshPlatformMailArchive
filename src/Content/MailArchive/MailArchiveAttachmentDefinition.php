@@ -28,11 +28,6 @@ class MailArchiveAttachmentDefinition extends EntityDefinition
         return MailArchiveAttachmentEntity::class;
     }
 
-    public function getCollectionClass(): string
-    {
-        return MailArchiveAttachmentCollection::class;
-    }
-
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
