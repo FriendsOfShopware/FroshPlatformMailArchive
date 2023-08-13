@@ -9,12 +9,9 @@ This plugins adds an MailArchive to your Shopware-Administration stored in Datab
 * Save all outgoing mails
 * Linking to customer
 * Resend Mail
-
-### Planned Features
-
-- Search in List
-- Download EML
 - Save attachments
+- Download EML
+- Search in List
 
 ## Zip-Installation
 
