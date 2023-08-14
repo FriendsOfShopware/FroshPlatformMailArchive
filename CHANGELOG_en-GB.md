@@ -1,3 +1,6 @@
+# 2.0.1
+* Fixed composer execution on plugin install or plugin update
+
 # 2.0.0
 * Change MailResendController to MailArchiveController
 * Change storage of EML from database to private filesystem (please run command "frosh:mailarchive:migrate" to migrate)
