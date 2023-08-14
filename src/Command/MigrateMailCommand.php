@@ -47,7 +47,7 @@ class MigrateMailCommand extends Command
         $progressBar->start();
 
         while ($ids = $iterator->fetch()) {
-            $message = new MigrateMailMessage($ids);
+            $message = new MigrateMailMessage(\array_values($ids));
 
             if ($input->getOption('sync')) {
                 $this->migrateMailHandler->__invoke($message);

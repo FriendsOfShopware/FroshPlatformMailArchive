@@ -1,3 +1,6 @@
+# 2.0.2
+* Fixed migration of MailArchive without sync option
+
 # 2.0.1
 * Fixed composer execution on plugin install or plugin update
 
