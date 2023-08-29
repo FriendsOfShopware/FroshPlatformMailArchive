@@ -1,3 +1,6 @@
+# 2.0.3
+* Fixed cleanup task to correctly delete old mails
+
 # 2.0.2
 * Fixed migration of MailArchive without sync option
 
