@@ -15,6 +15,7 @@ class FroshPlatformMailArchive extends Plugin
         }
 
         $this->container->get(Connection::class)->executeStatement('DROP TABLE IF EXISTS frosh_mail_archive');
+        $this->container->get(Connection::class)->executeStatement('DROP TABLE IF EXISTS frosh_mail_archive_attachment');       
     }
 
     public function executeComposerCommands(): bool
