@@ -38,7 +38,7 @@
                 "title": "Inhalt"
             },
             "alert": {
-              "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer einstellungen und versuche es erneut."
+              "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             }
         },
         "missingMigration": {
