@@ -3,6 +3,7 @@
 namespace Frosh\MailArchive\Services;
 
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
+use Shopware\Core\Content\MailTemplate\Exception\MailTransportFailedException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -29,9 +30,13 @@ class MailSender extends AbstractMailSender
     public function send(Email $email, ?Envelope $envelope = null): void
     {
         // let first send the mail itself, to see if it was really sent or entered error state
-        $this->mailSender->send($email, $envelope);
-
-        $this->saveMail($email);
+        try {
+            $this->mailSender->send($email, $envelope);
+            $this->saveMail($email);
+        }catch(MailTransportFailedException $e){
+            $this->saveMail($email, true);
+            throw $e;
+        }
     }
 
     public function getDecorated(): AbstractMailSender
@@ -39,7 +44,7 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(Email $message): void
+    private function saveMail(Email $message, bool $transportFailed = false): void
     {
         $id = Uuid::randomHex();
 
@@ -67,6 +72,7 @@ class MailSender extends AbstractMailSender
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail($message->getTo()),
                 'attachments' => $attachments,
+                'transportFailed' => $transportFailed,
             ],
         ], Context::createDefaultContext());
     }

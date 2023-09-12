@@ -19,6 +19,13 @@
 
     <template slot="content">
         <sw-card-view v-if="archive">
+            <sw-alert
+                v-if="archive.transportFailed"
+                variant="warning"
+                class="frosh-mail-archive__detail-alert"
+            >
+                {{ $tc('frosh-mail-archive.detail.alert.transportFailed') }}
+            </sw-alert>
             <sw-card
                     :title="$tc('frosh-mail-archive.detail.metadata.title')"
                     position-identifier="frosh-mail-archive-metadata"

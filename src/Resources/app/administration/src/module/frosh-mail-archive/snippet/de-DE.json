@@ -6,7 +6,8 @@
                 "sentDate": "Versanddatum",
                 "subject": "Betreff",
                 "receiver": "Empfänger",
-                "action": "Anzeigen"
+                "action": "Anzeigen",
+                "transportFailed": "Versand der E-Mail fehlgeschlagen"
             },
             "sidebar": {
                 "refresh": "Neuladen",
@@ -35,6 +36,9 @@
             },
             "content": {
                 "title": "Inhalt"
+            },
+            "alert": {
+              "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer einstellungen und versuche es erneut."
             }
         },
         "missingMigration": {

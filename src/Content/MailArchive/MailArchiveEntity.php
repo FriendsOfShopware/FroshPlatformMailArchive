@@ -22,6 +22,8 @@ class MailArchiveEntity extends Entity
 
     protected ?string $htmlText;
 
+    protected bool $transportFailed = false;
+
     /**
      * @deprecated will not be filled anyone. Use emlPath instead
      */
@@ -171,4 +173,15 @@ class MailArchiveEntity extends Entity
     {
         $this->attachments = $attachments;
     }
+
+    public function isTransportFailed(): bool
+    {
+        return $this->transportFailed;
+    }
+
+    public function setTransportFailed(bool $transportFailed): void
+    {
+        $this->transportFailed = $transportFailed;
+    }
+
 }

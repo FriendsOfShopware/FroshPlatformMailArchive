@@ -6,7 +6,8 @@
                 "sentDate": "Sent date",
                 "subject": "Subject",
                 "receiver": "Recipients",
-                "action": "Show"
+                "action": "Show",
+                "transportFailed": "Mail delivery failed."
             },
             "sidebar": {
                 "refresh": "Refresh",
@@ -35,6 +36,9 @@
             },
             "content": {
                 "title": "Content"
+            },
+            "alert": {
+              "transportFailed": "E-Mail delivery failed. Please check mailer settings and try again."
             }
         },
         "missingMigration": {
