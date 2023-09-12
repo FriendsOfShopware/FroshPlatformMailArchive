@@ -16,7 +16,7 @@ class Migration1694519020TransportFailed extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD `transport_failed` TINYINT(1) NOT NULL DEFAULT 0 AFTER `customerId`;');
+        $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD `transport_failed` TINYINT(1) NOT NULL DEFAULT 0;');
     }
 
     public function updateDestructive(Connection $connection): void
