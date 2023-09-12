@@ -30,12 +30,15 @@ class MailSender extends AbstractMailSender
     public function send(Email $email, ?Envelope $envelope = null): void
     {
         // let first send the mail itself, to see if it was really sent or entered error state
+       $failed = false;
+
         try {
             $this->mailSender->send($email, $envelope);
-            $this->saveMail($email);
-        }catch(MailTransportFailedException $e){
-            $this->saveMail($email, true);
+        } catch(MailTransportFailedException $e) {
+            $failed = true;
             throw $e;
+        } finally {
+            $this->saveMail($email, $failed);
         }
     }
 
