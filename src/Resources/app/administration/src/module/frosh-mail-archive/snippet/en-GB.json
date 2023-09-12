@@ -38,7 +38,7 @@
                 "title": "Content"
             },
             "alert": {
-              "transportFailed": "E-Mail delivery failed. Please check mailer settings and try again."
+              "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
             }
         },
         "missingMigration": {
