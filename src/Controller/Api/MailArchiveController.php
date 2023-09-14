@@ -104,12 +104,20 @@ class MailArchiveController extends AbstractController
             throw new \RuntimeException('Cannot read eml file or file is empty');
         }
 
-        $fileName = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s') . ' ' . $mailArchive->getSubject() . '.eml';
+        $fileNameParts = [];
+
+        if ($mailArchive->getCreatedAt() !== null) {
+            $fileNameParts[] = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s');
+        }
+
+        $fileNameParts[] = $mailArchive->getSubject();
+
+        $fileName = $this->getFileName($fileNameParts) . '.eml';
 
         return new JsonResponse([
             'success' => true,
             'content' => $content,
-            'fileName' => preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $fileName),
+            'fileName' => $fileName,
         ]);
     }
 
@@ -130,6 +138,9 @@ class MailArchiveController extends AbstractController
         }
 
         $mailArchive = $attachment->getMailArchive();
+        if (!$mailArchive instanceof MailArchiveEntity) {
+            throw MailArchiveException::notFound();
+        }
 
         $emlPath = $mailArchive->getEmlPath();
         $isEml = !empty($emlPath) && \is_string($emlPath);
@@ -158,13 +169,22 @@ class MailArchiveController extends AbstractController
             throw new \RuntimeException('Cannot find attachment in eml file');
         }
 
-        $fileName = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s') . ' ' . $mailArchive->getSubject() . ' ' . $attachment->getFileName();
+        $fileNameParts = [];
+
+        if ($mailArchive->getCreatedAt() !== null) {
+            $fileNameParts[] = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s');
+        }
+
+        $fileNameParts[] = $mailArchive->getSubject();
+        $fileNameParts[] = $attachment->getFileName();
+
+        $fileName = $this->getFileName($fileNameParts);
 
         return new JsonResponse([
             'success' => true,
             'content' => \base64_encode($content),
             'contentType' => $attachment->getContentType(),
-            'fileName' => preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $fileName),
+            'fileName' => $fileName,
         ]);
     }
 
@@ -191,6 +211,10 @@ class MailArchiveController extends AbstractController
         }
 
         foreach ($message->getAllAttachmentParts() as $attachment) {
+            if ($attachment->getContent() === null) {
+                continue;
+            }
+
             $email->attach($attachment->getContent(), $attachment->getFilename(), $attachment->getContentType());
         }
     }
@@ -209,10 +233,11 @@ class MailArchiveController extends AbstractController
 
         $email->html($mailArchive->getHtmlText());
         $email->text($mailArchive->getPlainText());
-
-        $this->emlFileManager->migrateMailToFilesystem([$mailArchive->getId()]);
     }
 
+    /**
+     * @return string|array<Address>|\DateTimeImmutable|null
+     */
     private function getHeaderValue(IHeader $header): string|array|null|\DateTimeImmutable
     {
         if ($header instanceof AddressHeader) {
@@ -229,5 +254,17 @@ class MailArchiveController extends AbstractController
         }
 
         return $header->getValue();
+    }
+
+    /**
+     * @param array<string> $fileNameParts
+     */
+    private function getFileName(array $fileNameParts): string
+    {
+        return (string) preg_replace(
+            '/[\x00-\x1F\x7F-\xFF]/',
+            '',
+            \implode(' ', $fileNameParts)
+        );
     }
 }

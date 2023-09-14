@@ -8,7 +8,6 @@ use Frosh\MailArchive\Services\EmlFileManager;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -53,6 +52,10 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         }
 
         foreach ($result as $item) {
+            if (empty($item['eml_path']) || !\is_string($item['eml_path'])) {
+                continue;
+            }
+
             $this->emlFileManager->deleteEmlFile($item['eml_path']);
         }
 

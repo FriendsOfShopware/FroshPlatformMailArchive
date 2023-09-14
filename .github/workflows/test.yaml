@@ -1,0 +1,33 @@
+name: Test
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            shopware-version:
+                - "~6.5.0.0"
+                - "~6.5.1.0"
+                - "~6.5.2.0"
+                - "~6.5.3.0"
+                - "~6.5.4.0"
+                - "~6.5.5.0"
+                - "dev-trunk"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 'PHPStan'
+        run: |
+            composer require shopware/core:${{ matrix.shopware-version }} --no-interaction --no-progress --optimize-autoloader
+            composer show shopware/core | grep versions
+            ./vendor/bin/phpstan analyse

@@ -42,5 +42,13 @@
     "require": {
         "shopware/core": "~6.5.0",
         "zbateson/mail-mime-parser": "^2.4"
+    },
+    "config": {
+        "allow-plugins": {
+          "symfony/runtime": true
+        }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10"
     }
 }

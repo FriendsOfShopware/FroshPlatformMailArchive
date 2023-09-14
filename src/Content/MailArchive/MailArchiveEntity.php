@@ -12,8 +12,10 @@ class MailArchiveEntity extends Entity
 {
     use EntityIdTrait;
 
+    /** @var array<string, string> */
     protected array $sender;
 
+    /** @var array<string, string> */
     protected array $receiver;
 
     protected string $subject;
@@ -46,21 +48,33 @@ class MailArchiveEntity extends Entity
 
     protected ?MailArchiveEntity $sourceMail;
 
+    /**
+     * @return array<string, string>
+     */
     public function getSender(): array
     {
         return $this->sender;
     }
 
+    /**
+     * @param array<string, string> $sender
+     */
     public function setSender(array $sender): void
     {
         $this->sender = $sender;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getReceiver(): array
     {
         return $this->receiver;
     }
 
+    /**
+     * @param array<string, string> $receiver
+     */
     public function setReceiver(array $receiver): void
     {
         $this->receiver = $receiver;
