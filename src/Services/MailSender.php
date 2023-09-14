@@ -100,7 +100,7 @@ class MailSender extends AbstractMailSender
     private function getSourceMailId(Context $context): ?string
     {
         $request = $this->requestStack->getMainRequest();
-        if($request === null) {
+        if ($request === null) {
             return null;
         }
 
