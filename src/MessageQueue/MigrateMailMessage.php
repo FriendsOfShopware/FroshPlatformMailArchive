@@ -7,7 +7,7 @@ use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 class MigrateMailMessage implements AsyncMessageInterface
 {
     /**
-     * @param string[] $ids
+     * @param array<int, string> $ids
      */
     public function __construct(
         public readonly array $ids

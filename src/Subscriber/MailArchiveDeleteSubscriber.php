@@ -27,7 +27,7 @@ class MailArchiveDeleteSubscriber implements EventSubscriberInterface
 
     public function beforeDelete(BeforeDeleteEvent $event): void
     {
-        /** @var list<string> $affected */
+        /** @var array<string> $ids */
         $ids = array_values($event->getIds(MailArchiveDefinition::ENTITY_NAME));
         if (empty($ids)) {
             return;
@@ -40,7 +40,7 @@ class MailArchiveDeleteSubscriber implements EventSubscriberInterface
         /** @var PartialEntity $mail */
         foreach ($mails as $mail) {
             $emlPath = $mail->get('emlPath');
-            if (empty($emlPath)) {
+            if (empty($emlPath) || !\is_string($emlPath)) {
                 continue;
             }
 
