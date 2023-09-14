@@ -109,7 +109,7 @@ class MailSender extends AbstractMailSender
             return null;
         }
 
-        $sourceMailId = $request->request->get('mailId');
+        $sourceMailId = (string) $request->request->get('mailId');
 
         /** @var MailArchiveEntity|null $sourceMail */
         $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
