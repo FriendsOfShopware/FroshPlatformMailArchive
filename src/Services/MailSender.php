@@ -105,7 +105,7 @@ class MailSender extends AbstractMailSender
         }
 
         $route = $request->attributes->getString('_route');
-        if($route !== 'api.action.frosh-mail-archive.resend-mail') {
+        if ($route !== 'api.action.frosh-mail-archive.resend-mail') {
             return null;
         }
 
