@@ -20,6 +20,11 @@ class EmlFileManager
     public function writeFile(string $id, string $content): string
     {
         $content = \gzcompress($content, 9);
+
+        if ($content === false) {
+            throw new \RuntimeException('Cannot compress eml file');
+        }
+
         $emlFilePath = 'mails/' . $id . '.eml.gz';
 
         $this->filesystem->write($emlFilePath, $content);

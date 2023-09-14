@@ -103,6 +103,7 @@ class MailSender extends AbstractMailSender
 
     /**
      * @param Address[] $addresses
+     * @return array<string, string>
      */
     private function convertAddress(array $addresses): array
     {
