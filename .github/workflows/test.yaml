@@ -1,0 +1,23 @@
+name: Test
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feat/phpstan
+  pull_request_target:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 'PHPStan'
+        run: |
+          composer install --no-interaction --no-progress --no-suggest --optimize-autoloader
+          ./vendor/bin/phpstan analyse
