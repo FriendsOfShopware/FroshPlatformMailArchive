@@ -38,7 +38,7 @@
                 "title": "Inhalt"
             },
             "alert": {
-              "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer einstellungen und versuche es erneut."
+                "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             },
             "resend-success-notification": {
               "message": "Die E-Mail wurde erneut versendet.",
@@ -48,15 +48,15 @@
               "title": "Mail Archiv",
               "message": "Fehler beim Senden der E-Mail"
             },
-          "resend-grid": {
-            "navigate": "Anzeigen",
-            "success-label": "erfolgreich",
-            "failed-label": "fehlgeschlagen",
-            "column-created-at": "Gesendet am",
-            "column-state": "Status",
-            "currently-selected": "ausgewählt",
-            "title": "Sendeverlauf"
-          }
+            "resend-grid": {
+              "navigate": "Anzeigen",
+              "success-label": "erfolgreich",
+              "failed-label": "fehlgeschlagen",
+              "column-created-at": "Gesendet am",
+              "column-state": "Status",
+              "currently-selected": "ausgewählt",
+              "title": "Sendeverlauf"
+            }
         },
         "missingMigration": {
             "title": "FroshMailArchive muss migriert werden",
