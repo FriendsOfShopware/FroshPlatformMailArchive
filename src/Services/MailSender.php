@@ -113,7 +113,7 @@ class MailSender extends AbstractMailSender
 
         /** @var MailArchiveEntity|null $sourceMail */
         $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
-        if(!$sourceMail){
+        if (!$sourceMail) {
             return null;
         }
 
