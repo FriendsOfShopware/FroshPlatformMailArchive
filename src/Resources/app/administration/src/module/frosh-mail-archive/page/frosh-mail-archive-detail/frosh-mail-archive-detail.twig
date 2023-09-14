@@ -8,11 +8,11 @@
             {{ $tc('frosh-mail-archive.detail.toolbar.customer') }}
         </sw-button>
 
-        <sw-button-process :isLoading="downloadIsLoading" :processSuccess="downloadIsSuccessful" @click="downloadMail">
+        <sw-button-process :isLoading="downloadIsLoading" :processSuccess="downloadIsSuccessful" @click="downloadMail" @process-finish="downloadFinish">
             {{ $tc('frosh-mail-archive.detail.toolbar.downloadEml') }}
         </sw-button-process>
 
-        <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail">
+        <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail" @process-finish="resendFinish">
             {{ $tc('frosh-mail-archive.detail.toolbar.resend') }}
         </sw-button-process>
     </template>
@@ -36,6 +36,7 @@
                 <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.subject')" :disabled="true" v-model="archive.subject"></sw-text-field>
                 <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.salesChannel')" v-if="archive.salesChannel" :disabled="true" v-model="archive.salesChannel.name"></sw-text-field>
             </sw-card>
+            <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id" :sourceMailId="archive.sourceMailId ?? archive.id"/>
             <sw-card
                     :title="$tc('frosh-mail-archive.detail.content.title')"
                     position-identifier="frosh-mail-archive-content"

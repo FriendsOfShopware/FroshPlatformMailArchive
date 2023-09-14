@@ -1,0 +1,42 @@
+<sw-card :title="$tc('frosh-mail-archive.detail.resend-grid.title')">
+    <template #grid>
+        <sw-data-grid
+            :isLoading="isLoading"
+            :data-source="resentMails"
+            :columns="columns"
+            :allowInlineEdit="false"
+            :allowColumnEdit="false"
+            :showSettings="false"
+            :showSelection="false"
+        >
+            <template #column-createdAt="{item}">
+                <router-link :to="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
+                    {{ item.createdAt|date }} <span v-if="currentMailId === item.id">({{ $tc('frosh-mail-archive.detail.resend-grid.currently-selected') }})</span>
+                </router-link>
+            </template>
+            <template #column-success="{item}">
+                <div v-if="!item.transportFailed">
+                    <sw-color-badge
+                        color="#37d046"
+                        rounded
+                    />
+                    {{ $tc('frosh-mail-archive.detail.resend-grid.success-label') }}
+                </div>
+                <div v-else>
+                    <sw-color-badge
+                        color="#de294c"
+                        rounded
+                    />
+                    {{ $tc('frosh-mail-archive.detail.resend-grid.failed-label') }}
+                </div>
+            </template>
+            <template #actions="{ item }">
+                <sw-context-menu-item
+                    @click="navigateToDetailPage(item.id)"
+                >
+                    {{ $tc('frosh-mail-archive.detail.resend-grid.navigate') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </template>
+</sw-card>

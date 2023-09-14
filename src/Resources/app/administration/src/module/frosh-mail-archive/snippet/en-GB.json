@@ -39,7 +39,24 @@
             },
             "alert": {
               "transportFailed": "E-Mail delivery failed. Please check mailer settings and try again."
-            }
+            },
+            "resend-success-notification": {
+              "message": "The e-mail has been resent successfully.",
+              "title": "Mail Archive"
+            },
+            "resend-error-notification": {
+              "title": "Mail Archive",
+              "message": "Mail could not be delivered"
+            },
+          "resend-grid": {
+            "navigate": "Show",
+            "success-label": "success",
+            "failed-label": "failed",
+            "column-created-at": "Sent at",
+            "column-state": "State",
+            "currently-selected": "this",
+            "title": "Resend history"
+          }
         },
         "missingMigration": {
             "title": "FroshMailArchive must be migrated",

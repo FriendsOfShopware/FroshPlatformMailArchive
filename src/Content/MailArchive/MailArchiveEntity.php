@@ -42,6 +42,10 @@ class MailArchiveEntity extends Entity
     /** @var EntityCollection<MailArchiveAttachmentEntity>|null $attachments */
     protected ?EntityCollection $attachments = null;
 
+    protected ?string $sourceMailId;
+
+    protected ?MailArchiveEntity $sourceMail;
+
     public function getSender(): array
     {
         return $this->sender;
@@ -182,6 +186,26 @@ class MailArchiveEntity extends Entity
     public function setTransportFailed(bool $transportFailed): void
     {
         $this->transportFailed = $transportFailed;
+    }
+
+    public function getSourceMailId(): ?string
+    {
+        return $this->sourceMailId;
+    }
+
+    public function setSourceMailId(?string $sourceMailId): void
+    {
+        $this->sourceMailId = $sourceMailId;
+    }
+
+    public function getSourceMail(): ?MailArchiveEntity
+    {
+        return $this->sourceMail;
+    }
+
+    public function setSourceMail(?MailArchiveEntity $sourceMail): void
+    {
+        $this->sourceMail = $sourceMail;
     }
 
 }

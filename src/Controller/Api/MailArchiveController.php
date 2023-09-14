@@ -6,13 +6,14 @@ use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
-use Frosh\MailArchive\Services\MailSender;
+use Shopware\Core\Content\Mail\Service\AbstractMailSender;
+use Shopware\Core\Content\Mail\Service\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,13 +31,14 @@ class MailArchiveController extends AbstractController
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
         private readonly EntityRepository $froshMailArchiveAttachmentRepository,
-        private readonly MailSender $mailSender,
+        #[Autowire(service: MailSender::class)]
+        private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager
     ) {
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail')]
+    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
     public function resend(Request $request): JsonResponse
     {
         $mailId = $request->request->get('mailId');

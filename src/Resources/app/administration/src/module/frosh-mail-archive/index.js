@@ -1,5 +1,6 @@
 import './page/frosh-mail-archive-index/index';
 import './page/frosh-mail-archive-detail/index';
+import './component/frosh-mail-resend-history'
 
 Shopware.Module.register('frosh-mail-archive', {
     type: 'plugin',
@@ -20,7 +21,12 @@ Shopware.Module.register('frosh-mail-archive', {
             path: 'detail/:id',
             meta: {
                 parentPath: 'frosh.mail.archive.list'
-            }
+            },
+            props: {
+                default: ($route) => {
+                    return { archiveId: $route.params.id };
+                },
+            },
         }
     },
 

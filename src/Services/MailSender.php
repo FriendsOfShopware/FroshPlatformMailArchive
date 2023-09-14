@@ -2,6 +2,7 @@
 
 namespace Frosh\MailArchive\Services;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Content\MailTemplate\Exception\MailTransportFailedException;
 use Shopware\Core\Framework\Context;
@@ -60,6 +61,7 @@ class MailSender extends AbstractMailSender
             ];
         }
 
+        $context = Context::createDefaultContext();
         $this->froshMailArchiveRepository->create([
             [
                 'id' => $id,
@@ -73,8 +75,9 @@ class MailSender extends AbstractMailSender
                 'customerId' => $this->getCustomerIdByMail($message->getTo()),
                 'attachments' => $attachments,
                 'transportFailed' => $transportFailed,
+                'sourceMailId' => $this->getSourceMailId($context),
             ],
-        ], Context::createDefaultContext());
+        ], $context);
     }
 
     private function getCurrentSalesChannelId(): ?string
@@ -89,6 +92,30 @@ class MailSender extends AbstractMailSender
         }
 
         return $salesChannelId;
+    }
+
+    private function getSourceMailId(Context $context): ?string
+    {
+        $request = $this->requestStack->getMainRequest();
+        if($request === null) {
+            return null;
+        }
+
+        $route = $request->attributes->getString('_route');
+        if($route !== 'api.action.frosh-mail-archive.resend-mail') {
+            return null;
+        }
+
+        $sourceMailId = $request->request->get('mailId');
+
+        /** @var MailArchiveEntity|null $sourceMail */
+        $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
+        if(!$sourceMail){
+            return null;
+        }
+
+        // In case the source Mail is a resend, we want to save the original source mail id
+        return $sourceMail->getSourceMailId() ?? $sourceMailId;
     }
 
     /**

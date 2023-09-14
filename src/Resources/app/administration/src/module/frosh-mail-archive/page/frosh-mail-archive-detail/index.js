@@ -1,4 +1,4 @@
-const { Component } = Shopware;
+const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 import template from './frosh-mail-archive-detail.twig';
 import './frosh-mail-archive-detail.scss';
@@ -14,20 +14,36 @@ Component.register('frosh-mail-archive-detail', {
             resendIsSuccessful: false,
             downloadIsLoading: false,
             downloadIsSuccessful: false,
+            resendCounter: 0
         }
     },
 
+    props: {
+        archiveId: {
+            type: String,
+            required: true
+        }
+    },
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
+
     created() {
-        this.repository = this.repositoryFactory.create('frosh_mail_archive');
-
-        const criteria = new Criteria();
-        criteria.addAssociation('attachments');
-
-        this.repository.get(this.$route.params.id, Shopware.Context.api, criteria).then(archive => {
-            this.archive = archive;
-        })
+        this.loadMail();
+    },
+    watch: {
+        archiveId() {
+            this.loadMail();
+        }
     },
     computed: {
+        resendKey() {
+            return this.archive.id + this.resendCounter;
+        },
+        repository() {
+            return this.repositoryFactory.create('frosh_mail_archive');
+        },
         createdAtDate() {
             const locale = Shopware.State.getters.adminLocaleLanguage || 'en';
             const options = {
@@ -87,6 +103,14 @@ Component.register('frosh-mail-archive-detail', {
     },
 
     methods: {
+        loadMail() {
+            const criteria = new Criteria();
+            criteria.addAssociation('attachments');
+
+            this.repository.get(this.archiveId, Shopware.Context.api, criteria).then(archive => {
+                this.archive = archive;
+            })
+        },
         getContent(html) {
             return 'data:text/html;base64,' + btoa(unescape(encodeURIComponent(html.replace(/[\u00A0-\u2666]/g, function(c) {
                 return '&#' + c.charCodeAt(0) + ';';
@@ -98,26 +122,41 @@ Component.register('frosh-mail-archive-detail', {
                 params: { id: this.archive.customer.id }
             });
         },
+        resendFinish() {
+            this.resendIsSuccessful = false;
+            this.resendCounter++;
+        },
+        downloadFinish() {
+            this.downloadIsSuccessful = false;
+        },
         resendMail() {
             this.resendIsLoading = true;
 
             this.froshMailArchiveService.resendMail(this.archive.id).then(() => {
-                this.resendIsLoading = false;
                 this.resendIsSuccessful = true;
+                this.createNotificationSuccess({
+                    title: this.$tc('frosh-mail-archive.detail.resend-success-notification.title'),
+                    message: this.$tc('frosh-mail-archive.detail.resend-success-notification.message')
+                });
             }).catch(() => {
-                this.resendIsLoading = false;
                 this.resendIsSuccessful = false;
+                this.createNotificationError({
+                    title: this.$tc('frosh-mail-archive.detail.resend-error-notification.title'),
+                    message: this.$tc('frosh-mail-archive.detail.resend-error-notification.message')
+                });
+            }).finally(() => {
+                this.resendIsLoading = false;
             });
         },
         downloadMail() {
             this.downloadIsLoading = true;
 
             this.froshMailArchiveService.downloadMail(this.archive.id).then(() => {
-                this.downloadIsLoading = false;
                 this.downloadIsSuccessful = true;
             }).catch(() => {
-                this.downloadIsLoading = false;
                 this.downloadIsSuccessful = false;
+            }).finally(() => {
+                this.downloadIsLoading = false;
             });
         },
         downloadAttachment(attachmentId) {
