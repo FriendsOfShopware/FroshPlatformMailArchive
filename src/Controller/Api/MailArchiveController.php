@@ -207,8 +207,6 @@ class MailArchiveController extends AbstractController
 
         $email->html($mailArchive->getHtmlText());
         $email->text($mailArchive->getPlainText());
-
-        $this->emlFileManager->migrateMailToFilesystem([$mailArchive->getId()]);
     }
 
     private function getHeaderValue(IHeader $header): string|array|null|\DateTimeImmutable
