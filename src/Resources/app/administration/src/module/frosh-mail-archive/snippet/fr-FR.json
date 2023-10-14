@@ -16,11 +16,7 @@
             },
             "content": {
                 "title": "Contenu"
-            },
-          "resend-grid": {
-            "pending-label": "",
-            "unknown-label": ""
-          }
+            }
         },
         "list": {
             "sidebar": {

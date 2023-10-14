@@ -16,11 +16,7 @@
                 "resend": "Rinvia l'e-mail",
                 "customer": "Apri cliente",
                 "downloadEml": "Scarica l'e-mail"
-            },
-          "resend-grid": {
-            "pending-label": "",
-            "unknown-label": ""
-          }
+            }
         },
         "list": {
             "sidebar": {
