@@ -6,10 +6,6 @@ store:
     localizations:
         - de_DE
         - en_GB
-        - es_ES
-        - fr_FR
-        - it_IT
-        - nl_NL
     categories:
         - BackendBearbeitung
     type: extension
