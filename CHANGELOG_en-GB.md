@@ -1,3 +1,6 @@
+# Unreleased
+* Add history of resent mails with state of mail delivery
+
 # 2.0.3
 * Fixed cleanup task to correctly delete old mails
 
@@ -46,7 +49,7 @@
 # 0.2.1
 
 * Sender name added
-* Default sorting changed to newest entries
+* Default sorting changed to the newest entries
 
 # 0.2.0
 
