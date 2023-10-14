@@ -3,6 +3,7 @@
 namespace Frosh\MailArchive\Services;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -114,7 +115,11 @@ class MailSender extends AbstractMailSender
             return null;
         }
 
-        $sourceMailId = (string) $request->request->get('mailId');
+        $sourceMailId = $request->request->get('mailId');
+
+        if (!\is_string($sourceMailId)) {
+            throw MailArchiveException::parameterMissing('mailId in request');
+        }
 
         /** @var MailArchiveEntity|null $sourceMail */
         $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
