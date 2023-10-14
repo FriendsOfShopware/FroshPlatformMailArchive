@@ -124,7 +124,6 @@ Component.register('frosh-mail-archive-detail', {
         },
         resendFinish() {
             this.resendIsSuccessful = false;
-            this.resendCounter++;
         },
         downloadFinish() {
             this.downloadIsSuccessful = false;
@@ -146,6 +145,7 @@ Component.register('frosh-mail-archive-detail', {
                 });
             }).finally(() => {
                 this.resendIsLoading = false;
+                this.resendCounter++;
             });
         },
         downloadMail() {

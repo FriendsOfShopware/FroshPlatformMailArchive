@@ -5,6 +5,7 @@ namespace Frosh\MailArchive\Content\MailArchive;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
@@ -47,7 +48,8 @@ class MailArchiveDefinition extends EntityDefinition
             (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING)),
             (new LongTextField('eml', 'eml'))->addFlags(new AllowHtml()),
             (new StringField('eml_path', 'emlPath', 2048)),
-            (new BoolField('transport_failed', 'transportFailed'))->addFlags(new Required()),
+            (new StringField('transport_state', 'transportState'))->addFlags(new Required()),
+            (new StringField('message_id', 'messageId'))->addFlags(new Required()),
 
             (new OneToManyAssociationField('attachments', MailArchiveAttachmentDefinition::class, 'mail_archive_id', 'id'))->addFlags(new CascadeDelete()),
 

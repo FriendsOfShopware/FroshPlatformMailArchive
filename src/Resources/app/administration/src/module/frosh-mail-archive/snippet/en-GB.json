@@ -55,7 +55,9 @@
                 "column-created-at": "Sent at",
                 "column-state": "State",
                 "currently-selected": "this",
-                "title": "Resend history"
+                "title": "Resend history",
+              "pending-label": "pending",
+              "unknown-label": "unknown"
             }
         },
         "missingMigration": {

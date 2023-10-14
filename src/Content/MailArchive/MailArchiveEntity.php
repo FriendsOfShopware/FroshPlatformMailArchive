@@ -24,7 +24,7 @@ class MailArchiveEntity extends Entity
 
     protected ?string $htmlText;
 
-    protected bool $transportFailed = false;
+    protected ?string $transportState;
 
     /**
      * @deprecated will not be filled anyone. Use emlPath instead
@@ -47,6 +47,8 @@ class MailArchiveEntity extends Entity
     protected ?string $sourceMailId;
 
     protected ?MailArchiveEntity $sourceMail;
+
+    protected ?string $messageId;
 
     /**
      * @return array<string, string>
@@ -192,16 +194,6 @@ class MailArchiveEntity extends Entity
         $this->attachments = $attachments;
     }
 
-    public function isTransportFailed(): bool
-    {
-        return $this->transportFailed;
-    }
-
-    public function setTransportFailed(bool $transportFailed): void
-    {
-        $this->transportFailed = $transportFailed;
-    }
-
     public function getSourceMailId(): ?string
     {
         return $this->sourceMailId;
@@ -220,6 +212,26 @@ class MailArchiveEntity extends Entity
     public function setSourceMail(?MailArchiveEntity $sourceMail): void
     {
         $this->sourceMail = $sourceMail;
+    }
+
+    public function getTransportState(): ?string
+    {
+        return $this->transportState;
+    }
+
+    public function setTransportState(string $transportState): void
+    {
+        $this->transportState = $transportState;
+    }
+
+    public function getMessageId(): ?string
+    {
+        return $this->messageId;
+    }
+
+    public function setMessageId(?string $messageId): void
+    {
+        $this->messageId = $messageId;
     }
 
 }

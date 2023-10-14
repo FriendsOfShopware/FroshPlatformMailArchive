@@ -4,7 +4,6 @@ namespace Frosh\MailArchive\Services;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
-use Shopware\Core\Content\MailTemplate\Exception\MailTransportFailedException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -19,6 +18,13 @@ use Symfony\Component\Mime\Email;
 #[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
 {
+
+    public const TRANSPORT_STATE_PENDING = 'pending';
+    public const TRANSPORT_STATE_FAILED = 'failed';
+    public const TRANSPORT_STATE_SENT = 'sent';
+
+    public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
+
     public function __construct(
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
@@ -30,17 +36,15 @@ class MailSender extends AbstractMailSender
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
-        // let first send the mail itself, to see if it was really sent or entered error state
-       $failed = false;
 
-        try {
-            $this->mailSender->send($email, $envelope);
-        } catch(MailTransportFailedException $e) {
-            $failed = true;
-            throw $e;
-        } finally {
-            $this->saveMail($email, $failed);
-        }
+        $messageId = Uuid::randomHex();
+        $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
+        $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $messageId);
+
+        // save the mail first, to make sure it exists in the database when we want to update its state
+        $this->saveMail($email, $messageId);
+        $this->mailSender->send($email, $envelope);
+
     }
 
     public function getDecorated(): AbstractMailSender
@@ -48,7 +52,7 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(Email $message, bool $transportFailed = false): void
+    private function saveMail(Email $message, string $messageId): void
     {
         $id = Uuid::randomHex();
 
@@ -77,8 +81,9 @@ class MailSender extends AbstractMailSender
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail($message->getTo()),
                 'attachments' => $attachments,
-                'transportFailed' => $transportFailed,
                 'sourceMailId' => $this->getSourceMailId($context),
+                'transportState' => self::TRANSPORT_STATE_PENDING,
+                'messageId' => $messageId,
             ],
         ], $context);
     }

@@ -16,7 +16,11 @@
                 "subject": "Onderwerp",
                 "receiver": "Ontvangers",
                 "sender": "Afzender"
-            }
+            },
+          "resend-grid": {
+            "pending-label": "",
+            "unknown-label": ""
+          }
         },
         "list": {
             "sidebar": {

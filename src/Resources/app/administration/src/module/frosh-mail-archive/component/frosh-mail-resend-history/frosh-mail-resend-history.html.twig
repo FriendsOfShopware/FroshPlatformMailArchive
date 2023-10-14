@@ -18,19 +18,33 @@
                 </router-link>
             </template>
             <template #column-success="{item}">
-                <div v-if="!item.transportFailed">
+                <div v-if="item.transportState === 'sent'">
                     <sw-color-badge
                         color="#37d046"
                         rounded
                     />
                     {{ $tc('frosh-mail-archive.detail.resend-grid.success-label') }}
                 </div>
-                <div v-else>
+                <div v-else-if="item.transportState === 'failed'">
                     <sw-color-badge
                         color="#de294c"
                         rounded
                     />
                     {{ $tc('frosh-mail-archive.detail.resend-grid.failed-label') }}
+                </div>
+                <div v-else-if="item.transportState === 'pending'">
+                    <sw-color-badge
+                        color="#ffab22"
+                        rounded
+                    />
+                    {{ $tc('frosh-mail-archive.detail.resend-grid.pending-label') }}
+                </div>
+                <div v-else>
+                    <sw-color-badge
+                        color="#94a6b8"
+                        rounded
+                    />
+                    {{ $tc('frosh-mail-archive.detail.resend-grid.unknown-label') }}
                 </div>
             </template>
             <template #actions="{ item }">

@@ -55,7 +55,9 @@
               "column-created-at": "Gesendet am",
               "column-state": "Status",
               "currently-selected": "ausgewählt",
-              "title": "Sendeverlauf"
+              "title": "Sendeverlauf",
+              "pending-label": "ausstehend",
+              "unknown-label": "unbekannt"
             }
         },
         "missingMigration": {
