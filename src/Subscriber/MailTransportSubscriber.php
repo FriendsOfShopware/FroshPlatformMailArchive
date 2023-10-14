@@ -69,10 +69,10 @@ class MailTransportSubscriber implements EventSubscriberInterface
         $messageId = $messageIdHeader->getBody();
         $message->getHeaders()->remove(MailSender::FROSH_MESSAGE_ID_HEADER);
 
-        if(!$messageId || !is_string($messageId)){
-            return null;
+        if (\is_string($messageId)) {
+            return $messageId;
         }
-
-        return $this->froshMailArchiveRepository->searchIds(new Criteria([$messageId]), $context)->firstId();
+        
+        return null;
     }
 }
