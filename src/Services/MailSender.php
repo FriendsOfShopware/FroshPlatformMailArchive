@@ -2,6 +2,8 @@
 
 namespace Frosh\MailArchive\Services;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -17,21 +19,33 @@ use Symfony\Component\Mime\Email;
 #[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
 {
+
+    public const TRANSPORT_STATE_PENDING = 'pending';
+    public const TRANSPORT_STATE_FAILED = 'failed';
+    public const TRANSPORT_STATE_SENT = 'sent';
+
+    public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
+
     public function __construct(
         private readonly AbstractMailSender $mailSender,
-        private readonly RequestStack $requestStack,
-        private readonly EntityRepository $froshMailArchiveRepository,
-        private readonly EntityRepository $customerRepository,
-        private readonly EmlFileManager $emlFileManager
-    ) {
+        private readonly RequestStack       $requestStack,
+        private readonly EntityRepository   $froshMailArchiveRepository,
+        private readonly EntityRepository   $customerRepository,
+        private readonly EmlFileManager     $emlFileManager
+    )
+    {
     }
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
-        // let first send the mail itself, to see if it was really sent or entered error state
+        $id = Uuid::randomHex();
+        $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
+        $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $id);
+
+        // save the mail first, to make sure it exists in the database when we want to update its state
+        $this->saveMail($id, $email);
         $this->mailSender->send($email, $envelope);
 
-        $this->saveMail($email);
     }
 
     public function getDecorated(): AbstractMailSender
@@ -39,10 +53,8 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(Email $message): void
+    private function saveMail(string $id, Email $message): void
     {
-        $id = Uuid::randomHex();
-
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
         $attachments = [];
@@ -55,20 +67,23 @@ class MailSender extends AbstractMailSender
             ];
         }
 
+        $context = Context::createDefaultContext();
         $this->froshMailArchiveRepository->create([
             [
                 'id' => $id,
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
-                'plainText' => nl2br((string) $message->getTextBody()),
+                'plainText' => nl2br((string)$message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail($message->getTo()),
                 'attachments' => $attachments,
+                'sourceMailId' => $this->getSourceMailId($context),
+                'transportState' => self::TRANSPORT_STATE_PENDING,
             ],
-        ], Context::createDefaultContext());
+        ], $context);
     }
 
     private function getCurrentSalesChannelId(): ?string
@@ -83,6 +98,31 @@ class MailSender extends AbstractMailSender
         }
 
         return $salesChannelId;
+    }
+
+    private function getSourceMailId(Context $context): ?string
+    {
+        $request = $this->requestStack->getMainRequest();
+        if ($request === null) {
+            return null;
+        }
+
+        $route = $request->attributes->get('_route');
+        if ($route !== 'api.action.frosh-mail-archive.resend-mail') {
+            return null;
+        }
+
+        $sourceMailId = $request->request->get('mailId');
+
+        if (!\is_string($sourceMailId)) {
+            throw MailArchiveException::parameterMissing('mailId in request');
+        }
+
+        /** @var MailArchiveEntity|null $sourceMail */
+        $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
+
+        // In case the source Mail is a resend, we want to save the original source mail id
+        return $sourceMail?->getSourceMailId() ?? $sourceMailId;
     }
 
     /**

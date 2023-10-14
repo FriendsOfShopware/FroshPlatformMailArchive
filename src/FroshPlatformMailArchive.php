@@ -21,11 +21,11 @@ class FroshPlatformMailArchive extends Plugin
 
         $connection = $container->get(Connection::class);
         if (!$connection instanceof Connection) {
-           return;
+            return;
         }
 
-        $connection->executeStatement('DROP TABLE IF EXISTS frosh_mail_archive');
         $connection->executeStatement('DROP TABLE IF EXISTS frosh_mail_archive_attachment');
+        $connection->executeStatement('DROP TABLE IF EXISTS frosh_mail_archive');
     }
 
     public function executeComposerCommands(): bool

@@ -6,6 +6,6 @@
 
     <services>
         <defaults autowire="true" autoconfigure="true"/>
-        <prototype namespace="Frosh\MailArchive\" resource="../../" />
+        <prototype namespace="Frosh\MailArchive\" resource="../../"/>
     </services>
 </container>

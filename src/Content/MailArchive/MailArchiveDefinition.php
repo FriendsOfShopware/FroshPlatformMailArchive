@@ -46,6 +46,7 @@ class MailArchiveDefinition extends EntityDefinition
             (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING)),
             (new LongTextField('eml', 'eml'))->addFlags(new AllowHtml()),
             (new StringField('eml_path', 'emlPath', 2048)),
+            (new StringField('transport_state', 'transportState'))->addFlags(new Required()),
 
             (new OneToManyAssociationField('attachments', MailArchiveAttachmentDefinition::class, 'mail_archive_id', 'id'))->addFlags(new CascadeDelete()),
 
@@ -54,6 +55,9 @@ class MailArchiveDefinition extends EntityDefinition
 
             new FkField('customerId', 'customerId', CustomerDefinition::class),
             new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', true),
+
+            new FkField('source_mail_id', 'sourceMailId', self::class),
+            new ManyToOneAssociationField('sourceMail', 'source_mail_id', self::class, 'id', false),
         ]);
     }
 }

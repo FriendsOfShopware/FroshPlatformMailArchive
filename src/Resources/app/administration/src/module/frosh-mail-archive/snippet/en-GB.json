@@ -6,7 +6,8 @@
                 "sentDate": "Sent date",
                 "subject": "Subject",
                 "receiver": "Recipients",
-                "action": "Show"
+                "action": "Show",
+                "transportFailed": "Mail delivery failed."
             },
             "sidebar": {
                 "refresh": "Refresh",
@@ -35,6 +36,28 @@
             },
             "content": {
                 "title": "Content"
+            },
+            "alert": {
+                "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
+            },
+            "resend-success-notification": {
+                "message": "Mail dispatch has started.",
+                "title": "Mail Archive"
+            },
+            "resend-error-notification": {
+                "title": "Mail Archive",
+                "message": "Mail could not be delivered"
+            },
+            "resend-grid": {
+                "navigate": "Show",
+                "success-label": "success",
+                "failed-label": "failed",
+                "column-created-at": "Sent at",
+                "column-state": "State",
+                "currently-selected": "this",
+                "title": "Resend history",
+              "pending-label": "pending",
+              "unknown-label": "unknown"
             }
         },
         "missingMigration": {

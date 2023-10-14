@@ -6,7 +6,8 @@
                 "sentDate": "Versanddatum",
                 "subject": "Betreff",
                 "receiver": "Empfänger",
-                "action": "Anzeigen"
+                "action": "Anzeigen",
+                "transportFailed": "Versand der E-Mail fehlgeschlagen"
             },
             "sidebar": {
                 "refresh": "Neuladen",
@@ -35,6 +36,28 @@
             },
             "content": {
                 "title": "Inhalt"
+            },
+            "alert": {
+                "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
+            },
+            "resend-success-notification": {
+              "message": "Der E-Mail-Versand wurde gestartet.",
+              "title": "Mail Archiv"
+            },
+            "resend-error-notification": {
+              "title": "Mail Archiv",
+              "message": "Fehler beim Senden der E-Mail"
+            },
+            "resend-grid": {
+              "navigate": "Anzeigen",
+              "success-label": "erfolgreich",
+              "failed-label": "fehlgeschlagen",
+              "column-created-at": "Gesendet am",
+              "column-state": "Status",
+              "currently-selected": "ausgewählt",
+              "title": "Sendeverlauf",
+              "pending-label": "ausstehend",
+              "unknown-label": "unbekannt"
             }
         },
         "missingMigration": {

@@ -8,30 +8,47 @@
             {{ $tc('frosh-mail-archive.detail.toolbar.customer') }}
         </sw-button>
 
-        <sw-button-process :isLoading="downloadIsLoading" :processSuccess="downloadIsSuccessful" @click="downloadMail">
+        <sw-button-process :isLoading="downloadIsLoading" :processSuccess="downloadIsSuccessful" @click="downloadMail"
+                           @process-finish="downloadFinish">
             {{ $tc('frosh-mail-archive.detail.toolbar.downloadEml') }}
         </sw-button-process>
 
-        <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail">
+        <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail"
+                           @process-finish="resendFinish">
             {{ $tc('frosh-mail-archive.detail.toolbar.resend') }}
         </sw-button-process>
     </template>
 
     <template slot="content">
         <sw-card-view v-if="archive">
-            <sw-card
-                    :title="$tc('frosh-mail-archive.detail.metadata.title')"
-                    position-identifier="frosh-mail-archive-metadata"
+            <sw-alert
+                v-if="archive.transportState === 'failed'"
+                variant="warning"
+                class="frosh-mail-archive__detail-alert"
             >
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sentDate')" :disabled="true" v-model="createdAtDate"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sender')" :disabled="true" v-model="senderText"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.receiver')" :disabled="true" v-model="receiverText"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.subject')" :disabled="true" v-model="archive.subject"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.salesChannel')" v-if="archive.salesChannel" :disabled="true" v-model="archive.salesChannel.name"></sw-text-field>
-            </sw-card>
+                {{ $tc('frosh-mail-archive.detail.alert.transportFailed') }}
+            </sw-alert>
             <sw-card
-                    :title="$tc('frosh-mail-archive.detail.content.title')"
-                    position-identifier="frosh-mail-archive-content"
+                :title="$tc('frosh-mail-archive.detail.metadata.title')"
+                position-identifier="frosh-mail-archive-metadata"
+            >
+                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sentDate')" :disabled="true"
+                               v-model="createdAtDate"></sw-text-field>
+                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sender')" :disabled="true"
+                               v-model="senderText"></sw-text-field>
+                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.receiver')" :disabled="true"
+                               v-model="receiverText"></sw-text-field>
+                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.subject')" :disabled="true"
+                               v-model="archive.subject"></sw-text-field>
+                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.salesChannel')"
+                               v-if="archive.salesChannel" :disabled="true"
+                               v-model="archive.salesChannel.name"></sw-text-field>
+            </sw-card>
+            <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id"
+                                       :sourceMailId="archive.sourceMailId ?? archive.id"/>
+            <sw-card
+                :title="$tc('frosh-mail-archive.detail.content.title')"
+                position-identifier="frosh-mail-archive-content"
             >
                 <h4>HTML</h4>
                 <iframe :src="htmlText" sandbox frameborder="0"></iframe>
@@ -57,7 +74,8 @@
                     </template>
 
                     <template slot="actions" slot-scope="{ item }">
-                        <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" @click="downloadAttachment(item.id)">
+                        <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
+                                              @click="downloadAttachment(item.id)">
                             Download
                         </sw-context-menu-item>
                     </template>

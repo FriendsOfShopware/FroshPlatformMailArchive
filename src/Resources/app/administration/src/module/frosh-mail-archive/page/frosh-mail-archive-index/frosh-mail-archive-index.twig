@@ -25,10 +25,21 @@
 
             <template slot="column-createdAt" slot-scope="{ item }">
                 {{ item.createdAt | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+                <template v-if="item.transportState === 'failed'">
+                    <sw-icon
+                        name="regular-exclamation-triangle"
+                        color="#f00"
+                        class="frosh-mail-archive__data-grid-danger-icon"
+                        v-tooltip="{
+                            message: $tc('frosh-mail-archive.list.columns.transportFailed')
+                        }"
+                        small></sw-icon>
+                </template>
             </template>
 
             <template slot="detail-action" slot-scope="{ item }">
-                <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
+                <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
+                                      :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
                     {{ $tc('frosh-mail-archive.list.columns.action') }}
                 </sw-context-menu-item>
             </template>
@@ -44,7 +55,8 @@
 
         <sw-sidebar-item icon="regular-filter"
                          :title="$tc('frosh-mail-archive.list.sidebar.filter')">
-            <sw-text-field :label="$tc('frosh-mail-archive.list.sidebar.filters.search')" v-model="filter.term"></sw-text-field>
+            <sw-text-field :label="$tc('frosh-mail-archive.list.sidebar.filters.search')"
+                           v-model="filter.term"></sw-text-field>
 
             <sw-entity-single-select
                 v-model="filter.salesChannelId"
@@ -58,8 +70,9 @@
                 entity="customer"
             >
                 <template #result-label-property="{ item, index, searchTerm, getKey }">
-                    <sw-highlight-text :text="`${getKey(item, 'firstName')} ${getKey(item, 'lastName')}${getKey(item, 'lastName') ? ' (' + getKey(item, 'lastName') + ')' : ''}`"
-                                       :searchTerm="searchTerm">
+                    <sw-highlight-text
+                        :text="`${getKey(item, 'firstName')} ${getKey(item, 'lastName')}${getKey(item, 'lastName') ? ' (' + getKey(item, 'lastName') + ')' : ''}`"
+                        :searchTerm="searchTerm">
                     </sw-highlight-text>
                 </template>
             </sw-entity-single-select>

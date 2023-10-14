@@ -24,6 +24,8 @@ class MailArchiveEntity extends Entity
 
     protected ?string $htmlText;
 
+    protected ?string $transportState;
+
     /**
      * @deprecated will not be filled anyone. Use emlPath instead
      */
@@ -41,6 +43,11 @@ class MailArchiveEntity extends Entity
 
     /** @var EntityCollection<MailArchiveAttachmentEntity>|null $attachments */
     protected ?EntityCollection $attachments = null;
+
+    protected ?string $sourceMailId;
+
+    protected ?MailArchiveEntity $sourceMail;
+
 
     /**
      * @return array<string, string>
@@ -185,4 +192,35 @@ class MailArchiveEntity extends Entity
     {
         $this->attachments = $attachments;
     }
+
+    public function getSourceMailId(): ?string
+    {
+        return $this->sourceMailId;
+    }
+
+    public function setSourceMailId(?string $sourceMailId): void
+    {
+        $this->sourceMailId = $sourceMailId;
+    }
+
+    public function getSourceMail(): ?MailArchiveEntity
+    {
+        return $this->sourceMail;
+    }
+
+    public function setSourceMail(?MailArchiveEntity $sourceMail): void
+    {
+        $this->sourceMail = $sourceMail;
+    }
+
+    public function getTransportState(): ?string
+    {
+        return $this->transportState;
+    }
+
+    public function setTransportState(string $transportState): void
+    {
+        $this->transportState = $transportState;
+    }
+
 }
