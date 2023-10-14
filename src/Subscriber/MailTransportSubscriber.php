@@ -5,7 +5,6 @@ namespace Frosh\MailArchive\Subscriber;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Event\FailedMessageEvent;
 use Symfony\Component\Mailer\Event\SentMessageEvent;
@@ -68,10 +67,10 @@ class MailTransportSubscriber implements EventSubscriberInterface
 
         $messageId = $messageIdHeader->getBody();
 
-        if (!$messageId || !is_string($messageId)) {
-            return null;
+        if (\is_string($messageId)) {
+            return $messageId;
         }
 
-        return $this->froshMailArchiveRepository->searchIds(new Criteria([$messageId]), $context)->firstId();
+        return null;
     }
 }

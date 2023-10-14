@@ -41,7 +41,7 @@
                 "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
             },
             "resend-success-notification": {
-                "message": "The email was successfully resent.",
+                "message": "Mail dispatch has started.",
                 "title": "Mail Archive"
             },
             "resend-error-notification": {

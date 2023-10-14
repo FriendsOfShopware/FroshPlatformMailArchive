@@ -41,7 +41,7 @@
                 "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             },
             "resend-success-notification": {
-              "message": "Die E-Mail wurde erneut versendet.",
+              "message": "Der E-Mail-Versand wurde gestartet.",
               "title": "Mail Archiv"
             },
             "resend-error-notification": {

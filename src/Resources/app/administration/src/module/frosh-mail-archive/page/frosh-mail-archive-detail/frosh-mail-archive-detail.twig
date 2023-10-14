@@ -22,7 +22,7 @@
     <template slot="content">
         <sw-card-view v-if="archive">
             <sw-alert
-                v-if="archive.transportFailed"
+                v-if="archive.transportState === 'failed'"
                 variant="warning"
                 class="frosh-mail-archive__detail-alert"
             >
