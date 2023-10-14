@@ -1,4 +1,4 @@
-const { Criteria } = Shopware.Data;
+const {Criteria} = Shopware.Data;
 import template from './frosh-mail-resend-history.html.twig';
 
 Shopware.Component.register('frosh-mail-resend-history', {
@@ -34,13 +34,13 @@ Shopware.Component.register('frosh-mail-resend-history', {
             return this.repositoryFactory.create('frosh_mail_archive');
         }
     },
-    async created(){
+    async created() {
         this.isLoading = true;
         await this.loadMails();
         this.isLoading = false;
     },
     methods: {
-        async loadMails(){
+        async loadMails() {
             const criteria = new Criteria();
             criteria.addFilter(Criteria.multi('OR', [
                 Criteria.equals('id', this.sourceMailId),
@@ -50,8 +50,8 @@ Shopware.Component.register('frosh-mail-resend-history', {
 
             this.resentMails = await this.mailArchiveRepository.search(criteria, Shopware.Context.api);
         },
-        navigateToDetailPage(id){
-            this.$router.push({ name: 'frosh.mail.archive.detail', params: { id } })
+        navigateToDetailPage(id) {
+            this.$router.push({name: 'frosh.mail.archive.detail', params: {id}})
         }
     }
 });

@@ -28,19 +28,22 @@ class MailSender extends AbstractMailSender
 
     public function __construct(
         private readonly AbstractMailSender $mailSender,
-        private readonly RequestStack $requestStack,
-        private readonly EntityRepository $froshMailArchiveRepository,
-        private readonly EntityRepository $customerRepository,
-        private readonly EmlFileManager $emlFileManager
-    ) {
+        private readonly RequestStack       $requestStack,
+        private readonly EntityRepository   $froshMailArchiveRepository,
+        private readonly EntityRepository   $customerRepository,
+        private readonly EmlFileManager     $emlFileManager
+    )
+    {
     }
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
-        // save the mail first, to make sure it exists in the database when we want to update its state
-        $mailId = $this->saveMail($email);
+        $id = Uuid::randomHex();
         $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
-        $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $mailId);
+        $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $id);
+
+        // save the mail first, to make sure it exists in the database when we want to update its state
+        $this->saveMail($id, $email);
         $this->mailSender->send($email, $envelope);
 
     }
@@ -50,10 +53,8 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(Email $message): string
+    private function saveMail(string $id, Email $message): void
     {
-        $id = Uuid::randomHex();
-
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
         $attachments = [];
@@ -73,7 +74,7 @@ class MailSender extends AbstractMailSender
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
-                'plainText' => nl2br((string) $message->getTextBody()),
+                'plainText' => nl2br((string)$message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
@@ -83,8 +84,6 @@ class MailSender extends AbstractMailSender
                 'transportState' => self::TRANSPORT_STATE_PENDING,
             ],
         ], $context);
-
-        return $id;
     }
 
     private function getCurrentSalesChannelId(): ?string

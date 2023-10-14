@@ -1,5 +1,5 @@
-const { Component, Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
+const {Component, Mixin} = Shopware;
+const {Criteria} = Shopware.Data;
 import template from './frosh-mail-archive-detail.twig';
 import './frosh-mail-archive-detail.scss';
 
@@ -112,14 +112,14 @@ Component.register('frosh-mail-archive-detail', {
             })
         },
         getContent(html) {
-            return 'data:text/html;base64,' + btoa(unescape(encodeURIComponent(html.replace(/[\u00A0-\u2666]/g, function(c) {
+            return 'data:text/html;base64,' + btoa(unescape(encodeURIComponent(html.replace(/[\u00A0-\u2666]/g, function (c) {
                 return '&#' + c.charCodeAt(0) + ';';
             }))));
         },
         openCustomer() {
             this.$router.push({
                 name: 'sw.customer.detail',
-                params: { id: this.archive.customer.id }
+                params: {id: this.archive.customer.id}
             });
         },
         resendFinish() {
@@ -173,7 +173,7 @@ Component.register('frosh-mail-archive-detail', {
 
             const units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
             let index = -1;
-            const reach = 10**dp;
+            const reach = 10 ** dp;
 
             do {
                 formatted /= thresh;

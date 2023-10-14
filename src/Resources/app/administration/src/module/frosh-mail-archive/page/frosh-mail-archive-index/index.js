@@ -1,5 +1,5 @@
-const { Component, Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
+const {Component, Mixin} = Shopware;
+const {Criteria} = Shopware.Data;
 const utils = Shopware.Utils;
 import template from './frosh-mail-archive-index.twig';
 import './frosh-mail-archive-index.scss';

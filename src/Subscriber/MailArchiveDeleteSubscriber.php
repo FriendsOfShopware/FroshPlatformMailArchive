@@ -14,8 +14,9 @@ class MailArchiveDeleteSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
-        private readonly EmlFileManager $emlFileManager
-    ) {
+        private readonly EmlFileManager   $emlFileManager
+    )
+    {
     }
 
     public static function getSubscribedEvents(): array

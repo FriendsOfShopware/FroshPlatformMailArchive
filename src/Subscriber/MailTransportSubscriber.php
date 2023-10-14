@@ -46,7 +46,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
         $context = Context::createDefaultContext();
         $archiveId = $this->getArchiveIdByMessage($message, $context);
 
-        if($archiveId){
+        if ($archiveId) {
             $this->froshMailArchiveRepository->update([[
                 'id' => $archiveId,
                 'transportState' => $newState
@@ -56,20 +56,19 @@ class MailTransportSubscriber implements EventSubscriberInterface
 
     private function getArchiveIdByMessage(RawMessage $message, Context $context): ?string
     {
-        if(!($message instanceof Email)) {
+        if (!($message instanceof Email)) {
             return null;
         }
 
         $messageIdHeader = $message->getHeaders()->get(MailSender::FROSH_MESSAGE_ID_HEADER);
 
-        if(!$messageIdHeader){
+        if (!$messageIdHeader) {
             return null;
         }
 
         $messageId = $messageIdHeader->getBody();
-        $message->getHeaders()->remove(MailSender::FROSH_MESSAGE_ID_HEADER);
 
-        if(!$messageId || !is_string($messageId)){
+        if (!$messageId || !is_string($messageId)) {
             return null;
         }
 

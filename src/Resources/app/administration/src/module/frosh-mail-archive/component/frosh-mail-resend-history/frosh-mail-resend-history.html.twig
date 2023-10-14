@@ -48,8 +48,8 @@
                 </div>
             </template>
             <template #actions="{ item }">
-                <sw-context-menu-item  :disabled="currentMailId === item.id"
-                    @click="navigateToDetailPage(item.id)"
+                <sw-context-menu-item :disabled="currentMailId === item.id"
+                                      @click="navigateToDetailPage(item.id)"
                 >
                     {{ $tc('frosh-mail-archive.detail.resend-grid.navigate') }}
                 </sw-context-menu-item>
