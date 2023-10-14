@@ -25,7 +25,7 @@
 
             <template slot="column-createdAt" slot-scope="{ item }">
                 {{ item.createdAt | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
-                <template v-if="item.transportFailed">
+                <template v-if="item.transportState === 'failed'">
                     <sw-icon
                         name="regular-exclamation-triangle"
                         color="#f00"
