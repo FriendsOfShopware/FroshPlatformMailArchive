@@ -70,7 +70,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
         $messageId = $messageIdHeader->getBody();
         $message->getHeaders()->remove(MailSender::FROSH_MESSAGE_ID_HEADER);
 
-        if(!$messageId) {
+        if(!$messageId || !is_string($messageId)){
             return null;
         }
 
