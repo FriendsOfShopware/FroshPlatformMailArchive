@@ -6,7 +6,6 @@ use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Event\FailedMessageEvent;
 use Symfony\Component\Mailer\Event\SentMessageEvent;
@@ -74,9 +73,6 @@ class MailTransportSubscriber implements EventSubscriberInterface
             return null;
         }
 
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('messageId', $messageId));
-        return $this->froshMailArchiveRepository->searchIds($criteria, $context)->firstId();
+        return $this->froshMailArchiveRepository->searchIds(new Criteria([$messageId]), $context)->firstId();
     }
 }

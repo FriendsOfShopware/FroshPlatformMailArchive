@@ -48,7 +48,6 @@ class MailArchiveEntity extends Entity
 
     protected ?MailArchiveEntity $sourceMail;
 
-    protected ?string $messageId;
 
     /**
      * @return array<string, string>
@@ -222,16 +221,6 @@ class MailArchiveEntity extends Entity
     public function setTransportState(string $transportState): void
     {
         $this->transportState = $transportState;
-    }
-
-    public function getMessageId(): ?string
-    {
-        return $this->messageId;
-    }
-
-    public function setMessageId(?string $messageId): void
-    {
-        $this->messageId = $messageId;
     }
 
 }

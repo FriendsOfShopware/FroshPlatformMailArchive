@@ -16,8 +16,6 @@ class Migration1694714751TransportInfo extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement("ALTER TABLE `frosh_mail_archive` ADD `message_id` BINARY(16) NULL;");
-        $connection->executeStatement("ALTER TABLE `frosh_mail_archive` DROP COLUMN `transport_failed`;");
         $connection->executeStatement("ALTER TABLE `frosh_mail_archive` ADD `transport_state` VARCHAR(255) NULL;");
     }
 

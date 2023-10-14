@@ -37,13 +37,10 @@ class MailSender extends AbstractMailSender
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
-
-        $messageId = Uuid::randomHex();
-        $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
-        $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $messageId);
-
         // save the mail first, to make sure it exists in the database when we want to update its state
-        $this->saveMail($email, $messageId);
+        $mailId = $this->saveMail($email);
+        $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
+        $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $mailId);
         $this->mailSender->send($email, $envelope);
 
     }
@@ -53,7 +50,7 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(Email $message, string $messageId): void
+    private function saveMail(Email $message): string
     {
         $id = Uuid::randomHex();
 
@@ -84,9 +81,10 @@ class MailSender extends AbstractMailSender
                 'attachments' => $attachments,
                 'sourceMailId' => $this->getSourceMailId($context),
                 'transportState' => self::TRANSPORT_STATE_PENDING,
-                'messageId' => $messageId,
             ],
         ], $context);
+
+        return $id;
     }
 
     private function getCurrentSalesChannelId(): ?string
