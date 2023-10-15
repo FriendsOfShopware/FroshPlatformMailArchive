@@ -43,6 +43,8 @@ class MigrateMailCommand extends Command
             return Command::SUCCESS;
         }
 
+        $isSync = $input->getOption('sync');
+
         $progressBar = new ProgressBar($output, $count);
         $progressBar->start();
 
@@ -52,7 +54,7 @@ class MigrateMailCommand extends Command
 
             $message = new MigrateMailMessage($ids);
 
-            if ($input->getOption('sync')) {
+            if ($isSync) {
                 $this->migrateMailHandler->__invoke($message);
             } else {
                 $this->messageBus->dispatch($message);
@@ -62,8 +64,11 @@ class MigrateMailCommand extends Command
         }
 
         $progressBar->finish();
-
         $output->writeln('');
+
+        if (!$isSync) {
+            $output->writeln('Mails are being migrated in the background by your message consumer.');
+        }
 
         return Command::SUCCESS;
     }
