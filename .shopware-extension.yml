@@ -35,6 +35,19 @@ store:
         en:
             - mail
             - archive
+    features:
+        de:
+          - Übersicht der versendenten E-Mails
+          - Durchsuchbares Archiv
+          - Erneutes versenden von E-Mails
+          - Automatisches entfernen alter E-Mails
+          - E-Mails, die nicht versendet werden konnten, werden markiert (ab 2.0.5)
+        en:
+          - Overview of sent emails
+          - Searchable archive
+          - Resend emails
+          - Automatically remove old emails
+          - Emails that could not be sent are marked as failed (from 2.0.5)
     images:
         - file: src/Resources/store/img-0.png
           activate:
