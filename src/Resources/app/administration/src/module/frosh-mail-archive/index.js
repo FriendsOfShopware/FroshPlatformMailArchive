@@ -35,7 +35,8 @@ Shopware.Module.register('frosh-mail-archive', {
             group: 'plugins',
             to: 'frosh.mail.archive.list',
             icon: 'regular-envelope',
-            name: 'frosh-mail-archive.title'
+            name: 'frosh-mail-archive.title',
+            privilege: 'frosh_mail_archive:read'
         }
     ]
 });
