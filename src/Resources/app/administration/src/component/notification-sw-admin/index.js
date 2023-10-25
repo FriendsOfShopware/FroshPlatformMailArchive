@@ -2,9 +2,13 @@ const {Component, State} = Shopware;
 const {Criteria} = Shopware.Data;
 
 Component.override('sw-admin', {
-    inject: ['repositoryFactory'],
+    inject: ['repositoryFactory', 'acl'],
 
     async created() {
+        if (!this.acl.can('frosh_mail_archive:read')) {
+            return;
+        }
+
         const repository = this.repositoryFactory.create('frosh_mail_archive');
 
         const criteria = new Criteria();
