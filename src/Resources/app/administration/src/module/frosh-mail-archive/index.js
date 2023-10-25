@@ -14,13 +14,17 @@ Shopware.Module.register('frosh-mail-archive', {
     routes: {
         list: {
             component: 'frosh-mail-archive-index',
-            path: 'list'
+            path: 'list',
+            meta: {
+                privilege: 'frosh_mail_archive:read'
+            },
         },
         detail: {
             component: 'frosh-mail-archive-detail',
             path: 'detail/:id',
             meta: {
-                parentPath: 'frosh.mail.archive.list'
+                parentPath: 'frosh.mail.archive.list',
+                privilege: 'frosh_mail_archive:read'
             },
             props: {
                 default: ($route) => {
