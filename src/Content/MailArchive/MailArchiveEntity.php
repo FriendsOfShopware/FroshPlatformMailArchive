@@ -48,6 +48,8 @@ class MailArchiveEntity extends Entity
 
     protected ?MailArchiveEntity $sourceMail;
 
+    protected ?MailArchiveCollection $sourceMails = null;
+
 
     /**
      * @return array<string, string>
@@ -198,7 +200,7 @@ class MailArchiveEntity extends Entity
         return $this->sourceMailId;
     }
 
-    public function setSourceMailId(?string $sourceMailId): void
+    public function setSourceMailId(string $sourceMailId): void
     {
         $this->sourceMailId = $sourceMailId;
     }
@@ -208,7 +210,7 @@ class MailArchiveEntity extends Entity
         return $this->sourceMail;
     }
 
-    public function setSourceMail(?MailArchiveEntity $sourceMail): void
+    public function setSourceMail(MailArchiveEntity $sourceMail): void
     {
         $this->sourceMail = $sourceMail;
     }
@@ -223,4 +225,13 @@ class MailArchiveEntity extends Entity
         $this->transportState = $transportState;
     }
 
+    public function getSourceMails(): ?MailArchiveCollection
+    {
+        return $this->sourceMails;
+    }
+
+    public function setSourceMails(MailArchiveCollection $sourceMails): void
+    {
+        $this->sourceMails = $sourceMails;
+    }
 }
