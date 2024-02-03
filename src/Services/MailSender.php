@@ -1,9 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Services;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
+use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -19,22 +23,23 @@ use Symfony\Component\Mime\Email;
 #[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
 {
-
     public const TRANSPORT_STATE_PENDING = 'pending';
     public const TRANSPORT_STATE_FAILED = 'failed';
     public const TRANSPORT_STATE_SENT = 'sent';
 
     public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
 
+    /**
+     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     * @param EntityRepository<CustomerCollection> $customerRepository
+     */
     public function __construct(
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack       $requestStack,
         private readonly EntityRepository   $froshMailArchiveRepository,
         private readonly EntityRepository   $customerRepository,
         private readonly EmlFileManager     $emlFileManager
-    )
-    {
-    }
+    ) {}
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
@@ -74,7 +79,7 @@ class MailSender extends AbstractMailSender
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
-                'plainText' => nl2br((string)$message->getTextBody()),
+                'plainText' => nl2br((string) $message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),

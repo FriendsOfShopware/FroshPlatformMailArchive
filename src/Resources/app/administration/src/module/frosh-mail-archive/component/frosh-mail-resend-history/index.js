@@ -32,6 +32,9 @@ Shopware.Component.register('frosh-mail-resend-history', {
     computed: {
         mailArchiveRepository() {
             return this.repositoryFactory.create('frosh_mail_archive');
+        },
+        date() {
+            return Shopware.Filter.getByName('date');
         }
     },
     async created() {

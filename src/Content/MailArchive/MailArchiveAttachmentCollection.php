@@ -7,17 +7,17 @@ namespace Frosh\MailArchive\Content\MailArchive;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @extends EntityCollection<MailArchiveEntity>
+ * @extends EntityCollection<MailArchiveAttachmentEntity>
  */
-class MailArchiveCollection extends EntityCollection
+class MailArchiveAttachmentCollection extends EntityCollection
 {
     public function getApiAlias(): string
     {
-        return 'frosh_mail_archive_collection';
+        return 'frosh_mail_archive_attachment_collection';
     }
 
     protected function getExpectedClass(): string
     {
-        return MailArchiveEntity::class;
+        return MailArchiveAttachmentEntity::class;
     }
 }

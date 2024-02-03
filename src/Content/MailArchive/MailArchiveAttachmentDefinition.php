@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Content\MailArchive;
 
@@ -26,6 +28,11 @@ class MailArchiveAttachmentDefinition extends EntityDefinition
     public function getEntityClass(): string
     {
         return MailArchiveAttachmentEntity::class;
+    }
+
+    public function getCollectionClass(): string
+    {
+        return MailArchiveAttachmentCollection::class;
     }
 
     protected function defineFields(): FieldCollection

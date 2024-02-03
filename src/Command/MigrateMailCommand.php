@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Command;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
 use Frosh\MailArchive\MessageQueue\MigrateMailHandler;
 use Frosh\MailArchive\MessageQueue\MigrateMailMessage;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Common\IteratorFactory;
@@ -17,6 +20,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[AsCommand('frosh:mailarchive:migrate', 'Migrate mails from database to private filesystem')]
 class MigrateMailCommand extends Command
 {
+    /**
+     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     */
     public function __construct(
         private readonly MigrateMailHandler $migrateMailHandler,
         private readonly MessageBusInterface $messageBus,

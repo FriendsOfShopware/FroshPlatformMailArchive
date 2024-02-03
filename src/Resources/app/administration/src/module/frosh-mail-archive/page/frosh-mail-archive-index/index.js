@@ -60,6 +60,9 @@ Component.register('frosh-mail-archive-index', {
         },
         mailArchiveRepository() {
             return this.repositoryFactory.create('frosh_mail_archive');
+        },
+        date() {
+            return Shopware.Filter.getByName('date');
         }
     },
 

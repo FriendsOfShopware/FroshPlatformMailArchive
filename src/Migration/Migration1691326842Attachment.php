@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Migration;
 
@@ -29,7 +31,5 @@ class Migration1691326842Attachment extends MigrationStep
 ');
     }
 
-    public function updateDestructive(Connection $connection): void
-    {
-    }
+    public function updateDestructive(Connection $connection): void {}
 }

@@ -1,9 +1,9 @@
 <sw-page class="frosh-mail-archive-detail">
-    <template slot="smart-bar-header">
+    <template #smart-bar-header>
         <h2 v-if="archive">{{ archive.subject }}</h2>
     </template>
 
-    <template slot="smart-bar-actions">
+    <template #smart-bar-actions>
         <sw-button variant="ghost" v-if="archive && archive.customer" @click="openCustomer">
             {{ $tc('frosh-mail-archive.detail.toolbar.customer') }}
         </sw-button>
@@ -19,7 +19,7 @@
         </sw-button-process>
     </template>
 
-    <template slot="content">
+    <template #content>
         <sw-card-view v-if="archive">
             <sw-alert
                 v-if="archive.transportState === 'failed'"
@@ -73,7 +73,7 @@
                         </template>
                     </template>
 
-                    <template slot="actions" slot-scope="{ item }">
+                    <template #actions="{ item }">
                         <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
                                               @click="downloadAttachment(item.id)">
                             Download

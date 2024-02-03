@@ -1,8 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentEntity;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentCollection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
@@ -28,6 +32,10 @@ use ZBateson\MailMimeParser\Header\Part\AddressPart;
 #[Route(defaults: ['_routeScope' => ['api']])]
 class MailArchiveController extends AbstractController
 {
+    /**
+     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     * @param EntityRepository<MailArchiveAttachmentCollection> $froshMailArchiveAttachmentRepository
+     */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
         private readonly EntityRepository $froshMailArchiveAttachmentRepository,
@@ -35,8 +43,7 @@ class MailArchiveController extends AbstractController
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
     public function resend(Request $request): JsonResponse

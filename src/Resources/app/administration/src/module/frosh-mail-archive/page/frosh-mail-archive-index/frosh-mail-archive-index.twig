@@ -1,15 +1,15 @@
 <sw-page>
-    <template slot="search-bar">
+    <template #search-bar>
         <sw-search-bar
             initialSearchType="Mail Archive"
             :initialSearch="term"
             @search="onSearch">
         </sw-search-bar>
     </template>
-    <template slot="smart-bar-header">
+    <template #smart-bar-header>
         <h2>{{ $tc('frosh-mail-archive.title') }}</h2>
     </template>
-    <template slot="content">
+    <template #content>
         <sw-entity-listing
             v-if="items"
             :items="items"
@@ -17,14 +17,14 @@
             :isLoading="isLoading"
             :repository="mailArchiveRepository"
         >
-            <template slot="column-receiver" slot-scope="{ item }">
+            <template #column-receiver="{ item }">
                 <span v-for="(element, index) in item.receiver">
                     {{ element }} &lt;<a :href='`mailto:${index}`'>{{ index }}</a>&gt;
                 </span>
             </template>
 
-            <template slot="column-createdAt" slot-scope="{ item }">
-                {{ item.createdAt | date({hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+            <template #column-createdAt="{ item }">
+                {{ date(item.createdAt, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
                 <template v-if="item.transportState === 'failed'">
                     <sw-icon
                         name="regular-exclamation-triangle"
@@ -37,7 +37,7 @@
                 </template>
             </template>
 
-            <template slot="detail-action" slot-scope="{ item }">
+            <template #detail-action="{ item }">
                 <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
                                       :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
                     {{ $tc('frosh-mail-archive.list.columns.action') }}

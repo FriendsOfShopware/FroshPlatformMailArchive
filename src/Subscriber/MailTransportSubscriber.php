@@ -2,6 +2,7 @@
 
 namespace Frosh\MailArchive\Subscriber;
 
+use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -13,12 +14,12 @@ use Symfony\Component\Mime\RawMessage;
 
 class MailTransportSubscriber implements EventSubscriberInterface
 {
-
+    /**
+     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
-    )
-    {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {

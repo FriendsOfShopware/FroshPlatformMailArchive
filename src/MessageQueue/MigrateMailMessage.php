@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\MessageQueue;
 
@@ -11,6 +13,5 @@ class MigrateMailMessage implements AsyncMessageInterface
      */
     public function __construct(
         public readonly array $ids
-    ) {
-    }
+    ) {}
 }
