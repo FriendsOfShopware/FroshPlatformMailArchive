@@ -27,11 +27,6 @@ class MailArchiveEntity extends Entity
 
     protected ?string $transportState;
 
-    /**
-     * @deprecated will not be filled anyone. Use emlPath instead
-     */
-    protected ?string $eml;
-
     protected ?string $emlPath;
 
     protected ?string $salesChannelId;
@@ -111,22 +106,6 @@ class MailArchiveEntity extends Entity
     public function setHtmlText(?string $htmlText): void
     {
         $this->htmlText = $htmlText;
-    }
-
-    /**
-     * @deprecated Will not be filled anyone. Use emlPath instead
-     */
-    public function getEml(): ?string
-    {
-        return $this->eml;
-    }
-
-    /**
-     * @deprecated should not be filled anyone. Save on disk and use emlPath instead
-     */
-    public function setEml(?string $eml): void
-    {
-        $this->eml = $eml;
     }
 
     public function getEmlPath(): ?string

@@ -97,9 +97,6 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::notFound();
         }
 
-        // for backward compatibility
-        $content = $mailArchive->getEml();
-
         $emlPath = $mailArchive->getEmlPath();
         $isEml = !empty($emlPath) && \is_string($emlPath);
 
