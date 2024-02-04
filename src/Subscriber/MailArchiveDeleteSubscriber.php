@@ -37,22 +37,19 @@ class MailArchiveDeleteSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $mails = $this->froshMailArchiveRepository->search(new Criteria($ids), $event->getContext())->getEntities();
+        $criteria = new Criteria($ids);
+        $criteria->addFields(['emlPath']);
+        $mails = $this->froshMailArchiveRepository->search($criteria, $event->getContext())->getEntities();
 
-        $event->addSuccess(function () use ($mails) {
-            $this->deleteEmlFiles($mails);
-        });
-    }
-
-    private function deleteEmlFiles(MailArchiveCollection $mails): void
-    {
         foreach ($mails as $mail) {
             $emlPath = $mail->get('emlPath');
             if (empty($emlPath) || !\is_string($emlPath)) {
                 continue;
             }
 
-            $this->emlFileManager->deleteEmlFile($emlPath);
+            $event->addSuccess(function () use ($emlPath) {
+                $this->emlFileManager->deleteEmlFile($emlPath);
+            });
         }
     }
 }
