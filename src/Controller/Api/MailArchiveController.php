@@ -97,12 +97,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::notFound();
         }
 
-        $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath);
-
-        if ($isEml) {
-            $content = $this->emlFileManager->getEmlFileAsString($emlPath);
-        }
+        $content = $this->getContent($mailArchive->getEmlPath());
 
         if (empty($content)) {
             throw new \RuntimeException('Cannot read eml file or file is empty');
@@ -270,5 +265,14 @@ class MailArchiveController extends AbstractController
             '',
             \implode(' ', $fileNameParts)
         );
+    }
+
+    private function getContent(?string $emlPath): false|string
+    {
+        if (empty($emlPath) || !\is_string($emlPath)) {
+            return false;
+        }
+
+        return $this->emlFileManager->getEmlFileAsString($emlPath);
     }
 }
