@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Controller\Api;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentEntity;
-use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
-use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentCollection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\PlatformRequest;
@@ -33,8 +32,8 @@ use ZBateson\MailMimeParser\Header\Part\AddressPart;
 class MailArchiveController extends AbstractController
 {
     /**
-     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
-     * @param EntityRepository<MailArchiveAttachmentCollection> $froshMailArchiveAttachmentRepository
+     * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
+     * @param EntityRepository<EntityCollection<MailArchiveAttachmentEntity>> $froshMailArchiveAttachmentRepository
      */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,

@@ -37,11 +37,6 @@ class MailArchiveDefinition extends EntityDefinition
         return MailArchiveEntity::class;
     }
 
-    public function getCollectionClass(): string
-    {
-        return MailArchiveCollection::class;
-    }
-
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([

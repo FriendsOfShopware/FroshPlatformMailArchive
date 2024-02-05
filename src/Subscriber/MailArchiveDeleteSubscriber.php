@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Frosh\MailArchive\Subscriber;
 
-use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Services\EmlFileManager;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityDeleteEvent;
@@ -15,7 +16,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class MailArchiveDeleteSubscriber implements EventSubscriberInterface
 {
     /**
-     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
      */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,

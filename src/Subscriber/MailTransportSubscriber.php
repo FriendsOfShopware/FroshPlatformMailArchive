@@ -2,9 +2,10 @@
 
 namespace Frosh\MailArchive\Subscriber;
 
-use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
+use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Event\FailedMessageEvent;
@@ -15,7 +16,7 @@ use Symfony\Component\Mime\RawMessage;
 class MailTransportSubscriber implements EventSubscriberInterface
 {
     /**
-     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
      */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,

@@ -6,6 +6,7 @@ namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
@@ -37,13 +38,19 @@ class MailArchiveEntity extends Entity
 
     protected ?CustomerEntity $customer;
 
-    protected ?MailArchiveAttachmentCollection $attachments = null;
+    /**
+     * @var EntityCollection<MailArchiveAttachmentEntity>|null
+     */
+    protected ?EntityCollection $attachments = null;
 
     protected ?string $sourceMailId;
 
     protected ?MailArchiveEntity $sourceMail;
 
-    protected ?MailArchiveCollection $sourceMails = null;
+    /**
+     * @var EntityCollection<MailArchiveEntity>|null
+     */
+    protected ?EntityCollection $sourceMails = null;
 
 
     /**
@@ -158,12 +165,18 @@ class MailArchiveEntity extends Entity
         $this->customer = $customer;
     }
 
-    public function getAttachments(): ?MailArchiveAttachmentCollection
+    /**
+     * @return EntityCollection<MailArchiveAttachmentEntity>|null
+     */
+    public function getAttachments(): ?EntityCollection
     {
         return $this->attachments;
     }
 
-    public function setAttachments(MailArchiveAttachmentCollection $attachments): void
+    /**
+     * @param EntityCollection<MailArchiveAttachmentEntity> $attachments
+     */
+    public function setAttachments(EntityCollection $attachments): void
     {
         $this->attachments = $attachments;
     }
@@ -198,12 +211,18 @@ class MailArchiveEntity extends Entity
         $this->transportState = $transportState;
     }
 
-    public function getSourceMails(): ?MailArchiveCollection
+    /**
+     * @return EntityCollection<MailArchiveEntity>|null
+     */
+    public function getSourceMails(): ?EntityCollection
     {
         return $this->sourceMails;
     }
 
-    public function setSourceMails(MailArchiveCollection $sourceMails): void
+    /**
+     * @param EntityCollection<MailArchiveEntity> $sourceMails
+     */
+    public function setSourceMails(EntityCollection $sourceMails): void
     {
         $this->sourceMails = $sourceMails;
     }

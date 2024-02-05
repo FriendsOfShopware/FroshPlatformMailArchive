@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Frosh\MailArchive\Services;
 
-use Frosh\MailArchive\Content\MailArchive\MailArchiveCollection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -30,7 +30,7 @@ class MailSender extends AbstractMailSender
     public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
 
     /**
-     * @param EntityRepository<MailArchiveCollection> $froshMailArchiveRepository
+     * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
      * @param EntityRepository<CustomerCollection> $customerRepository
      */
     public function __construct(
