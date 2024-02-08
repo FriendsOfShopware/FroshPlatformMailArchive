@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Controller\Api;
 
@@ -9,6 +11,7 @@ use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\PlatformRequest;
@@ -28,6 +31,10 @@ use ZBateson\MailMimeParser\Header\Part\AddressPart;
 #[Route(defaults: ['_routeScope' => ['api']])]
 class MailArchiveController extends AbstractController
 {
+    /**
+     * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
+     * @param EntityRepository<EntityCollection<MailArchiveAttachmentEntity>> $froshMailArchiveAttachmentRepository
+     */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
         private readonly EntityRepository $froshMailArchiveAttachmentRepository,
@@ -35,8 +42,7 @@ class MailArchiveController extends AbstractController
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
     public function resend(Request $request): JsonResponse
@@ -90,15 +96,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::notFound();
         }
 
-        // for backward compatibility
-        $content = $mailArchive->getEml();
-
-        $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath);
-
-        if ($isEml) {
-            $content = $this->emlFileManager->getEmlFileAsString($emlPath);
-        }
+        $content = $this->getContent($mailArchive->getEmlPath());
 
         if (empty($content)) {
             throw new \RuntimeException('Cannot read eml file or file is empty');
@@ -266,5 +264,14 @@ class MailArchiveController extends AbstractController
             '',
             \implode(' ', $fileNameParts)
         );
+    }
+
+    private function getContent(?string $emlPath): false|string
+    {
+        if (empty($emlPath) || !\is_string($emlPath)) {
+            return false;
+        }
+
+        return $this->emlFileManager->getEmlFileAsString($emlPath);
     }
 }

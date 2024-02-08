@@ -1,12 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Task;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -14,6 +18,9 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler(handles: CleanupTask::class)]
 class CleanupTaskHandler extends ScheduledTaskHandler
 {
+    /**
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         private readonly SystemConfigService $configService,
@@ -62,7 +69,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         $deleteQuery = $this->connection->createQueryBuilder();
         $deleteQuery->delete(MailArchiveDefinition::ENTITY_NAME);
         $deleteQuery->where('id IN (:ids)');
-        $deleteQuery->setParameter('ids', \array_column($result, 'id'), Connection::PARAM_STR_ARRAY);
+        $deleteQuery->setParameter('ids', \array_column($result, 'id'), ArrayParameterType::STRING);
 
         $deleteQuery->executeQuery();
     }

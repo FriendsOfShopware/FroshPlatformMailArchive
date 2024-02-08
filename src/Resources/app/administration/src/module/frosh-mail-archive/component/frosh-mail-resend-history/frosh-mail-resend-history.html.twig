@@ -11,10 +11,10 @@
         >
             <template #column-createdAt="{item}">
                 <template v-if="currentMailId === item.id">
-                    {{ item.createdAt|date }} ({{ $tc('frosh-mail-archive.detail.resend-grid.currently-selected') }})
+                    {{ date(item.createdAt) }} ({{ $tc('frosh-mail-archive.detail.resend-grid.currently-selected') }})
                 </template>
                 <router-link v-else :to="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
-                    {{ item.createdAt|date }}
+                    {{ date(item.createdAt) }}
                 </router-link>
             </template>
             <template #column-success="{item}">

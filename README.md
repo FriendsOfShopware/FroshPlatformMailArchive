@@ -2,7 +2,7 @@
 
 ## Description
 
-This plugins adds an MailArchive to your Shopware-Administration stored in Database.
+This plugin adds an MailArchive to your Shopware-Administration stored in Database.
 
 ### Features
 

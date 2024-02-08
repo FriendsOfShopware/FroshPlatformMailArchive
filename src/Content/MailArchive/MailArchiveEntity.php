@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Content\MailArchive;
 
@@ -26,11 +28,6 @@ class MailArchiveEntity extends Entity
 
     protected ?string $transportState;
 
-    /**
-     * @deprecated will not be filled anyone. Use emlPath instead
-     */
-    protected ?string $eml;
-
     protected ?string $emlPath;
 
     protected ?string $salesChannelId;
@@ -41,14 +38,19 @@ class MailArchiveEntity extends Entity
 
     protected ?CustomerEntity $customer;
 
-    /** @var EntityCollection<MailArchiveAttachmentEntity>|null $attachments */
+    /**
+     * @var EntityCollection<MailArchiveAttachmentEntity>|null
+     */
     protected ?EntityCollection $attachments = null;
 
     protected ?string $sourceMailId;
 
     protected ?MailArchiveEntity $sourceMail;
 
-    protected ?MailArchiveCollection $sourceMails = null;
+    /**
+     * @var EntityCollection<MailArchiveEntity>|null
+     */
+    protected ?EntityCollection $sourceMails = null;
 
 
     /**
@@ -111,22 +113,6 @@ class MailArchiveEntity extends Entity
     public function setHtmlText(?string $htmlText): void
     {
         $this->htmlText = $htmlText;
-    }
-
-    /**
-     * @deprecated Will not be filled anyone. Use emlPath instead
-     */
-    public function getEml(): ?string
-    {
-        return $this->eml;
-    }
-
-    /**
-     * @deprecated should not be filled anyone. Save on disk and use emlPath instead
-     */
-    public function setEml(?string $eml): void
-    {
-        $this->eml = $eml;
     }
 
     public function getEmlPath(): ?string
@@ -225,12 +211,18 @@ class MailArchiveEntity extends Entity
         $this->transportState = $transportState;
     }
 
-    public function getSourceMails(): ?MailArchiveCollection
+    /**
+     * @return EntityCollection<MailArchiveEntity>|null
+     */
+    public function getSourceMails(): ?EntityCollection
     {
         return $this->sourceMails;
     }
 
-    public function setSourceMails(MailArchiveCollection $sourceMails): void
+    /**
+     * @param EntityCollection<MailArchiveEntity> $sourceMails
+     */
+    public function setSourceMails(EntityCollection $sourceMails): void
     {
         $this->sourceMails = $sourceMails;
     }

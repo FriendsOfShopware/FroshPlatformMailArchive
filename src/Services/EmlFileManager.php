@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Services;
 
@@ -10,9 +12,9 @@ use ZBateson\MailMimeParser\MailMimeParser;
 class EmlFileManager
 {
     public function __construct(
-        #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')] private readonly FilesystemOperator $filesystem
-    ) {
-    }
+        #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')]
+        private readonly FilesystemOperator $filesystem
+    ) {}
 
     /**
      * @return string Path to the eml file
