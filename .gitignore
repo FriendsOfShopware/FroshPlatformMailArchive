@@ -1,9 +1,0 @@
-/.settings/
-/.buildpath
-/.project
-frosh-platform-mail-archive.css
-frosh-platform-mail-archive.js
-/vendor/
-/src/Resources/public/
-/composer.lock
-.php-cs-fixer.cache
