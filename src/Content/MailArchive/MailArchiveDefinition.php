@@ -59,7 +59,7 @@ class MailArchiveDefinition extends EntityDefinition
 
             new FkField('source_mail_id', 'sourceMailId', self::class),
             new ManyToOneAssociationField('sourceMail', 'source_mail_id', self::class, 'id', false),
-            new OneToManyAssociationField('sourceMails', self::class, 'sourceMailId')
+            new OneToManyAssociationField('sourceMails', self::class, 'sourceMailId'),
         ]);
     }
 }

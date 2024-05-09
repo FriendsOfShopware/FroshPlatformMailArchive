@@ -13,7 +13,7 @@ class EmlFileManager
 {
     public function __construct(
         #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')]
-        private readonly FilesystemOperator $filesystem
+        private readonly FilesystemOperator $filesystem,
     ) {}
 
     /**

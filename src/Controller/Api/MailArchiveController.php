@@ -41,7 +41,7 @@ class MailArchiveController extends AbstractController
         #[Autowire(service: MailSender::class)]
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
-        private readonly EmlFileManager $emlFileManager
+        private readonly EmlFileManager $emlFileManager,
     ) {}
 
     #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
@@ -262,7 +262,7 @@ class MailArchiveController extends AbstractController
         return (string) preg_replace(
             '/[\x00-\x1F\x7F-\xFF]/',
             '',
-            \implode(' ', $fileNameParts)
+            \implode(' ', $fileNameParts),
         );
     }
 
