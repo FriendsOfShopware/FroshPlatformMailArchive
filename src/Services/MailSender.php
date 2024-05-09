@@ -38,7 +38,7 @@ class MailSender extends AbstractMailSender
         private readonly RequestStack       $requestStack,
         private readonly EntityRepository   $froshMailArchiveRepository,
         private readonly EntityRepository   $customerRepository,
-        private readonly EmlFileManager     $emlFileManager
+        private readonly EmlFileManager     $emlFileManager,
     ) {}
 
     public function send(Email $email, ?Envelope $envelope = null): void

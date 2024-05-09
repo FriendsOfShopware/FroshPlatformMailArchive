@@ -25,7 +25,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         EntityRepository $scheduledTaskRepository,
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
-        private readonly EmlFileManager $emlFileManager
+        private readonly EmlFileManager $emlFileManager,
     ) {
         parent::__construct($scheduledTaskRepository);
     }
@@ -48,8 +48,8 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         $query->where(
             $query->expr()->lte(
                 'created_at',
-                $query->createNamedParameter($time->format(Defaults::STORAGE_DATE_TIME_FORMAT))
-            )
+                $query->createNamedParameter($time->format(Defaults::STORAGE_DATE_TIME_FORMAT)),
+            ),
         );
 
         $result = $query->executeQuery()->fetchAllAssociative();

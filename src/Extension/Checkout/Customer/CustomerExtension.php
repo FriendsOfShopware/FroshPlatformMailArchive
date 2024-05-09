@@ -20,8 +20,8 @@ class CustomerExtension extends EntityExtension
             new OneToManyAssociationField(
                 'froshMailArchive',
                 MailArchiveDefinition::class,
-                'customerId'
-            )
+                'customerId',
+            ),
         );
     }
 

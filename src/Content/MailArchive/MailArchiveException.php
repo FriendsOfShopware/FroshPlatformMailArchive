@@ -18,7 +18,7 @@ class MailArchiveException extends HttpException
         return new self(
             Response::HTTP_NOT_FOUND,
             self::NOT_FOUND_CODE,
-            'Cannot find mail in archive'
+            'Cannot find mail in archive',
         );
     }
 
@@ -28,7 +28,7 @@ class MailArchiveException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::MISSING_PARAMETER_CODE,
             'Parameter "{{parameter}}" is missing',
-            ['parameter' => $parameter]
+            ['parameter' => $parameter],
         );
     }
 
@@ -38,7 +38,7 @@ class MailArchiveException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::UNREADABLE_EML_CODE,
             'Cannot read eml file at "{{path}}" or file is empty',
-            ['path' => $path]
+            ['path' => $path],
         );
     }
 }

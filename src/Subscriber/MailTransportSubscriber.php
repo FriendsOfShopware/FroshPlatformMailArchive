@@ -26,7 +26,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
     {
         return [
             FailedMessageEvent::class => 'onMessageFailed',
-            SentMessageEvent::class => 'onMessageSent'
+            SentMessageEvent::class => 'onMessageSent',
         ];
     }
 
@@ -50,7 +50,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
         if ($archiveId) {
             $this->froshMailArchiveRepository->update([[
                 'id' => $archiveId,
-                'transportState' => $newState
+                'transportState' => $newState,
             ]], $context);
         }
     }

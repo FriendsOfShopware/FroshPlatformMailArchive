@@ -20,8 +20,8 @@ class SalesChannelExtension extends EntityExtension
             new OneToManyAssociationField(
                 'froshMailArchive',
                 MailArchiveDefinition::class,
-                'salesChannelId'
-            )
+                'salesChannelId',
+            ),
         );
     }
 
