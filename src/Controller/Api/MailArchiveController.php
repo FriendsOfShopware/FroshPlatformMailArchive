@@ -204,6 +204,11 @@ class MailArchiveController extends AbstractController
             if ($header->getName() === 'Content-Type' && \in_array($headerValue, ['multipart/alternative', 'multipart/mixed'], true)) {
                 continue;
             }
+            
+            // Extract first item for return-path since Symfony/Mailer needs to be a string value here
+            if ($header->getName() === 'Return-Path') {
+                $headerValue = array_pop($headerValue);
+            }
 
             $email->getHeaders()->addHeader($header->getName(), $headerValue);
         }
