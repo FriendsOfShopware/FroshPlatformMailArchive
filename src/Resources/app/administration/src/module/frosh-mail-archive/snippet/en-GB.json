@@ -16,6 +16,8 @@
                     "search": "Search",
                     "customer": "Customer",
                     "salesChannel": "Sales Channel",
+                    "transportStateLabel": "Status",
+                    "transportStatePlaceholder": "Select status",
                     "resetFilter": "Reset filter"
                 }
             }

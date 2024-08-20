@@ -16,6 +16,8 @@
                     "search": "Suche",
                     "customer": "Kunde",
                     "salesChannel": "Verkaufskanal",
+                    "transportStateLabel": "Status",
+                    "transportStatePlaceholder": "Status auswählen",
                     "resetFilter": "Filter zurücksetzen"
                 }
             }

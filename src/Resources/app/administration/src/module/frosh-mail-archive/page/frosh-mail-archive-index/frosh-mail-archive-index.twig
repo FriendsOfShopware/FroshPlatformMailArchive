@@ -58,6 +58,17 @@
             <sw-text-field :label="$tc('frosh-mail-archive.list.sidebar.filters.search')"
                            v-model="filter.term"></sw-text-field>
 
+            <sw-single-select
+                    {% if VUE3 %}
+                    v-model:value="filter.transportState"
+                    {% else %}
+                    v-model="filter.transportState"
+                    {% endif %}
+                :label="$tc('frosh-mail-archive.list.sidebar.filters.transportStateLabel')"
+                :placeholder="$tc('frosh-mail-archive.list.sidebar.filters.transportStatePlaceholder')"
+                :options="transportStateOptions"
+            ></sw-single-select>
+
             <sw-entity-single-select
                 v-model="filter.salesChannelId"
                 :label="$tc('frosh-mail-archive.list.sidebar.filters.salesChannel')"

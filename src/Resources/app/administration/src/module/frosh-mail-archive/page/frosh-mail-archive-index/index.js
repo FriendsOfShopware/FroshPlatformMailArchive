@@ -27,6 +27,7 @@ Component.register('frosh-mail-archive-index', {
             isLoading: true,
             filter: {
                 salesChannelId: null,
+                transportState: null,
                 customerId: null,
                 term: null
             }
@@ -60,6 +61,22 @@ Component.register('frosh-mail-archive-index', {
         },
         mailArchiveRepository() {
             return this.repositoryFactory.create('frosh_mail_archive');
+        },
+        transportStateOptions() {
+            return [
+                {
+                    value: 'failed',
+                    label: this.$tc('frosh-mail-archive.detail.resend-grid.failed-label'),
+                },
+                {
+                    value: 'sent',
+                    label: this.$tc('frosh-mail-archive.detail.resend-grid.success-label'),
+                },
+                {
+                    value: 'pending',
+                    label: this.$tc('frosh-mail-archive.detail.resend-grid.pending-label'),
+                },
+            ];
         }
     },
 
@@ -69,6 +86,10 @@ Component.register('frosh-mail-archive-index', {
 
             const criteria = new Criteria(this.page, this.limit);
             criteria.setTerm(this.term);
+
+            if (this.filter.transportState) {
+                criteria.addFilter(Criteria.equals('transportState', this.filter.transportState));
+            }
 
             if (this.filter.salesChannelId) {
                 criteria.addFilter(Criteria.equals('salesChannelId', this.filter.salesChannelId));
