@@ -45,6 +45,12 @@ Component.register('frosh-mail-archive-index', {
                     routerLink: 'frosh.mail.archive.detail'
                 },
                 {
+                    property: 'transportState',
+                    dataIndex: 'transportState',
+                    label: 'frosh-mail-archive.list.columns.transportState',
+                    allowResize: true
+                },
+                {
                     property: 'subject',
                     dataIndex: 'subject',
                     label: 'frosh-mail-archive.list.columns.subject',
@@ -56,13 +62,14 @@ Component.register('frosh-mail-archive-index', {
                     dataIndex: 'receiver',
                     label: 'frosh-mail-archive.list.columns.receiver',
                     allowResize: true
-                }
+                },
             ]
         },
         mailArchiveRepository() {
             return this.repositoryFactory.create('frosh_mail_archive');
         },
         transportStateOptions() {
+            []
             return [
                 {
                     value: 'failed',
