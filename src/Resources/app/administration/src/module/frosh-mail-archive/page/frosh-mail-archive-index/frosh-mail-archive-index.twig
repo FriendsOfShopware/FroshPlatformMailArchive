@@ -28,20 +28,17 @@
             </template>
 
             <template slot="column-transportState" slot-scope="{ item }">
-                <template v-if="transportStateOptions.find(e => e.value = item.transportState)">
-                    {{ transportStateOptions.find(e => e.value = item.transportState).label }}
-                    <template v-if="item.transportState === 'failed'">
-                        <sw-icon
-                                name="regular-exclamation-triangle"
-                                color="#f00"
-                                class="frosh-mail-archive__data-grid-danger-icon"
-                                v-tooltip="{
-                                message: $tc('frosh-mail-archive.list.columns.transportFailed')
-                            }"
-                                small></sw-icon>
-                    </template>
+                <template v-if="item.transportState === 'failed'">
+                    <sw-icon
+                        name="regular-exclamation-triangle"
+                        color="#f00"
+                        class="frosh-mail-archive__data-grid-danger-icon"
+                        v-tooltip="{
+                            message: $tc('frosh-mail-archive.list.columns.transportFailed')
+                        }"
+                        small></sw-icon>
                 </template>
-                <template v-else>{{ item.transportState }}</template>
+                {{ translateState(item.transportState) }}
             </template>
 
             <template slot="detail-action" slot-scope="{ item }">

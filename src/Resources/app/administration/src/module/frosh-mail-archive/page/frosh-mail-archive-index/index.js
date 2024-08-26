@@ -69,25 +69,27 @@ Component.register('frosh-mail-archive-index', {
             return this.repositoryFactory.create('frosh_mail_archive');
         },
         transportStateOptions() {
-            []
             return [
                 {
                     value: 'failed',
-                    label: this.$tc('frosh-mail-archive.detail.resend-grid.failed-label'),
+                    label: this.translateState('failed'),
                 },
                 {
                     value: 'sent',
-                    label: this.$tc('frosh-mail-archive.detail.resend-grid.success-label'),
+                    label: this.translateState('sent'),
                 },
                 {
                     value: 'pending',
-                    label: this.$tc('frosh-mail-archive.detail.resend-grid.pending-label'),
+                    label: this.translateState('pending'),
                 },
             ];
         }
     },
 
     methods: {
+        translateState(state) {
+            return this.$tc(`frosh-mail-archive.state.${state}`);
+        },
         getList() {
             this.isLoading = true;
 
