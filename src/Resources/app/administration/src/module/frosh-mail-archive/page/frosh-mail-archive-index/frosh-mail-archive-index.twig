@@ -25,6 +25,9 @@
 
             <template #column-createdAt="{ item }">
                 {{ date(item.createdAt, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+            </template>
+
+            <template slot="column-transportState" slot-scope="{ item }">
                 <template v-if="item.transportState === 'failed'">
                     <sw-icon
                         name="regular-exclamation-triangle"
@@ -35,6 +38,7 @@
                         }"
                         small></sw-icon>
                 </template>
+                {{ translateState(item.transportState) }}
             </template>
 
             <template #detail-action="{ item }">
@@ -58,6 +62,13 @@
                              :title="$tc('frosh-mail-archive.list.sidebar.filter')">
                 <sw-text-field :label="$tc('frosh-mail-archive.list.sidebar.filters.search')"
                                v-model:value="filter.term"></sw-text-field>
+
+                <sw-single-select
+                    v-model:value="filter.transportState"
+                    :label="$tc('frosh-mail-archive.list.sidebar.filters.transportStateLabel')"
+                    :placeholder="$tc('frosh-mail-archive.list.sidebar.filters.transportStatePlaceholder')"
+                    :options="transportStateOptions"
+                ></sw-single-select>
 
                 <sw-entity-single-select
                     v-model:value="filter.salesChannelId"

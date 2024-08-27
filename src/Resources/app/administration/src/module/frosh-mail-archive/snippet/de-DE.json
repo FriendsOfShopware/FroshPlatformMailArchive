@@ -1,12 +1,19 @@
 {
     "frosh-mail-archive": {
         "title": "Mail Archiv",
+        "state": {
+            "pending": "ausstehend",
+            "sent": "gesendet",
+            "failed": "fehlgeschlagen",
+            "unknown": "unbekannt"
+        },
         "list": {
             "columns": {
                 "sentDate": "Versanddatum",
                 "subject": "Betreff",
                 "receiver": "Empfänger",
                 "action": "Anzeigen",
+                "transportState": "Status",
                 "transportFailed": "Versand der E-Mail fehlgeschlagen"
             },
             "sidebar": {
@@ -16,6 +23,8 @@
                     "search": "Suche",
                     "customer": "Kunde",
                     "salesChannel": "Verkaufskanal",
+                    "transportStateLabel": "Status",
+                    "transportStatePlaceholder": "Status auswählen",
                     "resetFilter": "Filter zurücksetzen"
                 }
             }
@@ -50,14 +59,10 @@
             },
             "resend-grid": {
               "navigate": "Anzeigen",
-              "success-label": "erfolgreich",
-              "failed-label": "fehlgeschlagen",
               "column-created-at": "Gesendet am",
               "column-state": "Status",
               "currently-selected": "ausgewählt",
-              "title": "Sendeverlauf",
-              "pending-label": "ausstehend",
-              "unknown-label": "unbekannt"
+              "title": "Sendeverlauf"
             }
         }
     }

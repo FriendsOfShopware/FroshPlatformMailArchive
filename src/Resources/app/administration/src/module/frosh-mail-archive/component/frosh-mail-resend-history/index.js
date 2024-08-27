@@ -43,6 +43,9 @@ Shopware.Component.register('frosh-mail-resend-history', {
         this.isLoading = false;
     },
     methods: {
+        translateState(state) {
+            return this.$tc(`frosh-mail-archive.state.${state}`);
+        },
         async loadMails() {
             const criteria = new Criteria();
             criteria.addFilter(Criteria.multi('OR', [
