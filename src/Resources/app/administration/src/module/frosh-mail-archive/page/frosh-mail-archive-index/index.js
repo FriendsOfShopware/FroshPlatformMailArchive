@@ -27,6 +27,7 @@ Component.register('frosh-mail-archive-index', {
             isLoading: true,
             filter: {
                 salesChannelId: null,
+                transportState: null,
                 customerId: null,
                 term: null
             }
@@ -44,6 +45,12 @@ Component.register('frosh-mail-archive-index', {
                     routerLink: 'frosh.mail.archive.detail'
                 },
                 {
+                    property: 'transportState',
+                    dataIndex: 'transportState',
+                    label: 'frosh-mail-archive.list.columns.transportState',
+                    allowResize: true
+                },
+                {
                     property: 'subject',
                     dataIndex: 'subject',
                     label: 'frosh-mail-archive.list.columns.subject',
@@ -55,20 +62,43 @@ Component.register('frosh-mail-archive-index', {
                     dataIndex: 'receiver',
                     label: 'frosh-mail-archive.list.columns.receiver',
                     allowResize: true
-                }
+                },
             ]
         },
         mailArchiveRepository() {
             return this.repositoryFactory.create('frosh_mail_archive');
+        },
+        transportStateOptions() {
+            return [
+                {
+                    value: 'failed',
+                    label: this.translateState('failed'),
+                },
+                {
+                    value: 'sent',
+                    label: this.translateState('sent'),
+                },
+                {
+                    value: 'pending',
+                    label: this.translateState('pending'),
+                },
+            ];
         }
     },
 
     methods: {
+        translateState(state) {
+            return this.$tc(`frosh-mail-archive.state.${state}`);
+        },
         getList() {
             this.isLoading = true;
 
             const criteria = new Criteria(this.page, this.limit);
             criteria.setTerm(this.term);
+
+            if (this.filter.transportState) {
+                criteria.addFilter(Criteria.equals('transportState', this.filter.transportState));
+            }
 
             if (this.filter.salesChannelId) {
                 criteria.addFilter(Criteria.equals('salesChannelId', this.filter.salesChannelId));
