@@ -1,6 +1,12 @@
 {
     "frosh-mail-archive": {
         "title": "Mail Archiv",
+        "state": {
+            "pending": "ausstehend",
+            "sent": "gesendet",
+            "failed": "fehlgeschlagen",
+            "unknown": "unbekannt"
+        },
         "list": {
             "columns": {
                 "sentDate": "Versanddatum",
@@ -53,14 +59,10 @@
             },
             "resend-grid": {
               "navigate": "Anzeigen",
-              "success-label": "erfolgreich",
-              "failed-label": "fehlgeschlagen",
               "column-created-at": "Gesendet am",
               "column-state": "Status",
               "currently-selected": "ausgewählt",
-              "title": "Sendeverlauf",
-              "pending-label": "ausstehend",
-              "unknown-label": "unbekannt"
+              "title": "Sendeverlauf"
             }
         },
         "missingMigration": {
