@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Services;
 
@@ -9,7 +11,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\PlatformRequest;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
@@ -68,22 +73,43 @@ class MailSender extends AbstractMailSender
         }
 
         $context = Context::createDefaultContext();
-        $this->froshMailArchiveRepository->create([
-            [
-                'id' => $id,
-                'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
-                'receiver' => $this->convertAddress($message->getTo()),
-                'subject' => $message->getSubject(),
-                'plainText' => nl2br((string)$message->getTextBody()),
-                'htmlText' => $message->getHtmlBody(),
-                'emlPath' => $emlPath,
-                'salesChannelId' => $this->getCurrentSalesChannelId(),
-                'customerId' => $this->getCustomerIdByMail($message->getTo()),
-                'attachments' => $attachments,
-                'sourceMailId' => $this->getSourceMailId($context),
-                'transportState' => self::TRANSPORT_STATE_PENDING,
-            ],
-        ], $context);
+        $parentId = $this->getParentId($context);
+
+        if ($parentId !== null) {
+            $criteria = (new Criteria())->addFilter(
+                new OrFilter([
+                    new EqualsFilter('id', $parentId),
+                    new EqualsFilter('parentId', $parentId),
+                ])
+            );
+            /** @var array<string> $ids */
+            $ids = $this->froshMailArchiveRepository->searchIds($criteria, $context)->getIds();
+
+            $payload = array_map(fn ($id) => [
+                'id' => (string) $id,
+                'historyLastMail' => false,
+            ], $ids);
+
+            $this->froshMailArchiveRepository->update($payload, $context);
+        }
+
+        $payload = [
+            'id' => $id,
+            'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
+            'receiver' => $this->convertAddress($message->getTo()),
+            'subject' => $message->getSubject(),
+            'plainText' => nl2br((string) $message->getTextBody()),
+            'htmlText' => $message->getHtmlBody(),
+            'emlPath' => $emlPath,
+            'salesChannelId' => $this->getCurrentSalesChannelId(),
+            'customerId' => $this->getCustomerIdByMail($message->getTo()),
+            'attachments' => $attachments,
+            'parentId' => $parentId,
+            'historyLastMail' => true,
+            'transportState' => self::TRANSPORT_STATE_PENDING,
+        ];
+
+        $this->froshMailArchiveRepository->create([$payload], $context);
     }
 
     private function getCurrentSalesChannelId(): ?string
@@ -92,7 +118,7 @@ class MailSender extends AbstractMailSender
             return null;
         }
 
-        $salesChannelId = $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
+        $salesChannelId = $this->requestStack->getMainRequest()->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID);
         if (!\is_string($salesChannelId)) {
             return null;
         }
@@ -100,7 +126,7 @@ class MailSender extends AbstractMailSender
         return $salesChannelId;
     }
 
-    private function getSourceMailId(Context $context): ?string
+    private function getParentId(Context $context): ?string
     {
         $request = $this->requestStack->getMainRequest();
         if ($request === null) {
@@ -112,17 +138,17 @@ class MailSender extends AbstractMailSender
             return null;
         }
 
-        $sourceMailId = $request->request->get('mailId');
+        $mailId = $request->request->get('mailId');
 
-        if (!\is_string($sourceMailId)) {
+        if (!\is_string($mailId)) {
             throw MailArchiveException::parameterMissing('mailId in request');
         }
 
-        /** @var MailArchiveEntity|null $sourceMail */
-        $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
+        /** @var MailArchiveEntity|null $mail */
+        $mail = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
 
-        // In case the source Mail is a resend, we want to save the original source mail id
-        return $sourceMail?->getSourceMailId() ?? $sourceMailId;
+        // In case the Mail is a resend, we want to save the original mail id
+        return $mail?->getParentId() ?? $mailId;
     }
 
     /**
@@ -130,13 +156,10 @@ class MailSender extends AbstractMailSender
      */
     private function getCustomerIdByMail(array $to): ?string
     {
-        $criteria = new Criteria();
+        $addresses = \array_map(fn (Address $mail) => $mail->getAddress(), $to);
 
-        $addresses = \array_map(function (Address $mail) {
-            return $mail->getAddress();
-        }, $to);
-
-        $criteria->addFilter(new EqualsAnyFilter('email', $addresses));
+        $criteria = (new Criteria())
+            ->addFilter(new EqualsAnyFilter('email', $addresses));
 
         return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
     }

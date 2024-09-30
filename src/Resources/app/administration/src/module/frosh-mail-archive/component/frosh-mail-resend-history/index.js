@@ -3,7 +3,7 @@ import template from './frosh-mail-resend-history.html.twig';
 
 Shopware.Component.register('frosh-mail-resend-history', {
     props: {
-        sourceMailId: {
+        parentMailId: {
             required: true,
             type: String
         },
@@ -46,8 +46,8 @@ Shopware.Component.register('frosh-mail-resend-history', {
         async loadMails() {
             const criteria = new Criteria();
             criteria.addFilter(Criteria.multi('OR', [
-                Criteria.equals('id', this.sourceMailId),
-                Criteria.equals('sourceMailId', this.sourceMailId)
+                Criteria.equals('id', this.parentMailId),
+                Criteria.equals('parentId', this.parentMailId)
             ]));
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 

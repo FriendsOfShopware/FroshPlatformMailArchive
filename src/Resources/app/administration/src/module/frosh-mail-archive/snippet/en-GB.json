@@ -25,6 +25,8 @@
                     "salesChannel": "Sales Channel",
                     "transportStateLabel": "State",
                     "transportStatePlaceholder": "Select state",
+                    "onlyLastMailInHistoryLabel": "Consider (re)send history",
+                    "onlyLastMailInHistoryHelpText": "If active, only the last email in the (re)send history is taken into consideration",
                     "resetFilter": "Reset filter"
                 }
             }

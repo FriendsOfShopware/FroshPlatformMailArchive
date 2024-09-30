@@ -25,6 +25,8 @@
                     "salesChannel": "Verkaufskanal",
                     "transportStateLabel": "Status",
                     "transportStatePlaceholder": "Status auswählen",
+                    "onlyLastMailInHistoryLabel": "Sendeverlauf berücksichtigen",
+                    "onlyLastMailInHistoryHelpText": "Wenn aktiv, wird nur die letzte Mail des Sendungsverlaufs berücksichtigt",
                     "resetFilter": "Filter zurücksetzen"
                 }
             }
