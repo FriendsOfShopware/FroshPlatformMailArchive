@@ -6,9 +6,10 @@ import './frosh-mail-archive-index.scss';
 
 Component.register('frosh-mail-archive-index', {
     template,
-    inject: ['repositoryFactory'],
+    inject: ['repositoryFactory', 'froshMailArchiveService'],
     mixins: [
         Mixin.getByName('listing'),
+        Mixin.getByName('notification'),
     ],
 
     metaInfo() {
@@ -30,7 +31,8 @@ Component.register('frosh-mail-archive-index', {
                 transportState: null,
                 customerId: null,
                 term: null
-            }
+            },
+            selectedItems: {},
         }
     },
 
@@ -90,6 +92,7 @@ Component.register('frosh-mail-archive-index', {
         translateState(state) {
             return this.$tc(`frosh-mail-archive.state.${state}`);
         },
+
         getList() {
             this.isLoading = true;
 
@@ -120,6 +123,45 @@ Component.register('frosh-mail-archive-index', {
                     this.total = searchResult.total;
                     this.isLoading = false;
                 });
+        },
+
+        resendMail(item) {
+            this.isLoading = true;
+
+            this.froshMailArchiveService.resendMail(item.id).then(async () => {
+                this.createNotificationSuccess({
+                    title: this.$tc('frosh-mail-archive.detail.resend-success-notification.title'),
+                    message: this.$tc('frosh-mail-archive.detail.resend-success-notification.message')
+                });
+                await this.getList();
+            }).catch(() => {
+                this.createNotificationError({
+                    title: this.$tc('frosh-mail-archive.detail.resend-error-notification.title'),
+                    message: this.$tc('frosh-mail-archive.detail.resend-error-notification.message')
+                });
+            }).finally(() => {
+                this.isLoading = false;
+            });
+        },
+
+        onBulkResendClick() {
+            const ids = Object.keys(this.selectedItems);
+            if (ids.length === 0) {
+                return
+            }
+            this.isLoading = true;
+
+            Promise.all(ids.map((id) => {
+                return this.froshMailArchiveService.resendMail(id);
+            })).finally(async () => {
+                this.$refs.table?.resetSelection();
+                await this.getList();
+                this.isLoading = false;
+            });
+        },
+
+        onSelectionChanged(selection) {
+            this.selectedItems = selection;
         },
 
         resetFilter() {
