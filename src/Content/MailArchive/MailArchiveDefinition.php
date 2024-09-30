@@ -4,6 +4,8 @@ namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ChildrenAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
@@ -15,6 +17,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ParentAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ParentFkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
@@ -39,6 +43,11 @@ class MailArchiveDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+
+            new ParentFkField(self::class),
+            new ParentAssociationField(self::class, 'id'),
+            new ChildrenAssociationField(self::class),
+
             (new JsonField('sender', 'sender'))->addFlags(new Required()),
             (new JsonField('receiver', 'receiver'))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
             (new StringField('subject', 'subject', 998))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
@@ -47,6 +56,7 @@ class MailArchiveDefinition extends EntityDefinition
             (new LongTextField('eml', 'eml'))->addFlags(new AllowHtml()),
             (new StringField('eml_path', 'emlPath', 2048)),
             (new StringField('transport_state', 'transportState'))->addFlags(new Required()),
+            new BoolField('history_last_mail', 'historyLastMail'),
 
             (new OneToManyAssociationField('attachments', MailArchiveAttachmentDefinition::class, 'mail_archive_id', 'id'))->addFlags(new CascadeDelete()),
 
@@ -55,10 +65,6 @@ class MailArchiveDefinition extends EntityDefinition
 
             new FkField('customerId', 'customerId', CustomerDefinition::class),
             new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', true),
-
-            new FkField('source_mail_id', 'sourceMailId', self::class),
-            new ManyToOneAssociationField('sourceMail', 'source_mail_id', self::class, 'id', false),
-            new OneToManyAssociationField('sourceMails', self::class, 'sourceMailId')
         ]);
     }
 }
