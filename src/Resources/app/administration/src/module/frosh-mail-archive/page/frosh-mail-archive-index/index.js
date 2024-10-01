@@ -29,8 +29,9 @@ Component.register('frosh-mail-archive-index', {
                 salesChannelId: null,
                 transportState: null,
                 customerId: null,
-                term: null
-            }
+                term: null,
+                onlyLastMailInHistory: false,
+            },
         }
     },
 
@@ -90,6 +91,7 @@ Component.register('frosh-mail-archive-index', {
         translateState(state) {
             return this.$tc(`frosh-mail-archive.state.${state}`);
         },
+
         getList() {
             this.isLoading = true;
 
@@ -98,6 +100,10 @@ Component.register('frosh-mail-archive-index', {
 
             if (this.filter.transportState) {
                 criteria.addFilter(Criteria.equals('transportState', this.filter.transportState));
+            }
+
+            if (this.filter.onlyLastMailInHistory) {
+                criteria.addFilter(Criteria.equals('historyLastMail', true));
             }
 
             if (this.filter.salesChannelId) {

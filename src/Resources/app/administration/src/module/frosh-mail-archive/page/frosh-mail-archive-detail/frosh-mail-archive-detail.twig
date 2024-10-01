@@ -44,8 +44,13 @@
                                v-if="archive.salesChannel" :disabled="true"
                                v-model="archive.salesChannel.name"></sw-text-field>
             </sw-card>
-            <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id"
-                                       :sourceMailId="archive.sourceMailId ?? archive.id"/>
+
+            <frosh-mail-resend-history
+                    :key="resendKey"
+                    :currentMailId="archive.id"
+                    :parentMailId="archive.parentId ?? archive.id"
+            />
+
             <sw-card
                 :title="$tc('frosh-mail-archive.detail.content.title')"
                 position-identifier="frosh-mail-archive-content"

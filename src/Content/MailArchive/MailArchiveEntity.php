@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Content\MailArchive;
 
@@ -26,6 +28,8 @@ class MailArchiveEntity extends Entity
 
     protected ?string $transportState;
 
+    protected bool $historyLastMail;
+
     /**
      * @deprecated will not be filled anyone. Use emlPath instead
      */
@@ -44,11 +48,11 @@ class MailArchiveEntity extends Entity
     /** @var EntityCollection<MailArchiveAttachmentEntity>|null $attachments */
     protected ?EntityCollection $attachments = null;
 
-    protected ?string $sourceMailId;
+    protected ?string $parentId;
 
-    protected ?MailArchiveEntity $sourceMail;
+    protected ?self $parent = null;
 
-    protected ?MailArchiveCollection $sourceMails = null;
+    protected ?MailArchiveCollection $children = null;
 
 
     /**
@@ -195,25 +199,6 @@ class MailArchiveEntity extends Entity
         $this->attachments = $attachments;
     }
 
-    public function getSourceMailId(): ?string
-    {
-        return $this->sourceMailId;
-    }
-
-    public function setSourceMailId(string $sourceMailId): void
-    {
-        $this->sourceMailId = $sourceMailId;
-    }
-
-    public function getSourceMail(): ?MailArchiveEntity
-    {
-        return $this->sourceMail;
-    }
-
-    public function setSourceMail(MailArchiveEntity $sourceMail): void
-    {
-        $this->sourceMail = $sourceMail;
-    }
 
     public function getTransportState(): ?string
     {
@@ -225,13 +210,43 @@ class MailArchiveEntity extends Entity
         $this->transportState = $transportState;
     }
 
-    public function getSourceMails(): ?MailArchiveCollection
+    public function isHistoryLastMail(): bool
     {
-        return $this->sourceMails;
+        return $this->historyLastMail;
     }
 
-    public function setSourceMails(MailArchiveCollection $sourceMails): void
+    public function setHistoryLastMail(bool $historyLastMail): void
     {
-        $this->sourceMails = $sourceMails;
+        $this->historyLastMail = $historyLastMail;
+    }
+
+    public function getParentId(): ?string
+    {
+        return $this->parentId;
+    }
+
+    public function setParentId(?string $parentId): void
+    {
+        $this->parentId = $parentId;
+    }
+
+    public function getParent(): ?MailArchiveEntity
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?MailArchiveEntity $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    public function getChildren(): ?MailArchiveCollection
+    {
+        return $this->children;
+    }
+
+    public function setChildren(MailArchiveCollection $children): void
+    {
+        $this->children = $children;
     }
 }
