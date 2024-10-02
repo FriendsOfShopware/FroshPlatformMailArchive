@@ -6,9 +6,11 @@
             @search="onSearch">
         </sw-search-bar>
     </template>
+
     <template slot="smart-bar-header">
         <h2>{{ $tc('frosh-mail-archive.title') }}</h2>
     </template>
+
     <template slot="content">
         <sw-entity-listing
             v-if="items"
@@ -50,53 +52,55 @@
         </sw-entity-listing>
     </template>
 
-    <sw-sidebar slot="sidebar">
-        <sw-sidebar-item
-            icon="regular-undo"
-            :title="$tc('frosh-mail-archive.list.sidebar.refresh')"
-            @click="onRefresh">
-        </sw-sidebar-item>
+    <template slot="sidebar">
+        <sw-sidebar>
+            <sw-sidebar-item
+                    icon="regular-undo"
+                    :title="$tc('frosh-mail-archive.list.sidebar.refresh')"
+                    @click="onRefresh">
+            </sw-sidebar-item>
 
-        <sw-sidebar-item icon="regular-filter"
-                         :title="$tc('frosh-mail-archive.list.sidebar.filter')">
-            <sw-text-field :label="$tc('frosh-mail-archive.list.sidebar.filters.search')"
-                           v-model="filter.term"></sw-text-field>
+            <sw-sidebar-item icon="regular-filter"
+                             :title="$tc('frosh-mail-archive.list.sidebar.filter')">
+                <sw-text-field :label="$tc('frosh-mail-archive.list.sidebar.filters.search')"
+                               v-model="filter.term"></sw-text-field>
 
-            <sw-single-select
-                    {% if VUE3 %}
-                    v-model:value="filter.transportState"
-                    {% else %}
-                    v-model="filter.transportState"
-                    {% endif %}
-                :label="$tc('frosh-mail-archive.list.sidebar.filters.transportStateLabel')"
-                :placeholder="$tc('frosh-mail-archive.list.sidebar.filters.transportStatePlaceholder')"
-                :options="transportStateOptions"
-            ></sw-single-select>
+                <sw-single-select
+                        {% if VUE3 %}
+                            v-model:value="filter.transportState"
+                        {% else %}
+                            v-model="filter.transportState"
+                        {% endif %}
+                        :label="$tc('frosh-mail-archive.list.sidebar.filters.transportStateLabel')"
+                        :placeholder="$tc('frosh-mail-archive.list.sidebar.filters.transportStatePlaceholder')"
+                        :options="transportStateOptions"
+                ></sw-single-select>
 
-            <sw-entity-single-select
-                v-model="filter.salesChannelId"
-                :label="$tc('frosh-mail-archive.list.sidebar.filters.salesChannel')"
-                entity="sales_channel"
-            ></sw-entity-single-select>
+                <sw-entity-single-select
+                        v-model="filter.salesChannelId"
+                        :label="$tc('frosh-mail-archive.list.sidebar.filters.salesChannel')"
+                        entity="sales_channel"
+                ></sw-entity-single-select>
 
-            <sw-entity-single-select
-                v-model="filter.customerId"
-                :label="$tc('frosh-mail-archive.list.sidebar.filters.customer')"
-                entity="customer"
-            >
-                <template #result-label-property="{ item, index, searchTerm, getKey }">
-                    <sw-highlight-text
-                        :text="`${getKey(item, 'firstName')} ${getKey(item, 'lastName')}${getKey(item, 'lastName') ? ' (' + getKey(item, 'lastName') + ')' : ''}`"
-                        :searchTerm="searchTerm">
-                    </sw-highlight-text>
-                </template>
-            </sw-entity-single-select>
+                <sw-entity-single-select
+                        v-model="filter.customerId"
+                        :label="$tc('frosh-mail-archive.list.sidebar.filters.customer')"
+                        entity="customer"
+                >
+                    <template #result-label-property="{ item, index, searchTerm, getKey }">
+                        <sw-highlight-text
+                                :text="`${getKey(item, 'firstName')} ${getKey(item, 'lastName')}${getKey(item, 'lastName') ? ' (' + getKey(item, 'lastName') + ')' : ''}`"
+                                :searchTerm="searchTerm">
+                        </sw-highlight-text>
+                    </template>
+                </sw-entity-single-select>
 
-            <sw-button
-                variant="ghost"
-                @click="resetFilter">
-                {{ $tc('frosh-mail-archive.list.sidebar.filters.resetFilter') }}
-            </sw-button>
-        </sw-sidebar-item>
-    </sw-sidebar>
+                <sw-button
+                        variant="ghost"
+                        @click="resetFilter">
+                    {{ $tc('frosh-mail-archive.list.sidebar.filters.resetFilter') }}
+                </sw-button>
+            </sw-sidebar-item>
+        </sw-sidebar>
+    </template>
 </sw-page>
