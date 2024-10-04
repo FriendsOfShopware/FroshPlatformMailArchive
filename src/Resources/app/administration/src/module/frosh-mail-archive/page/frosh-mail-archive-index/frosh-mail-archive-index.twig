@@ -11,11 +11,13 @@
     </template>
     <template #content>
         <sw-entity-listing
+            ref="table"
             v-if="items"
             :items="items"
             :columns="columns"
             :isLoading="isLoading"
             :repository="mailArchiveRepository"
+            @selection-change="onSelectionChanged"
         >
             <template #column-receiver="{ item }">
                 <span v-for="(element, index) in item.receiver">
@@ -28,24 +30,62 @@
             </template>
 
             <template #column-transportState="{ item }">
+
+                {{ translateState(item.transportState) }}
                 <template v-if="item.transportState === 'failed'">
                     <sw-icon
-                        name="regular-exclamation-triangle"
-                        color="#f00"
-                        class="frosh-mail-archive__data-grid-danger-icon"
-                        v-tooltip="{
-                            message: $tc('frosh-mail-archive.list.columns.transportFailed')
-                        }"
-                        small></sw-icon>
+                            name="regular-exclamation-triangle"
+                            color="#f00"
+                            class="frosh-mail-archive__data-grid-danger-icon"
+                            v-tooltip="{ message: $tc('frosh-mail-archive.list.columns.transportFailed') }"
+                            small
+                    ></sw-icon>
+
+                    <sw-button
+                            square
+                            size="small"
+                            variant="context"
+                            @click="resendMail(item)"
+                    >
+                        <sw-icon
+                                name="regular-undo"
+                                class="frosh-mail-archive__data-grid-danger-icon"
+                                v-tooltip="{ message: $tc('frosh-mail-archive.list.actions.resendAction') }"
+                                small
+                        ></sw-icon>
+                    </sw-button>
+
                 </template>
-                {{ translateState(item.transportState) }}
             </template>
 
             <template #detail-action="{ item }">
                 <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
                                       :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
-                    {{ $tc('frosh-mail-archive.list.columns.action') }}
+                    {{ $tc('frosh-mail-archive.list.actions.showAction') }}
                 </sw-context-menu-item>
+
+                <sw-context-menu-item class="sw-entity-listing__context-menu-show-action" @click="resendMail(item)">
+                    {{ $tc('frosh-mail-archive.list.actions.resendAction') }}
+                </sw-context-menu-item>
+
+            </template>
+
+            <template #bulk-additional="{ selectionCount }">
+                <a
+                        v-if="selectionCount > 0"
+                        class="link link-primary"
+                        @click="onBulkResendClick"
+                >
+                    {{ $tc('frosh-mail-archive.list.actions.bulkResendAction') }}
+
+                    <sw-icon
+                            name="regular-exclamation-triangle"
+                            color="orange"
+                            class="frosh-mail-archive__data-grid-warning-icon"
+                            v-tooltip="{ message: $tc('frosh-mail-archive.list.actions.bulkResendWarningTooltip') }"
+                            small
+                    ></sw-icon>
+                </a>
             </template>
         </sw-entity-listing>
     </template>
