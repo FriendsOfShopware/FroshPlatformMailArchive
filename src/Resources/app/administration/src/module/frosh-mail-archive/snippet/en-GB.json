@@ -8,11 +8,16 @@
             "unknown": "unknown"
         },
         "list": {
+            "actions": {
+                "bulkResendAction": "Resend",
+                "bulkResendWarningTooltip": "Attention: Some mail providers have a limit on how many emails can be sent at the same time.",
+                "resendAction": "Resend mail",
+                "showAction": "Show"
+            },
             "columns": {
                 "sentDate": "Sent date",
                 "subject": "Subject",
                 "receiver": "Recipients",
-                "action": "Show",
                 "transportState": "State",
                 "transportFailed": "Mail delivery failed."
             },
