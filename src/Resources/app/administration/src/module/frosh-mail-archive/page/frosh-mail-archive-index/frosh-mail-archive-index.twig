@@ -27,7 +27,7 @@
                 {{ date(item.createdAt, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
             </template>
 
-            <template slot="column-transportState" slot-scope="{ item }">
+            <template #column-transportState="{ item }">
                 <template v-if="item.transportState === 'failed'">
                     <sw-icon
                         name="regular-exclamation-triangle"
