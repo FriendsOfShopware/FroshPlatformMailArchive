@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\PlatformRequest;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
@@ -62,16 +63,6 @@ class MailSender extends AbstractMailSender
     {
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
-        $attachments = [];
-
-        foreach ($message->getAttachments() as $attachment) {
-            $attachments[] = [
-                'fileName' => $attachment->getFilename(),
-                'contentType' => $attachment->getContentType(),
-                'fileSize' => \strlen($attachment->bodyToString()),
-            ];
-        }
-
         $context = Context::createDefaultContext();
         $this->froshMailArchiveRepository->create([
             [
@@ -79,12 +70,11 @@ class MailSender extends AbstractMailSender
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
-                'plainText' => nl2br((string) $message->getTextBody()),
+                'plainText' => nl2br((string)$message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
                 'customerId' => $this->getCustomerIdByMail($message->getTo()),
-                'attachments' => $attachments,
                 'sourceMailId' => $this->getSourceMailId($context),
                 'transportState' => self::TRANSPORT_STATE_PENDING,
             ],
@@ -97,7 +87,7 @@ class MailSender extends AbstractMailSender
             return null;
         }
 
-        $salesChannelId = $this->requestStack->getMainRequest()->attributes->get('sw-sales-channel-id');
+        $salesChannelId = $this->requestStack->getMainRequest()->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID);
         if (!\is_string($salesChannelId)) {
             return null;
         }

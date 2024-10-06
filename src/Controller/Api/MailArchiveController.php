@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -36,16 +37,18 @@ class MailArchiveController extends AbstractController
      * @param EntityRepository<EntityCollection<MailArchiveAttachmentEntity>> $froshMailArchiveAttachmentRepository
      */
     public function __construct(
-        private readonly EntityRepository $froshMailArchiveRepository,
-        private readonly EntityRepository $froshMailArchiveAttachmentRepository,
+        private readonly EntityRepository   $froshMailArchiveRepository,
+        private readonly EntityRepository   $froshMailArchiveAttachmentRepository,
         #[Autowire(service: MailSender::class)]
         private readonly AbstractMailSender $mailSender,
-        private readonly RequestStack $requestStack,
-        private readonly EmlFileManager $emlFileManager,
-    ) {}
+        private readonly RequestStack       $requestStack,
+        private readonly EmlFileManager     $emlFileManager,
+    )
+    {
+    }
 
     #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
-    public function resend(Request $request): JsonResponse
+    public function resend(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
 
@@ -53,7 +56,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
@@ -83,7 +86,7 @@ class MailArchiveController extends AbstractController
     }
 
     #[Route(path: '/api/_action/frosh-mail-archive/content')]
-    public function download(Request $request): JsonResponse
+    public function download(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
 
@@ -91,7 +94,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), Context::createDefaultContext())->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
@@ -120,17 +123,17 @@ class MailArchiveController extends AbstractController
     }
 
     #[Route(path: '/api/_action/frosh-mail-archive/attachment', name: 'api.action.frosh-mail-archive.attachment')]
-    public function attachment(Request $request): JsonResponse
+    public function attachment(Request $request, Context $context): JsonResponse
     {
-        $attachmentId = $request->request->get('attachmentId');
-        if (!\is_string($attachmentId)) {
-            throw MailArchiveException::parameterMissing('attachmentId');
+        $attachmentId = $request->request->getString('attachmentId');
+        if (!Uuid::isValid($attachmentId)) {
+            throw MailArchiveException::parameterInvalidUuid('attachmentId');
         }
 
         $criteria = new Criteria([$attachmentId]);
         $criteria->addAssociation('mailArchive');
 
-        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, Context::createDefaultContext())->first();
+        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, $context)->first();
         if (!$attachment instanceof MailArchiveAttachmentEntity) {
             throw MailArchiveException::notFound();
         }
@@ -264,7 +267,7 @@ class MailArchiveController extends AbstractController
      */
     private function getFileName(array $fileNameParts): string
     {
-        return (string) preg_replace(
+        return (string)preg_replace(
             '/[\x00-\x1F\x7F-\xFF]/',
             '',
             \implode(' ', $fileNameParts),
