@@ -23,9 +23,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
         private readonly EmlFileManager   $emlFileManager,
-    )
-    {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -66,7 +64,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
         $this->froshMailArchiveRepository->update([[
             'id' => $archiveId,
             'transportState' => $newState,
-            'attachments' => $attachments
+            'attachments' => $attachments,
         ]], $context);
 
     }
@@ -79,7 +77,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
             return [
                 'fileName' => $attachment->getFilename(),
                 'contentType' => $attachment->getContentType(),
-                'fileSize' => strlen($attachment->getBody())
+                'fileSize' => strlen($attachment->getBody()),
             ];
         }, $attachments);
     }
