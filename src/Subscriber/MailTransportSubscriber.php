@@ -51,7 +51,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $context = Context::createCLIContext();
+        $context = Context::createDefaultContext();
         $archiveId = $this->getArchiveIdByMessage($message);
 
         if (!$archiveId) {
@@ -69,13 +69,17 @@ class MailTransportSubscriber implements EventSubscriberInterface
 
     }
 
+    /**
+     * @param Email $message
+     * @return array<array{'fileName': string, 'contentType': string, 'fileSize': int}>
+     */
     private function getAttachments(Email $message): array
     {
         $attachments = $message->getAttachments();
 
         return array_map(static function (DataPart $attachment) {
             return [
-                'fileName' => $attachment->getFilename(),
+                'fileName' => $attachment->getFilename() ?? "attachment",
                 'contentType' => $attachment->getContentType(),
                 'fileSize' => strlen($attachment->getBody()),
             ];
