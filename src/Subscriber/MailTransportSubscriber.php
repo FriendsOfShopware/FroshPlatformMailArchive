@@ -3,6 +3,7 @@
 namespace Frosh\MailArchive\Subscriber;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
+use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
@@ -11,6 +12,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Event\FailedMessageEvent;
 use Symfony\Component\Mailer\Event\SentMessageEvent;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\RawMessage;
 
 class MailTransportSubscriber implements EventSubscriberInterface
@@ -20,7 +22,10 @@ class MailTransportSubscriber implements EventSubscriberInterface
      */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
-    ) {}
+        private readonly EmlFileManager   $emlFileManager,
+    )
+    {
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -44,30 +49,44 @@ class MailTransportSubscriber implements EventSubscriberInterface
 
     private function updateArchiveState(RawMessage $message, string $newState): void
     {
-        $context = Context::createDefaultContext();
-        $archiveId = $this->getArchiveIdByMessage($message, $context);
-
-        if ($archiveId) {
-            $this->froshMailArchiveRepository->update([[
-                'id' => $archiveId,
-                'transportState' => $newState,
-            ]], $context);
+        if (!$message instanceof Email) {
+            return;
         }
+
+        $context = Context::createCLIContext();
+        $archiveId = $this->getArchiveIdByMessage($message);
+
+        if (!$archiveId) {
+            return;
+        }
+
+        $this->emlFileManager->writeFile($archiveId, $message->toString());
+
+        $attachments = $this->getAttachments($message);
+        $this->froshMailArchiveRepository->update([[
+            'id' => $archiveId,
+            'transportState' => $newState,
+            'attachments' => $attachments
+        ]], $context);
+
     }
 
-    private function getArchiveIdByMessage(RawMessage $message, Context $context): ?string
+    private function getAttachments(Email $message): array
     {
-        if (!($message instanceof Email)) {
-            return null;
-        }
+        $attachments = $message->getAttachments();
 
-        $messageIdHeader = $message->getHeaders()->get(MailSender::FROSH_MESSAGE_ID_HEADER);
+        return array_map(static function (DataPart $attachment) {
+            return [
+                'fileName' => $attachment->getFilename(),
+                'contentType' => $attachment->getContentType(),
+                'fileSize' => strlen($attachment->getBody())
+            ];
+        }, $attachments);
+    }
 
-        if (!$messageIdHeader) {
-            return null;
-        }
-
-        $messageId = $messageIdHeader->getBody();
+    private function getArchiveIdByMessage(Email $message): ?string
+    {
+        $messageId = $message->getHeaders()->get(MailSender::FROSH_MESSAGE_ID_HEADER)?->getBody();
 
         if (\is_string($messageId)) {
             return $messageId;
