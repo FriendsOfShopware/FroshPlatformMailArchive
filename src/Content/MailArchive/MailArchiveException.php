@@ -39,7 +39,7 @@ class MailArchiveException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::INVALID_UUID_CODE,
             'Parameter "{{parameter}}" is not a valid UUID',
-            ['parameter' => $parameter]
+            ['parameter' => $parameter],
         );
     }
 
