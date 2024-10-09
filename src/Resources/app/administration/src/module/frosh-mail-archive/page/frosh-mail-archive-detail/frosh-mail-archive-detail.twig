@@ -5,32 +5,32 @@
 
     <template #smart-bar-actions>
         <sw-button variant="ghost" v-if="archive && archive.customer" @click="openCustomer">
-            {{ $tc('frosh-mail-archive.detail.toolbar.customer') }}
+            {{ $t('frosh-mail-archive.detail.toolbar.customer') }}
         </sw-button>
 
-        <sw-button-process :isLoading="downloadIsLoading" :processSuccess="downloadIsSuccessful" @click="downloadMail"
-                           @process-finish="downloadFinish">
-            {{ $tc('frosh-mail-archive.detail.toolbar.downloadEml') }}
+        <sw-button-process :isLoading="downloadIsLoading" :process-success="downloadIsSuccessful" @click="downloadMail"
+                           @update:process-success="downloadFinish">
+            {{ $t('frosh-mail-archive.detail.toolbar.downloadEml') }}
         </sw-button-process>
 
         <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail"
-                           @process-finish="resendFinish">
-            {{ $tc('frosh-mail-archive.detail.toolbar.resend') }}
+                           @update:process-success="resendFinish">
+            {{ $t('frosh-mail-archive.detail.toolbar.resend') }}
         </sw-button-process>
     </template>
 
     <template #content>
         <sw-card-view v-if="archive">
             <sw-alert
-                v-if="archive.transportState === 'failed'"
-                variant="warning"
-                class="frosh-mail-archive__detail-alert"
+                    v-if="archive.transportState === 'failed'"
+                    variant="warning"
+                    class="frosh-mail-archive__detail-alert"
             >
-                {{ $tc('frosh-mail-archive.detail.alert.transportFailed') }}
+                {{ $t('frosh-mail-archive.detail.alert.transportFailed') }}
             </sw-alert>
             <sw-card
-                :title="$tc('frosh-mail-archive.detail.metadata.title')"
-                position-identifier="frosh-mail-archive-metadata"
+                    :title="$t('frosh-mail-archive.detail.metadata.title')"
+                    position-identifier="frosh-mail-archive-metadata"
             >
                 <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sentDate')" :disabled="true"
                                v-model="createdAtDate"></sw-text-field>
@@ -47,40 +47,50 @@
             <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id"
                                        :sourceMailId="archive.sourceMailId ?? archive.id"/>
             <sw-card
-                :title="$tc('frosh-mail-archive.detail.content.title')"
-                position-identifier="frosh-mail-archive-content"
+                    :title="$t('frosh-mail-archive.detail.content.title')"
+                    position-identifier="frosh-mail-archive-content"
             >
                 <h4>HTML</h4>
                 <iframe :src="htmlText" sandbox frameborder="0"></iframe>
 
                 <h4>Plain</h4>
                 <iframe :src="plainText" sandbox frameborder="0"></iframe>
-
-                <h4>Attachments: {{ archive.attachments.length }}</h4>
-
-                <sw-data-grid
-                    v-if="archive.attachments.length > 0"
-                    :showSelection="false"
-                    :dataSource="archive.attachments"
-                    :columns="attachmentsColumns"
-                >
-                    <template #column-fileSize="{ item }">
-                        <template v-if="item.fileSize < 0">
-                            unknown
+            </sw-card>
+            <sw-card :title="$t('frosh-mail-archive.detail.attachments.title')"
+                     position-identifier="frosh-mail-archive-attachments"
+            >
+                <template #grid>
+                    <sw-card-section v-if="archive.transportState === 'pending' || archive.attachments.length === 0"
+                                     secondary divider="bottom">
+                        <sw-alert variant="warning" v-if="archive.transportState === 'pending'">
+                            {{ $t('frosh-mail-archive.detail.attachments.attachments-incomplete-alert') }}
+                        </sw-alert>
+                        <sw-alert v-if="archive.attachments.length === 0">
+                            {{ $t('frosh-mail-archive.detail.attachments.no-attachments-alert') }}
+                        </sw-alert>
+                    </sw-card-section>
+                    <sw-data-grid
+                            :showSelection="false"
+                            :dataSource="archive.attachments"
+                            :columns="attachmentsColumns"
+                    >
+                        <template #column-fileSize="{ item }">
+                            <template v-if="item.fileSize < 0">
+                                {{ $t('frosh-mail-archive.detail.attachments.size-unknown') }}
+                            </template>
+                            <template v-else>
+                                {{ formatSize(item.fileSize) }}
+                            </template>
                         </template>
-                        <template v-else>
-                            {{ formatSize(item.fileSize) }}
+
+                        <template #actions="{ item }">
+                            <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
+                                                  @click="downloadAttachment(item.id)">
+                                {{ $t('frosh-mail-archive.detail.attachments.download') }}
+                            </sw-context-menu-item>
                         </template>
-                    </template>
-
-                    <template #actions="{ item }">
-                        <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
-                                              @click="downloadAttachment(item.id)">
-                            Download
-                        </sw-context-menu-item>
-                    </template>
-
-                </sw-data-grid>
+                    </sw-data-grid>
+                </template>
             </sw-card>
         </sw-card-view>
     </template>

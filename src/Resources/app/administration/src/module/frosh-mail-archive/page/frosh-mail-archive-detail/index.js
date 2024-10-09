@@ -85,17 +85,17 @@ Component.register('frosh-mail-archive-detail', {
             return [
                 {
                     property: 'fileName',
-                    label: 'Name',
+                    label: this.$t('frosh-mail-archive.detail.attachments.file-name'),
                     rawData: true
                 },
                 {
                     property: 'fileSize',
-                    label: 'Size',
+                    label: this.$t('frosh-mail-archive.detail.attachments.size'),
                     rawData: true
                 },
                 {
                     property: 'contentType',
-                    label: 'ContentType',
+                    label: this.$t('frosh-mail-archive.detail.attachments.type'),
                     rawData: true
                 }
             ];

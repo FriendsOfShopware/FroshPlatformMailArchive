@@ -51,6 +51,16 @@
             "content": {
                 "title": "Content"
             },
+            "attachments": {
+                "title": "Attachments",
+                "size-unknown": "unknown",
+                "download": "Download",
+                "size": "File size",
+                "file-name": "Name",
+                "type": "MIME type",
+                "no-attachments-alert": "This mail does not contain any attachments.",
+                "attachments-incomplete-alert": "Some attachments might not show up while the mail is in pending state."
+            },
             "alert": {
                 "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
             },

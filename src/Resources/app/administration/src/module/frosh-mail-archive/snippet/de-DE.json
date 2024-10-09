@@ -51,6 +51,16 @@
             "content": {
                 "title": "Inhalt"
             },
+            "attachments": {
+                "title": "Anhänge",
+                "size-unknown": "unbekannt",
+                "download": "Herunterladen",
+                "size": "Dateigröße",
+                "file-name": "Name",
+                "type": "MIME type",
+                "no-attachments-alert": "Diese E-Mail enthält keine Anhänge.",
+                "attachments-incomplete-alert": "Möglicherweise werden nicht alle Anhänge angezeigt, während die E-Mail im \"ausstehend\" Status ist."
+            },
             "alert": {
                 "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             },
