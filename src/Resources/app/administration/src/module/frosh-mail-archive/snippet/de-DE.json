@@ -8,11 +8,16 @@
             "unknown": "unbekannt"
         },
         "list": {
+            "actions": {
+                "bulkResendAction": "Erneut versenden",
+                "bulkResendWarningTooltip": "Achtung: Manche MailProvider haben eine Begrenzung, wie viele Mails gleichzeitig versendet werden können.",
+                "resendAction": "E-Mail erneut versenden",
+                "showAction": "Anzeigen"
+            },
             "columns": {
                 "sentDate": "Versanddatum",
                 "subject": "Betreff",
                 "receiver": "Empfänger",
-                "action": "Anzeigen",
                 "transportState": "Status",
                 "transportFailed": "Versand der E-Mail fehlgeschlagen"
             },
