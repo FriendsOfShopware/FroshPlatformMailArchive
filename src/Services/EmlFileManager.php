@@ -27,7 +27,9 @@ class EmlFileManager
             throw new \RuntimeException('Cannot compress eml file');
         }
 
-        $emlFilePath = 'mails/' . $id . '.eml.gz';
+        $folderParts = \array_slice(\str_split($id, 2), 0, 3);
+
+        $emlFilePath = 'mails/' . \implode('/', $folderParts) . '/' . $id . '.eml.gz';
 
         $this->filesystem->write($emlFilePath, $content);
 
