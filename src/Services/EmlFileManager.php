@@ -11,6 +11,9 @@ use ZBateson\MailMimeParser\MailMimeParser;
 
 class EmlFileManager
 {
+    private const COMPRESSION_EXT_GZIP = 'gz';
+    private const COMPRESSION_EXT_ZSTD = 'zst';
+
     public function __construct(
         #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')]
         private readonly FilesystemOperator $filesystem,
@@ -21,7 +24,13 @@ class EmlFileManager
      */
     public function writeFile(string $id, string $content): string
     {
-        $content = \gzcompress($content, 9);
+        if (\function_exists('zstd_compress')) {
+            $content = \zstd_compress($content);
+            $extension = '.' . self::COMPRESSION_EXT_ZSTD;
+        } else {
+            $content = \gzcompress($content, 9);
+            $extension = '.' . self::COMPRESSION_EXT_GZIP;
+        }
 
         if ($content === false) {
             throw new \RuntimeException('Cannot compress eml file');
@@ -29,7 +38,7 @@ class EmlFileManager
 
         $folderParts = \array_slice(\str_split($id, 2), 0, 3);
 
-        $emlFilePath = 'mails/' . \implode('/', $folderParts) . '/' . $id . '.eml.gz';
+        $emlFilePath = 'mails/' . \implode('/', $folderParts) . '/' . $id . '.eml' . $extension;
 
         $this->filesystem->write($emlFilePath, $content);
 
@@ -38,11 +47,19 @@ class EmlFileManager
 
     public function getEmlFileAsString(string $emlFilePath): false|string
     {
-        if (!$this->filesystem->fileExists($emlFilePath)) {
+        try {
+            $extension = \pathinfo($emlFilePath, PATHINFO_EXTENSION);
+
+            $content = $this->filesystem->read($emlFilePath);
+
+            if ($extension === self::COMPRESSION_EXT_ZSTD) {
+                return \zstd_uncompress($content);
+            }
+
+            return \gzuncompress($content);
+        } catch (\Throwable) {
             return false;
         }
-
-        return \gzuncompress($this->filesystem->read($emlFilePath));
     }
 
     public function getEmlAsMessage(string $emlFilePath): false|IMessage
@@ -62,9 +79,7 @@ class EmlFileManager
         fwrite($emlResource, $content);
         rewind($emlResource);
 
-        $parser = new MailMimeParser();
-
-        return $parser->parse($emlResource, false);
+        return (new MailMimeParser())->parse($emlResource, false);
     }
 
     public function deleteEmlFile(string $emlFilePath): void
