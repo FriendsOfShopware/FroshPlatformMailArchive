@@ -78,6 +78,11 @@ class MailArchiveController extends AbstractController
 
         $this->mailSender->send($email);
 
+        $this->froshMailArchiveRepository->update([[
+            'id' => $mailId,
+            'transportState' => MailSender::TRANSPORT_STATE_RESENT,
+        ]], $context);
+
         return new JsonResponse([
             'success' => true,
         ]);

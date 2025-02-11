@@ -4,6 +4,7 @@
         "state": {
             "pending": "ausstehend",
             "sent": "gesendet",
+            "resent": "erneut gesendet",
             "failed": "fehlgeschlagen",
             "unknown": "unbekannt"
         },

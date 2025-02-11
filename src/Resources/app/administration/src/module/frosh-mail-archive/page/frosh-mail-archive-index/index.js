@@ -87,6 +87,10 @@ Component.register('frosh-mail-archive-index', {
                     value: 'pending',
                     label: this.translateState('pending'),
                 },
+                {
+                    value: 'resent',
+                    label: this.translateState('resent'),
+                },
             ];
         }
     },
