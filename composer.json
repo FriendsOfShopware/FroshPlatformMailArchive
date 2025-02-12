@@ -43,6 +43,9 @@
         "shopware/core": "~6.6.0 || ~6.7.0",
         "zbateson/mail-mime-parser": "^3.0"
     },
+    "require-dev": {
+        "frosh/tools": ">2.0.0"
+    },
     "config": {
         "allow-plugins": {
           "symfony/runtime": true
