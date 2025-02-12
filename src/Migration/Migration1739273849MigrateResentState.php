@@ -29,7 +29,7 @@ class Migration1739273849MigrateResentState extends MigrationStep
         $updateQuery->where('id IN (:ids)');
 
         foreach (array_chunk($sourceMailIds, 1000) as $chunk) {
-            $updateQuery->setParameter('ids', $chunk, ArrayParameterType::STRING);
+            $updateQuery->setParameter('ids', $chunk, ArrayParameterType::BINARY);
             $updateQuery->executeStatement();
         }
     }
