@@ -27,6 +27,7 @@ class MailSender extends AbstractMailSender
     public const TRANSPORT_STATE_PENDING = 'pending';
     public const TRANSPORT_STATE_FAILED = 'failed';
     public const TRANSPORT_STATE_SENT = 'sent';
+    public const TRANSPORT_STATE_RESENT = 'resent';
 
     public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
 

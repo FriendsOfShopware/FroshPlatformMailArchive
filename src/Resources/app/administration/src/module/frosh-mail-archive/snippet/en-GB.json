@@ -4,6 +4,7 @@
         "state": {
             "pending": "pending",
             "sent": "sent",
+            "resent": "resent",
             "failed": "failed",
             "unknown": "unknown"
         },

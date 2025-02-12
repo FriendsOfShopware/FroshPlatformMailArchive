@@ -19,7 +19,7 @@
             </template>
             <template #column-success="{item}">
                 <div>
-                    <sw-color-badge v-if="item.transportState === 'sent'"
+                    <sw-color-badge v-if="item.transportState === 'sent' || item.transportState === 'resent'"
                         color="#37d046"
                         rounded
                     />
