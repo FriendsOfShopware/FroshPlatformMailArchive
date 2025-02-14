@@ -7,7 +7,7 @@ Shopware.Module.register('frosh-mail-archive', {
     name: 'frosh-mail-archive.title',
     title: 'frosh-mail-archive.title',
     description: '',
-    color: '#243758',
+    color: '#9AA8B5',
     icon: 'regular-envelope',
     entity: 'frosh_mail_archive',
 
@@ -16,7 +16,8 @@ Shopware.Module.register('frosh-mail-archive', {
             component: 'frosh-mail-archive-index',
             path: 'list',
             meta: {
-                privilege: 'frosh_mail_archive:read'
+                privilege: 'frosh_mail_archive:read',
+                parentPath: 'sw.settings.index.plugins'
             },
         },
         detail: {
