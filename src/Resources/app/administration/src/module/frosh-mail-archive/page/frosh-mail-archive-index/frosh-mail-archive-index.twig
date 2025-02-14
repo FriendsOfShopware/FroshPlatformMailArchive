@@ -7,7 +7,14 @@
         </sw-search-bar>
     </template>
     <template #smart-bar-header>
-        <h2>{{ $tc('frosh-mail-archive.title') }}</h2>
+        <h2>
+            {{ $tc('sw-settings.index.title') }}
+            <sw-icon
+                    name="regular-chevron-right-xs"
+                    small
+            />
+            {{ $tc('frosh-mail-archive.title') }}
+        </h2>
     </template>
     <template #content>
         <sw-entity-listing
@@ -25,8 +32,9 @@
                 </span>
             </template>
 
-            <template #column-createdAt="{ item }">
-                {{ date(item.createdAt, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}
+            <template #column-createdAt="{ item, column }">
+                <router-link
+                        :to="{ name: column.routerLink, params: { id: item.id } }">{{ date(item.createdAt, {hour: '2-digit', minute: '2-digit', second: '2-digit'}) }}</router-link>
             </template>
 
             <template #column-transportState="{ item }">

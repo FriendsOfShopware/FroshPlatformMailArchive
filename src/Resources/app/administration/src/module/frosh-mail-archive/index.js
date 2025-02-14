@@ -16,7 +16,8 @@ Shopware.Module.register('frosh-mail-archive', {
             component: 'frosh-mail-archive-index',
             path: 'list',
             meta: {
-                privilege: 'frosh_mail_archive:read'
+                privilege: 'frosh_mail_archive:read',
+                parentPath: 'sw.settings.index.plugins'
             },
         },
         detail: {
