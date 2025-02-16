@@ -47,7 +47,9 @@
                 "sender": "Absender",
                 "receiver": "Empfänger",
                 "subject": "Betreff",
-                "salesChannel": "Verkaufskanal"
+                "salesChannel": "Verkaufskanal",
+                "customer": "Kunde",
+                "order": "Bestellung"
             },
             "content": {
                 "title": "Inhalt"

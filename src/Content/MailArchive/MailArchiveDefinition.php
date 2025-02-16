@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
@@ -56,6 +57,9 @@ class MailArchiveDefinition extends EntityDefinition
 
             new FkField('customerId', 'customerId', CustomerDefinition::class),
             new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', true),
+
+            new FkField('order_id', 'orderId', OrderDefinition::class),
+            new ManyToOneAssociationField('order', 'order_id', OrderDefinition::class, 'id', false),
 
             new FkField('source_mail_id', 'sourceMailId', self::class),
             new ManyToOneAssociationField('sourceMail', 'source_mail_id', self::class, 'id', false),

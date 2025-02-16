@@ -8,22 +8,22 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MailBeforeSentSubscriber implements EventSubscriberInterface
 {
-
     public static function getSubscribedEvents(): array
     {
         return [
-            MailBeforeSentEvent::class => 'onMailBeforeSent'
+            MailBeforeSentEvent::class => 'onMailBeforeSent',
         ];
     }
 
     public function onMailBeforeSent(MailBeforeSentEvent $e): void
     {
-        $customerId = $e->getData()['customerId'] ?? null;
+        /** @var string $customerId */
+        $customerId = $e->getData()['customerId'] ?? "";
 
-        if(!$customerId){
-            return;
-        }
+        /** @var string $orderId */
+        $orderId = $e->getData()['orderId'] ?? "";
 
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_CUSTOMER_ID_HEADER, $customerId);
+        $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_ORDER_ID_HEADER, $orderId);
     }
 }

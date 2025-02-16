@@ -20,8 +20,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Header\IdentificationHeader;
-use Symfony\Component\Mime\Header\UnstructuredHeader;
 
 #[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
@@ -33,6 +31,7 @@ class MailSender extends AbstractMailSender
 
     public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
     public const FROSH_CUSTOMER_ID_HEADER = 'X-Frosh-Customer-ID';
+    public const FROSH_ORDER_ID_HEADER = 'X-Frosh-Order-ID';
 
     /**
      * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
@@ -52,16 +51,10 @@ class MailSender extends AbstractMailSender
         $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
         $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $id);
 
-        $customerIdHeader = $email->getHeaders()->get(self::FROSH_CUSTOMER_ID_HEADER);
-        $email->getHeaders()->remove(self::FROSH_CUSTOMER_ID_HEADER);
-
-        $customerId = null;
-        if($customerIdHeader instanceof UnstructuredHeader){
-            $customerId = $customerIdHeader->getBody();
-        }
+        $metadata = $this->getMailMetadata($email);
 
         // save the mail first, to make sure it exists in the database when we want to update its state
-        $this->saveMail($id, $email, $customerId);
+        $this->saveMail($id, $email, $metadata);
         $this->mailSender->send($email, $envelope);
 
     }
@@ -71,7 +64,10 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(string $id, Email $message, ?string $customerId): void
+    /**
+     * @param array<string,string|null> $metadata
+     */
+    private function saveMail(string $id, Email $message, array $metadata): void
     {
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
@@ -86,9 +82,10 @@ class MailSender extends AbstractMailSender
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
-                'customerId' => $customerId ?? $this->getCustomerIdByMail($message->getTo()),
+                'customerId' => $metadata['customerId'] ?? $this->getCustomerIdByMail($message->getTo()),
                 'sourceMailId' => $this->getSourceMailId($context),
                 'transportState' => self::TRANSPORT_STATE_PENDING,
+                'orderId' => $metadata['orderId'],
             ],
         ], $context);
     }
@@ -161,5 +158,32 @@ class MailSender extends AbstractMailSender
         }
 
         return $list;
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function getMailMetadata(Email $email): array
+    {
+        $customerIdHeader = $email->getHeaders()->get(self::FROSH_CUSTOMER_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_CUSTOMER_ID_HEADER);
+
+        $customerId = null;
+        if ($customerIdHeader) {
+            $customerId = $customerIdHeader->getBodyAsString() ?: null;
+        }
+
+        $orderIdHeader = $email->getHeaders()->get(self::FROSH_ORDER_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_ORDER_ID_HEADER);
+
+        $orderId = null;
+        if ($orderIdHeader) {
+            $orderId = $orderIdHeader->getBodyAsString() ?: null;
+        }
+
+        return [
+            'customerId' => $customerId,
+            'orderId' => $orderId,
+        ];
     }
 }
