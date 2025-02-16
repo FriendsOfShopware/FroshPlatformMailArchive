@@ -32,6 +32,7 @@ class MailSender extends AbstractMailSender
     public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
     public const FROSH_CUSTOMER_ID_HEADER = 'X-Frosh-Customer-ID';
     public const FROSH_ORDER_ID_HEADER = 'X-Frosh-Order-ID';
+    public const FROSH_FLOW_ID_HEADER = 'X-Frosh-Flow-ID';
 
     /**
      * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
@@ -86,6 +87,7 @@ class MailSender extends AbstractMailSender
                 'sourceMailId' => $this->getSourceMailId($context),
                 'transportState' => self::TRANSPORT_STATE_PENDING,
                 'orderId' => $metadata['orderId'],
+                'flowId' => $metadata['flowId'],
             ],
         ], $context);
     }
@@ -168,22 +170,16 @@ class MailSender extends AbstractMailSender
         $customerIdHeader = $email->getHeaders()->get(self::FROSH_CUSTOMER_ID_HEADER);
         $email->getHeaders()->remove(self::FROSH_CUSTOMER_ID_HEADER);
 
-        $customerId = null;
-        if ($customerIdHeader) {
-            $customerId = $customerIdHeader->getBodyAsString() ?: null;
-        }
-
         $orderIdHeader = $email->getHeaders()->get(self::FROSH_ORDER_ID_HEADER);
         $email->getHeaders()->remove(self::FROSH_ORDER_ID_HEADER);
 
-        $orderId = null;
-        if ($orderIdHeader) {
-            $orderId = $orderIdHeader->getBodyAsString() ?: null;
-        }
+        $flowIdHeader = $email->getHeaders()->get(self::FROSH_FLOW_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_FLOW_ID_HEADER);
 
         return [
-            'customerId' => $customerId,
-            'orderId' => $orderId,
+            'customerId' => $customerIdHeader?->getBodyAsString() ?: null,
+            'orderId' => $orderIdHeader?->getBodyAsString() ?: null,
+            'flowId' => $flowIdHeader?->getBodyAsString() ?: null,
         ];
     }
 }

@@ -74,6 +74,15 @@
                         </dd>
                         <dd v-else>-</dd>
                     </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.flow') }}</dt>
+                        <dd v-if="archive.flow">
+                            <router-link :to="{ name: 'sw.flow.detail', params: {id: archive.flowId}}">
+                                {{ archive.flow.name }}
+                            </router-link>
+                        </dd>
+                        <dd v-else>-</dd>
+                    </sw-description-list>
                 </sw-container>
             </sw-card>
             <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id"

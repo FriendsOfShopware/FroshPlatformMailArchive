@@ -49,7 +49,8 @@
                 "subject": "Betreff",
                 "salesChannel": "Verkaufskanal",
                 "customer": "Kunde",
-                "order": "Bestellung"
+                "order": "Bestellung",
+                "flow": "Flow"
             },
             "content": {
                 "title": "Inhalt"

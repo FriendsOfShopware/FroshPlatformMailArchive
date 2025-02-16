@@ -21,8 +21,10 @@ class SendMailActionSubscriber implements EventSubscriberInterface
         $flow = $e->getStorableFlow();
         $customerId = $flow->getData(CustomerAware::CUSTOMER_ID);
         $orderId = $flow->getData(OrderAware::ORDER_ID);
+        $flowId = $flow->getFlowState()->flowId;
 
         $e->getDataBag()->set('customerId', $customerId);
         $e->getDataBag()->set('orderId', $orderId);
+        $e->getDataBag()->set('flowId', $flowId);
     }
 }

@@ -6,6 +6,7 @@ namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Content\Flow\FlowEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
@@ -40,7 +41,12 @@ class MailArchiveEntity extends Entity
     protected ?CustomerEntity $customer;
 
     protected ?string $orderId;
+
     protected ?OrderEntity $order;
+
+    protected ?string $flowId;
+
+    protected ?FlowEntity $flow;
 
     /**
      * @var EntityCollection<MailArchiveAttachmentEntity>|null
@@ -249,6 +255,26 @@ class MailArchiveEntity extends Entity
     public function setOrder(?OrderEntity $order): void
     {
         $this->order = $order;
+    }
+
+    public function getFlowId(): ?string
+    {
+        return $this->flowId;
+    }
+
+    public function setFlowId(?string $flowId): void
+    {
+        $this->flowId = $flowId;
+    }
+
+    public function getFlow(): ?FlowEntity
+    {
+        return $this->flow;
+    }
+
+    public function setFlow(?FlowEntity $flow): void
+    {
+        $this->flow = $flow;
     }
 
 }

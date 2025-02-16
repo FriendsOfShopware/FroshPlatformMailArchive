@@ -108,6 +108,7 @@ Component.register('frosh-mail-archive-detail', {
             criteria.addAssociation('attachments');
             criteria.addAssociation('customer');
             criteria.addAssociation('order');
+            criteria.addAssociation('flow');
 
             this.repository.get(this.archiveId, Shopware.Context.api, criteria).then(archive => {
                 this.archive = archive;
