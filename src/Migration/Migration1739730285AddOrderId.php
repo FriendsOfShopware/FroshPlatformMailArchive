@@ -18,7 +18,9 @@ class Migration1739730285AddOrderId extends MigrationStep
     {
         $connection->executeStatement('
             ALTER TABLE `frosh_mail_archive`
-            ADD COLUMN `order_id` BINARY(16) NULL;
+            ADD COLUMN `order_id` BINARY(16) NULL,
+            ADD COLUMN `order_version_id` BINARY(16) NULL
+            ;
         ');
     }
 

@@ -23,7 +23,7 @@ class FlowExtension extends EntityExtension
                 'froshMailArchive',
                 MailArchiveDefinition::class,
                 'flow_id',
-            ))->addFlags(new SetNullOnDelete()),
+            ))->addFlags(new SetNullOnDelete(false)),
         );
     }
 }

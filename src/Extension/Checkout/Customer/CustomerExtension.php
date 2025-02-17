@@ -22,7 +22,7 @@ class CustomerExtension extends EntityExtension
                 'froshMailArchive',
                 MailArchiveDefinition::class,
                 'customerId',
-            ))->addFlags(new SetNullOnDelete()),
+            ))->addFlags(new SetNullOnDelete(false)),
         );
     }
 

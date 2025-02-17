@@ -42,6 +42,8 @@ class MailArchiveEntity extends Entity
 
     protected ?string $orderId;
 
+    protected ?string $orderVersionId;
+
     protected ?OrderEntity $order;
 
     protected ?string $flowId;
@@ -275,6 +277,16 @@ class MailArchiveEntity extends Entity
     public function setFlow(?FlowEntity $flow): void
     {
         $this->flow = $flow;
+    }
+
+    public function getOrderVersionId(): ?string
+    {
+        return $this->orderVersionId;
+    }
+
+    public function setOrderVersionId(?string $orderVersionId): void
+    {
+        $this->orderVersionId = $orderVersionId;
     }
 
 }
