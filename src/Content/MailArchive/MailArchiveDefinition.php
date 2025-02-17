@@ -66,7 +66,7 @@ class MailArchiveDefinition extends EntityDefinition
             new ManyToOneAssociationField('salesChannel', 'salesChannelId', SalesChannelDefinition::class, 'id', true),
 
             new FkField('customerId', 'customerId', CustomerDefinition::class),
-            new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', true),
+            new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', false),
 
             new FkField('order_id', 'orderId', OrderDefinition::class),
             new ReferenceVersionField(OrderDefinition::class, 'order_version_id'),
