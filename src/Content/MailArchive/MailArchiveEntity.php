@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Content\Flow\FlowEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
@@ -37,6 +39,16 @@ class MailArchiveEntity extends Entity
     protected ?string $customerId;
 
     protected ?CustomerEntity $customer;
+
+    protected ?string $orderId;
+
+    protected ?string $orderVersionId;
+
+    protected ?OrderEntity $order;
+
+    protected ?string $flowId;
+
+    protected ?FlowEntity $flow;
 
     /**
      * @var EntityCollection<MailArchiveAttachmentEntity>|null
@@ -226,4 +238,55 @@ class MailArchiveEntity extends Entity
     {
         $this->sourceMails = $sourceMails;
     }
+
+    public function getOrderId(): ?string
+    {
+        return $this->orderId;
+    }
+
+    public function setOrderId(?string $orderId): void
+    {
+        $this->orderId = $orderId;
+    }
+
+    public function getOrder(): ?OrderEntity
+    {
+        return $this->order;
+    }
+
+    public function setOrder(?OrderEntity $order): void
+    {
+        $this->order = $order;
+    }
+
+    public function getFlowId(): ?string
+    {
+        return $this->flowId;
+    }
+
+    public function setFlowId(?string $flowId): void
+    {
+        $this->flowId = $flowId;
+    }
+
+    public function getFlow(): ?FlowEntity
+    {
+        return $this->flow;
+    }
+
+    public function setFlow(?FlowEntity $flow): void
+    {
+        $this->flow = $flow;
+    }
+
+    public function getOrderVersionId(): ?string
+    {
+        return $this->orderVersionId;
+    }
+
+    public function setOrderVersionId(?string $orderVersionId): void
+    {
+        $this->orderVersionId = $orderVersionId;
+    }
+
 }

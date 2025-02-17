@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
+use Shopware\Core\Content\Flow\FlowDefinition;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
@@ -17,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
@@ -37,6 +41,13 @@ class MailArchiveDefinition extends EntityDefinition
         return MailArchiveEntity::class;
     }
 
+    public function getDefaults(): array
+    {
+        return [
+            'orderVersionId' => Defaults::LIVE_VERSION,
+        ];
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
@@ -55,7 +66,14 @@ class MailArchiveDefinition extends EntityDefinition
             new ManyToOneAssociationField('salesChannel', 'salesChannelId', SalesChannelDefinition::class, 'id', true),
 
             new FkField('customerId', 'customerId', CustomerDefinition::class),
-            new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', true),
+            new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', false),
+
+            new FkField('order_id', 'orderId', OrderDefinition::class),
+            new ReferenceVersionField(OrderDefinition::class, 'order_version_id'),
+            new ManyToOneAssociationField('order', 'order_id', OrderDefinition::class, 'id', false),
+
+            new FkField('flow_id', 'flowId', FlowDefinition::class),
+            new ManyToOneAssociationField('flow', 'flow_id', FlowDefinition::class, 'id', false),
 
             new FkField('source_mail_id', 'sourceMailId', self::class),
             new ManyToOneAssociationField('sourceMail', 'source_mail_id', self::class, 'id', false),

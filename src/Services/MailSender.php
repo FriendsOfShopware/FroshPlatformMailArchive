@@ -30,6 +30,9 @@ class MailSender extends AbstractMailSender
     public const TRANSPORT_STATE_RESENT = 'resent';
 
     public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
+    public const FROSH_CUSTOMER_ID_HEADER = 'X-Frosh-Customer-ID';
+    public const FROSH_ORDER_ID_HEADER = 'X-Frosh-Order-ID';
+    public const FROSH_FLOW_ID_HEADER = 'X-Frosh-Flow-ID';
 
     /**
      * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
@@ -49,8 +52,10 @@ class MailSender extends AbstractMailSender
         $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
         $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $id);
 
+        $metadata = $this->getMailMetadata($email);
+
         // save the mail first, to make sure it exists in the database when we want to update its state
-        $this->saveMail($id, $email);
+        $this->saveMail($id, $email, $metadata);
         $this->mailSender->send($email, $envelope);
 
     }
@@ -60,7 +65,10 @@ class MailSender extends AbstractMailSender
         return $this->mailSender;
     }
 
-    private function saveMail(string $id, Email $message): void
+    /**
+     * @param array<string,string|null> $metadata
+     */
+    private function saveMail(string $id, Email $message, array $metadata): void
     {
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
@@ -75,9 +83,11 @@ class MailSender extends AbstractMailSender
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
                 'salesChannelId' => $this->getCurrentSalesChannelId(),
-                'customerId' => $this->getCustomerIdByMail($message->getTo()),
+                'customerId' => $metadata['customerId'] ?? $this->getCustomerIdByMail($message->getTo()),
                 'sourceMailId' => $this->getSourceMailId($context),
                 'transportState' => self::TRANSPORT_STATE_PENDING,
+                'orderId' => $metadata['orderId'],
+                'flowId' => $metadata['flowId'],
             ],
         ], $context);
     }
@@ -150,5 +160,26 @@ class MailSender extends AbstractMailSender
         }
 
         return $list;
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function getMailMetadata(Email $email): array
+    {
+        $customerIdHeader = $email->getHeaders()->get(self::FROSH_CUSTOMER_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_CUSTOMER_ID_HEADER);
+
+        $orderIdHeader = $email->getHeaders()->get(self::FROSH_ORDER_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_ORDER_ID_HEADER);
+
+        $flowIdHeader = $email->getHeaders()->get(self::FROSH_FLOW_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_FLOW_ID_HEADER);
+
+        return [
+            'customerId' => $customerIdHeader?->getBodyAsString() ?: null,
+            'orderId' => $orderIdHeader?->getBodyAsString() ?: null,
+            'flowId' => $flowIdHeader?->getBodyAsString() ?: null,
+        ];
     }
 }

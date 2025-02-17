@@ -4,10 +4,6 @@
     </template>
 
     <template #smart-bar-actions>
-        <sw-button variant="ghost" v-if="archive && archive.customer" @click="openCustomer">
-            {{ $t('frosh-mail-archive.detail.toolbar.customer') }}
-        </sw-button>
-
         <sw-button-process :isLoading="downloadIsLoading" :process-success="downloadIsSuccessful" @click="downloadMail"
                            @update:process-success="downloadFinish">
             {{ $t('frosh-mail-archive.detail.toolbar.downloadEml') }}
@@ -32,17 +28,62 @@
                     :title="$t('frosh-mail-archive.detail.metadata.title')"
                     position-identifier="frosh-mail-archive-metadata"
             >
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sentDate')" :disabled="true"
-                               v-model="createdAtDate"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.sender')" :disabled="true"
-                               v-model="senderText"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.receiver')" :disabled="true"
-                               v-model="receiverText"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.subject')" :disabled="true"
-                               v-model="archive.subject"></sw-text-field>
-                <sw-text-field :label="$tc('frosh-mail-archive.detail.metadata.salesChannel')"
-                               v-if="archive.salesChannel" :disabled="true"
-                               v-model="archive.salesChannel.name"></sw-text-field>
+                <sw-container
+                        columns="1fr 1fr"
+                        gap="0px 15px"
+                        class="frosh-mail-archive__detail-metadata"
+                >
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.receiver') }}</dt>
+                        <dd>{{ receiverText }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.sender') }}</dt>
+                        <dd>{{ senderText }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.subject') }}</dt>
+                        <dd>{{ archive.subject }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}</dt>
+                        <dd>{{ createdAtDate }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.salesChannel') }}</dt>
+                        <dd v-if="archive.salesChannel">
+                            {{ archive.salesChannel.name }}
+                        </dd>
+                        <dd v-else>-</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.customer') }}</dt>
+                        <dd v-if="archive.customer">
+                            <router-link :to="{ name: 'sw.customer.detail', params: {id: archive.customerId} }">
+                                {{ archive.customer.customerNumber }} - {{ archive.customer.firstName }} {{ archive.customer.lastName }}
+                            </router-link>
+                        </dd>
+                        <dd v-else>-</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.order') }}</dt>
+                        <dd v-if="archive.order">
+                            <router-link :to="{ name: 'sw.order.detail', params: {id: archive.orderId}}">
+                                {{ archive.order.orderNumber }}
+                            </router-link>
+                        </dd>
+                        <dd v-else>-</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.flow') }}</dt>
+                        <dd v-if="archive.flow">
+                            <router-link :to="{ name: 'sw.flow.detail', params: {id: archive.flowId}}">
+                                {{ archive.flow.name }}
+                            </router-link>
+                        </dd>
+                        <dd v-else>-</dd>
+                    </sw-description-list>
+                </sw-container>
             </sw-card>
             <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id"
                                        :sourceMailId="archive.sourceMailId ?? archive.id"/>

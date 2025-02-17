@@ -47,7 +47,10 @@
                 "sender": "Sender",
                 "receiver": "Recipients",
                 "subject": "Subject",
-                "salesChannel": "Sales Channel"
+                "salesChannel": "Sales Channel",
+                "customer": "Customer",
+                "order": "Order",
+                "flow": "Flow"
             },
             "content": {
                 "title": "Content"

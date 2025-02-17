@@ -1,33 +1,29 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Frosh\MailArchive\Extension\Checkout\Customer;
+namespace Frosh\MailArchive\Extension\Checkout\Order;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\SetNullOnDelete;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('shopware.entity.extension')]
-class CustomerExtension extends EntityExtension
+class OrderExtension extends EntityExtension
 {
+    public function getDefinitionClass(): string
+    {
+        return OrderDefinition::class;
+    }
+
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
             (new OneToManyAssociationField(
                 'froshMailArchive',
                 MailArchiveDefinition::class,
-                'customerId',
+                'order_id',
             ))->addFlags(new SetNullOnDelete(false)),
         );
-    }
-
-    public function getDefinitionClass(): string
-    {
-        return CustomerDefinition::class;
     }
 }
