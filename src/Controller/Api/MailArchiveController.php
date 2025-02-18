@@ -211,9 +211,12 @@ class MailArchiveController extends AbstractController
                 continue;
             }
 
-            // Extract first item for return-path since Symfony/Mailer needs to be a string value here
-            if ($header->getName() === 'Return-Path' && is_array($headerValue)) {
-                $headerValue = array_pop($headerValue);
+            if ($header->getName() === 'Return-Path') {
+                $headerValue = $this->determineReturnPath($headerValue);
+
+                if ($headerValue === null) {
+                    continue;
+                }
             }
 
             $email->getHeaders()->addHeader($header->getName(), $headerValue);
@@ -284,5 +287,40 @@ class MailArchiveController extends AbstractController
         }
 
         return $this->emlFileManager->getEmlFileAsString($emlPath);
+    }
+
+    /**
+     * @param \DateTimeImmutable|array<Address>|string|null $headerValue
+     */
+    private function determineReturnPath(\DateTimeImmutable|array|string|null $headerValue): ?string
+    {
+        // Extract first item for return-path since Symfony/Mailer needs to be a string value here
+        if (is_array($headerValue)) {
+            $headerValue = array_pop($headerValue);
+        }
+
+        // extract mail from: <"mail@example.com" <mail@example.com>>
+        // see https://github.com/symfony/symfony/pull/59796
+        if ($headerValue instanceof Address) {
+            return $headerValue->getEncodedAddress();
+        }
+
+        if (is_string($headerValue)) {
+            $regex = '/[<"]([^<>"\s]+@[^<>"\s]+)[>"]/';
+            preg_match($regex, $headerValue, $matches);
+            if (isset($matches[1])) {
+                $headerValue = $matches[1];
+            }
+        }
+
+        if (is_string($headerValue)) {
+            try {
+                return (new Address($headerValue))->getEncodedAddress();
+            } catch (\Throwable) {
+                // we don't care about invalid addresses
+            }
+        }
+
+        return null;
     }
 }
