@@ -248,7 +248,7 @@ class MailArchiveController extends AbstractController
     }
 
     /**
-     * @return string|array<Address>|\DateTimeImmutable|null
+     * @return string|array<string|Address>|\DateTimeImmutable|null
      */
     private function getHeaderValue(IHeader $header): string|array|null|\DateTimeImmutable
     {
@@ -256,7 +256,11 @@ class MailArchiveController extends AbstractController
             /** @var AddressPart[] $addressParts */
             $addressParts = $header->getParts();
 
-            return \array_map(function (AddressPart $part) {
+            return \array_map(function (AddressPart $part) use ($header) {
+                if ($header->getName() === 'Return-Path') {
+                    return $part->getEmail();
+                }
+
                 return new Address($part->getEmail(), $part->getName());
             }, $addressParts);
         }
@@ -290,7 +294,7 @@ class MailArchiveController extends AbstractController
     }
 
     /**
-     * @param \DateTimeImmutable|array<Address>|string|null $headerValue
+     * @param \DateTimeImmutable|array<string|Address>|string|null $headerValue
      */
     private function determineReturnPath(\DateTimeImmutable|array|string|null $headerValue): ?string
     {
