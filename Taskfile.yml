@@ -3,6 +3,7 @@ version: '3'
 env:
   CONSOLE: docker compose exec -it shopware ./bin/console
   COMPOSER: docker compose exec -it shopware composer
+  CONTAINER: docker compose exec -it shopware
 
 tasks:
   init:
@@ -11,14 +12,23 @@ tasks:
       - $COMPOSER install
       - $CONSOLE plugin:refresh -s
       - $CONSOLE plugin:install -c -a FroshPlatformMailArchive
+      - task: build
 
   console:
     cmds:
       - $CONSOLE {{.CLI_ARGS}}
 
+  container:
+    cmds:
+      - $CONTAINER {{.CLI_ARGS}}
+
   composer:
     cmds:
       - $COMPOSER {{.CLI_ARGS}}
+
+  build:
+    cmds:
+      - $CONTAINER bin/build-administration.sh
 
   start:
     cmds:

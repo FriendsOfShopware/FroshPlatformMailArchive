@@ -55,6 +55,18 @@ Allows you to execute composer commands as follows:
 task composer -- <composer command>
 ```
 
+#### container:
+Allows you to execute bash commands in the container as follows:
+```
+task container -- <bash command>
+```
+
+#### build:
+Builds the shopware administration javascript files.
+```
+task build
+```
+
 #### start:
 Starts the docker containers.
 ```
