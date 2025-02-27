@@ -100,6 +100,25 @@ Component.register('frosh-mail-archive-index', {
             return this.$tc(`frosh-mail-archive.state.${state}`);
         },
 
+        updateData(query) {
+            for (const filter in this.filter) {
+                this.filter[filter] = query[filter] ?? null;
+            }
+        },
+
+        saveFilters() {
+            this.updateRoute({
+                limit: this.limit,
+                page: this.page,
+                term: this.term,
+                sortBy: this.sortBy,
+                sortDirection: this.sortDirection,
+                naturalSorting: this.naturalSorting,
+            },
+                this.filter
+            );
+        },
+
         getList() {
             this.isLoading = true;
 
@@ -129,6 +148,7 @@ Component.register('frosh-mail-archive-index', {
                     this.items = searchResult;
                     this.total = searchResult.total;
                     this.isLoading = false;
+                    this.saveFilters();
                 });
         },
 
