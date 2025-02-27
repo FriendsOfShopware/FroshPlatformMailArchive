@@ -22,6 +22,76 @@ This plugin adds an MailArchive to your Shopware-Administration stored in Databa
 
 Feel free to fork and send [pull requests](https://github.com/FriendsOfShopware/FroshPlatformMailArchive)!
 
+### Setting up local docker dev
+#### Prerequisites
+##### Task files
+Install the `task` command if not already installed following this guide:
+
+https://taskfile.dev/installation/
+
+##### Docker
+Install Docker on your maschine for the local dev setup to start in.
+This can be done for example using Docker desktop and installing it from the following link:
+https://www.docker.com/get-started/
+
+#### Task Commands
+
+#### init
+Initializes the development system and gets it ready to be used.
+If everything is successful you should have a clean shopware instance, with this plugin under http://localhost
+```
+task init
+```
+
+#### console:
+Allows you to execute shopware commands as follows:
+```
+task console -- <shopware command>
+```
+
+#### composer:
+Allows you to execute composer commands as follows:
+```
+task composer -- <shopware command>
+```
+
+#### start:
+Starts the docker containers.
+```
+task start
+```
+
+#### stop:
+Stops the docker containers.
+```
+task stop
+```
+
+#### restart:
+Restarts the docker containers.
+```
+task restart
+```
+
+#### remove:
+Stops and removes the docker containers, **therefore all database data is lost**.
+```
+task remove
+```
+
+#### reset:
+Resets the docker container to a fresh state, **therefore all database data is lost**.
+```
+task reset
+```
+
+#### clean:
+Cleans the shopware cache.
+```
+task clean
+```
+
+
 ## Licence
 
 This project uses the [MIT License](LICENSE.md).

@@ -1,0 +1,21 @@
+
+services:
+  shopware:
+    image: dockware/dev:latest
+    ports:*
+      - "80:80"
+      - "3306:3306"
+      - "22:22"
+      - "8888:8888"
+      - "9999:9999"
+      - "9998:9998"
+    environment:
+      SW_TASKS_ENABLED: 1
+    volumes:
+      - .:/var/www/html/custom/plugins/FroshPlatformMailArchive
+    networks:
+      - web
+
+networks:
+  web:
+    external: false

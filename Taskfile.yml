@@ -1,0 +1,47 @@
+version: '3'
+
+env:
+  CONSOLE: docker compose exec -it shopware ./bin/console
+  COMPOSER: docker compose exec -it shopware composer
+
+tasks:
+  init:
+    cmds:
+      - task: start
+      - $COMPOSER install
+      - $CONSOLE plugin:refresh -s
+      - $CONSOLE plugin:install -c -a FroshPlatformMailArchive
+
+  console:
+    cmds:
+      - $CONSOLE {{.CLI_ARGS}}
+
+  composer:
+    cmds:
+      - $COMPOSER {{.CLI_ARGS}}
+
+  start:
+    cmds:
+      - docker compose up -d
+
+  stop:
+    cmds:
+      - docker compose down
+
+  restart:
+    cmds:
+      - task: stop
+      - task: start
+
+  remove:
+    cmds:
+      - docker compose down -v
+
+  reset:
+    cmds:
+      - task: remove
+      - task: init
+
+  clean:
+    cmds:
+      - $CONSOLE cache:clear
