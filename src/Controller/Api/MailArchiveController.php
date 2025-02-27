@@ -241,6 +241,14 @@ class MailArchiveController extends AbstractController
             $email->from(new Address($mail, $name));
         }
 
+        foreach ($mailArchive->getCc() as $mail => $name) {
+            $email->cc(new Address($mail, $name));
+        }
+
+        foreach ($mailArchive->getBcc() as $mail => $name) {
+            $email->bcc(new Address($mail, $name));
+        }
+
         $email->subject($mailArchive->getSubject());
 
         $email->html($mailArchive->getHtmlText());

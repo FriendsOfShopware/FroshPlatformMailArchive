@@ -57,15 +57,6 @@ Component.register('frosh-mail-archive-detail', {
 
             return new Intl.DateTimeFormat(locale, options).format(new Date(this.archive.createdAt));
         },
-        receiverText() {
-            let text = [];
-
-            Object.keys(this.archive.receiver).forEach(key => {
-                text.push(`${this.archive.receiver[key]} <${key}>`);
-            });
-
-            return text.join(',');
-        },
         senderText() {
             let text = [];
 
@@ -103,6 +94,15 @@ Component.register('frosh-mail-archive-detail', {
     },
 
     methods: {
+        jsonToTextConcat(field) {
+            let text = [];
+
+            Object.keys(this.archive[field]).forEach(key => {
+                text.push(`${this.archive[field][key]} <${key}>`);
+            });
+
+            return text.join(',');
+        },
         loadMail() {
             const criteria = new Criteria();
             criteria.addAssociation('attachments');

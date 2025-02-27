@@ -24,6 +24,10 @@ class MailArchiveEntity extends Entity
 
     protected string $subject;
 
+    protected ?array $cc;
+
+    protected ?array $bcc;
+
     protected ?string $plainText;
 
     protected ?string $htmlText;
@@ -89,13 +93,6 @@ class MailArchiveEntity extends Entity
         return $this->receiver;
     }
 
-    /**
-     * @param array<string, string> $receiver
-     */
-    public function setReceiver(array $receiver): void
-    {
-        $this->receiver = $receiver;
-    }
 
     public function getSubject(): string
     {
@@ -105,6 +102,46 @@ class MailArchiveEntity extends Entity
     public function setSubject(string $subject): void
     {
         $this->subject = $subject;
+    }
+
+    /**
+     * @param array<string, string> $receiver
+     */
+    public function setReceiver(array $receiver): void
+    {
+        $this->receiver = $receiver;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getCc(): ?array
+    {
+        return $this->receiver;
+    }
+
+    /**
+     * @param array<string, string> $cc
+     */
+    public function setCc(?array $cc): void
+    {
+        $this->cc = $cc;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getBcc(): ?array
+    {
+        return $this->receiver;
+    }
+
+    /**
+     * @param array<string, string> $bcc
+     */
+    public function setBcc(?array $bcc): void
+    {
+        $this->bcc = $bcc;
     }
 
     public function getPlainText(): ?string

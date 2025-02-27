@@ -35,7 +35,7 @@
                 >
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.receiver') }}</dt>
-                        <dd>{{ receiverText }}</dd>
+                        <dd>{{ jsonToTextConcat('receiver') }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.sender') }}</dt>
@@ -44,6 +44,14 @@
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.subject') }}</dt>
                         <dd>{{ archive.subject }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.cc') }}</dt>
+                        <dd>{{ jsonToTextConcat('cc') }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.bcc') }}</dt>
+                        <dd>{{ jsonToTextConcat('bcc') }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}</dt>

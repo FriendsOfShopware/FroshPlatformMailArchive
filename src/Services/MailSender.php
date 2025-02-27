@@ -79,6 +79,8 @@ class MailSender extends AbstractMailSender
                 'sender' => [$message->getFrom()[0]->getAddress() => $message->getFrom()[0]->getName()],
                 'receiver' => $this->convertAddress($message->getTo()),
                 'subject' => $message->getSubject(),
+                'cc' => $message->getCc(),
+                'bcc' => $message->getBcc(),
                 'plainText' => nl2br((string) $message->getTextBody()),
                 'htmlText' => $message->getHtmlBody(),
                 'emlPath' => $emlPath,
