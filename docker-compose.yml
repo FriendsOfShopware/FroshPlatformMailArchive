@@ -2,7 +2,7 @@
 services:
   shopware:
     image: dockware/dev:latest
-    ports:*
+    ports:
       - "80:80"
       - "3306:3306"
       - "22:22"
