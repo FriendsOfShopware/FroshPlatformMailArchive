@@ -52,7 +52,7 @@ task console -- <shopware command>
 #### composer:
 Allows you to execute composer commands as follows:
 ```
-task composer -- <shopware command>
+task composer -- <composer command>
 ```
 
 #### start:
