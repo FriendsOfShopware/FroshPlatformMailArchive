@@ -57,7 +57,7 @@ class MailArchiveDefinition extends EntityDefinition
             (new StringField('subject', 'subject', 998))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
             (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml()),
             (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING)),
-            (new StringField('eml_path', 'emlPath', 2048)),
+            new StringField('eml_path', 'emlPath', 2048),
             (new StringField('transport_state', 'transportState'))->addFlags(new Required()),
 
             (new OneToManyAssociationField('attachments', MailArchiveAttachmentDefinition::class, 'mail_archive_id', 'id'))->addFlags(new CascadeDelete()),

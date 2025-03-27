@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Extension\Checkout\Order;
 
@@ -11,11 +11,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderExtension extends EntityExtension
 {
-    public function getDefinitionClass(): string
-    {
-        return OrderDefinition::class;
-    }
-
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
@@ -25,5 +20,15 @@ class OrderExtension extends EntityExtension
                 'order_id',
             ))->addFlags(new SetNullOnDelete(false)),
         );
+    }
+
+    public function getEntityName(): string
+    {
+        return OrderDefinition::ENTITY_NAME;
+    }
+
+    public function getDefinitionClass(): string
+    {
+        return OrderDefinition::class;
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "frosh/mail-platform-archive",
-    "version": "3.5.0",
+    "version": "3.5.1",
     "description": "Mail Archive",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -40,12 +40,16 @@
         }
     },
     "require": {
-        "shopware/core": "~6.6.0",
+        "shopware/core": "~6.6.0 || ~6.7.0",
         "zbateson/mail-mime-parser": "^2.4"
     },
     "config": {
         "allow-plugins": {
           "symfony/runtime": true
         }
+    },
+    "scripts": {
+        "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension format /ext",
+        "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:latest extension validate --full /ext"
     }
 }

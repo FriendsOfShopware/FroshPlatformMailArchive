@@ -7,3 +7,7 @@ frosh-platform-mail-archive.js
 /src/Resources/public/
 /composer.lock
 .php-cs-fixer.cache
+
+src/Resources/app/administration/src/.vite
+src/Resources/public
+

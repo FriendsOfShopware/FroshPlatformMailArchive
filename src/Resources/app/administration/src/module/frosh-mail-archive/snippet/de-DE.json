@@ -69,19 +69,19 @@
                 "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             },
             "resend-success-notification": {
-              "message": "Der E-Mail-Versand wurde gestartet.",
-              "title": "Mail Archiv"
+                "message": "Der E-Mail-Versand wurde gestartet.",
+                "title": "Mail Archiv"
             },
             "resend-error-notification": {
-              "title": "Mail Archiv",
-              "message": "Fehler beim Senden der E-Mail"
+                "title": "Mail Archiv",
+                "message": "Fehler beim Senden der E-Mail"
             },
             "resend-grid": {
-              "navigate": "Anzeigen",
-              "column-created-at": "Gesendet am",
-              "column-state": "Status",
-              "currently-selected": "ausgewählt",
-              "title": "Sendeverlauf"
+                "navigate": "Anzeigen",
+                "column-created-at": "Gesendet am",
+                "column-state": "Status",
+                "currently-selected": "ausgewählt",
+                "title": "Sendeverlauf"
             }
         }
     }

@@ -7,6 +7,7 @@ namespace Frosh\MailArchive;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FroshPlatformMailArchive extends Plugin
 {
@@ -17,7 +18,7 @@ class FroshPlatformMailArchive extends Plugin
         }
 
         $container = $this->container;
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             return;
         }
 
