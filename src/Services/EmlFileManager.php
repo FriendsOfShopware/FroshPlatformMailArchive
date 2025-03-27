@@ -17,7 +17,8 @@ class EmlFileManager
     public function __construct(
         #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')]
         private readonly FilesystemOperator $filesystem,
-    ) {}
+    ) {
+    }
 
     /**
      * @return string Path to the eml file
@@ -48,7 +49,7 @@ class EmlFileManager
     public function getEmlFileAsString(string $emlFilePath): false|string
     {
         try {
-            $extension = \pathinfo($emlFilePath, PATHINFO_EXTENSION);
+            $extension = \pathinfo($emlFilePath, \PATHINFO_EXTENSION);
 
             $content = $this->filesystem->read($emlFilePath);
 
@@ -72,7 +73,7 @@ class EmlFileManager
 
         $content = $this->getEmlFileAsString($emlFilePath);
 
-        if (empty($content)) {
+        if ($content === '' || $content === '0' || $content === false) {
             return false;
         }
 
