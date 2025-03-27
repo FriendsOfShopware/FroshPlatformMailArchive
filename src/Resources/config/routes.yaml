@@ -1,3 +1,3 @@
 frosh_mail_archive:
-    resource: ../../Controller/**/*Controller.php
-    type: attribute
+  resource: ../../Controller/**/*Controller.php
+  type: attribute

@@ -1,88 +1,88 @@
 {
-    "frosh-mail-archive": {
-        "title": "Mail Archive",
-        "state": {
-            "pending": "pending",
-            "sent": "sent",
-            "resent": "resent",
-            "failed": "failed",
-            "unknown": "unknown"
-        },
-        "list": {
-            "actions": {
-                "bulkResendAction": "Resend",
-                "bulkResendWarningTooltip": "Attention: Some mail providers have a limit on how many emails can be sent at the same time.",
-                "resendAction": "Resend mail",
-                "showAction": "Show"
-            },
-            "columns": {
-                "sentDate": "Sent date",
-                "subject": "Subject",
-                "receiver": "Recipients",
-                "transportState": "State",
-                "transportFailed": "Mail delivery failed."
-            },
-            "sidebar": {
-                "refresh": "Refresh",
-                "filter": "Filter",
-                "filters": {
-                    "search": "Search",
-                    "customer": "Customer",
-                    "salesChannel": "Sales Channel",
-                    "transportStateLabel": "State",
-                    "transportStatePlaceholder": "Select state",
-                    "resetFilter": "Reset filter"
-                }
-            }
-        },
-        "detail": {
-            "toolbar": {
-                "customer": "Open customer",
-                "resend": "Resend mail",
-                "downloadEml": "Download mail"
-            },
-            "metadata": {
-                "title": "Metadata",
-                "sentDate": "Sent date",
-                "sender": "Sender",
-                "receiver": "Recipients",
-                "subject": "Subject",
-                "salesChannel": "Sales Channel",
-                "customer": "Customer",
-                "order": "Order",
-                "flow": "Flow"
-            },
-            "content": {
-                "title": "Content"
-            },
-            "attachments": {
-                "title": "Attachments",
-                "size-unknown": "unknown",
-                "download": "Download",
-                "size": "File size",
-                "file-name": "Name",
-                "type": "MIME type",
-                "no-attachments-alert": "This mail does not contain any attachments.",
-                "attachments-incomplete-alert": "Some attachments might not show up while the mail is in pending state."
-            },
-            "alert": {
-                "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
-            },
-            "resend-success-notification": {
-                "message": "Mail dispatch has started.",
-                "title": "Mail Archive"
-            },
-            "resend-error-notification": {
-                "title": "Mail Archive",
-                "message": "Mail could not be delivered"
-            },
-            "resend-grid": {
-                "navigate": "Show",
-                "column-created-at": "Sent at",
-                "column-state": "State",
-                "currently-selected": "this",
-                "title": "Resend history"
-            }
+  "frosh-mail-archive": {
+    "title": "Mail Archive",
+    "state": {
+      "pending": "pending",
+      "sent": "sent",
+      "resent": "resent",
+      "failed": "failed",
+      "unknown": "unknown"
+    },
+    "list": {
+      "actions": {
+        "bulkResendAction": "Resend",
+        "bulkResendWarningTooltip": "Attention: Some mail providers have a limit on how many emails can be sent at the same time.",
+        "resendAction": "Resend mail",
+        "showAction": "Show"
+      },
+      "columns": {
+        "sentDate": "Sent date",
+        "subject": "Subject",
+        "receiver": "Recipients",
+        "transportState": "State",
+        "transportFailed": "Mail delivery failed."
+      },
+      "sidebar": {
+        "refresh": "Refresh",
+        "filter": "Filter",
+        "filters": {
+          "search": "Search",
+          "customer": "Customer",
+          "salesChannel": "Sales Channel",
+          "transportStateLabel": "State",
+          "transportStatePlaceholder": "Select state",
+          "resetFilter": "Reset filter"
         }
+      }
+    },
+    "detail": {
+      "toolbar": {
+        "customer": "Open customer",
+        "resend": "Resend mail",
+        "downloadEml": "Download mail"
+      },
+      "metadata": {
+        "title": "Metadata",
+        "sentDate": "Sent date",
+        "sender": "Sender",
+        "receiver": "Recipients",
+        "subject": "Subject",
+        "salesChannel": "Sales Channel",
+        "customer": "Customer",
+        "order": "Order",
+        "flow": "Flow"
+      },
+      "content": {
+        "title": "Content"
+      },
+      "attachments": {
+        "title": "Attachments",
+        "size-unknown": "unknown",
+        "download": "Download",
+        "size": "File size",
+        "file-name": "Name",
+        "type": "MIME type",
+        "no-attachments-alert": "This mail does not contain any attachments.",
+        "attachments-incomplete-alert": "Some attachments might not show up while the mail is in pending state."
+      },
+      "alert": {
+        "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
+      },
+      "resend-success-notification": {
+        "message": "Mail dispatch has started.",
+        "title": "Mail Archive"
+      },
+      "resend-error-notification": {
+        "title": "Mail Archive",
+        "message": "Mail could not be delivered"
+      },
+      "resend-grid": {
+        "navigate": "Show",
+        "column-created-at": "Sent at",
+        "column-state": "State",
+        "currently-selected": "this",
+        "title": "Resend history"
+      }
     }
+  }
 }

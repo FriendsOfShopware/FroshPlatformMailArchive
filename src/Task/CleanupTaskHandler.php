@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Frosh\MailArchive\Task;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
 use Frosh\MailArchive\Services\EmlFileManager;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
@@ -26,8 +27,9 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EmlFileManager $emlFileManager,
+        LoggerInterface $exceptionLogger,
     ) {
-        parent::__construct($scheduledTaskRepository);
+        parent::__construct($scheduledTaskRepository, $exceptionLogger);
     }
 
     public function run(): void
@@ -39,7 +41,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         }
 
         $time = new \DateTime();
-        $time->modify(sprintf('-%s days', $days));
+        $time->modify(\sprintf('-%s days', $days));
 
         $query = $this->connection->createQueryBuilder();
 
