@@ -1,88 +1,88 @@
 {
-    "frosh-mail-archive": {
-        "title": "Mail Archiv",
-        "state": {
-            "pending": "ausstehend",
-            "sent": "gesendet",
-            "resent": "erneut gesendet",
-            "failed": "fehlgeschlagen",
-            "unknown": "unbekannt"
-        },
-        "list": {
-            "actions": {
-                "bulkResendAction": "Erneut versenden",
-                "bulkResendWarningTooltip": "Achtung: Manche MailProvider haben eine Begrenzung, wie viele Mails gleichzeitig versendet werden können.",
-                "resendAction": "E-Mail erneut versenden",
-                "showAction": "Anzeigen"
-            },
-            "columns": {
-                "sentDate": "Versanddatum",
-                "subject": "Betreff",
-                "receiver": "Empfänger",
-                "transportState": "Status",
-                "transportFailed": "Versand der E-Mail fehlgeschlagen"
-            },
-            "sidebar": {
-                "refresh": "Neuladen",
-                "filter": "Filter",
-                "filters": {
-                    "search": "Suche",
-                    "customer": "Kunde",
-                    "salesChannel": "Verkaufskanal",
-                    "transportStateLabel": "Status",
-                    "transportStatePlaceholder": "Status auswählen",
-                    "resetFilter": "Filter zurücksetzen"
-                }
-            }
-        },
-        "detail": {
-            "toolbar": {
-                "customer": "Kunden öffnen",
-                "resend": "E-Mail erneut versenden",
-                "downloadEml": "Download E-Mail"
-            },
-            "metadata": {
-                "title": "Metadaten",
-                "sentDate": "Versanddatum",
-                "sender": "Absender",
-                "receiver": "Empfänger",
-                "subject": "Betreff",
-                "salesChannel": "Verkaufskanal",
-                "customer": "Kunde",
-                "order": "Bestellung",
-                "flow": "Flow"
-            },
-            "content": {
-                "title": "Inhalt"
-            },
-            "attachments": {
-                "title": "Anhänge",
-                "size-unknown": "unbekannt",
-                "download": "Herunterladen",
-                "size": "Dateigröße",
-                "file-name": "Name",
-                "type": "MIME type",
-                "no-attachments-alert": "Diese E-Mail enthält keine Anhänge.",
-                "attachments-incomplete-alert": "Möglicherweise werden nicht alle Anhänge angezeigt, während die E-Mail im \"ausstehend\" Status ist."
-            },
-            "alert": {
-                "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
-            },
-            "resend-success-notification": {
-              "message": "Der E-Mail-Versand wurde gestartet.",
-              "title": "Mail Archiv"
-            },
-            "resend-error-notification": {
-              "title": "Mail Archiv",
-              "message": "Fehler beim Senden der E-Mail"
-            },
-            "resend-grid": {
-              "navigate": "Anzeigen",
-              "column-created-at": "Gesendet am",
-              "column-state": "Status",
-              "currently-selected": "ausgewählt",
-              "title": "Sendeverlauf"
-            }
+  "frosh-mail-archive": {
+    "title": "Mail Archiv",
+    "state": {
+      "pending": "ausstehend",
+      "sent": "gesendet",
+      "resent": "erneut gesendet",
+      "failed": "fehlgeschlagen",
+      "unknown": "unbekannt"
+    },
+    "list": {
+      "actions": {
+        "bulkResendAction": "Erneut versenden",
+        "bulkResendWarningTooltip": "Achtung: Manche MailProvider haben eine Begrenzung, wie viele Mails gleichzeitig versendet werden können.",
+        "resendAction": "E-Mail erneut versenden",
+        "showAction": "Anzeigen"
+      },
+      "columns": {
+        "sentDate": "Versanddatum",
+        "subject": "Betreff",
+        "receiver": "Empfänger",
+        "transportState": "Status",
+        "transportFailed": "Versand der E-Mail fehlgeschlagen"
+      },
+      "sidebar": {
+        "refresh": "Neuladen",
+        "filter": "Filter",
+        "filters": {
+          "search": "Suche",
+          "customer": "Kunde",
+          "salesChannel": "Verkaufskanal",
+          "transportStateLabel": "Status",
+          "transportStatePlaceholder": "Status auswählen",
+          "resetFilter": "Filter zurücksetzen"
         }
+      }
+    },
+    "detail": {
+      "toolbar": {
+        "customer": "Kunden öffnen",
+        "resend": "E-Mail erneut versenden",
+        "downloadEml": "Download E-Mail"
+      },
+      "metadata": {
+        "title": "Metadaten",
+        "sentDate": "Versanddatum",
+        "sender": "Absender",
+        "receiver": "Empfänger",
+        "subject": "Betreff",
+        "salesChannel": "Verkaufskanal",
+        "customer": "Kunde",
+        "order": "Bestellung",
+        "flow": "Flow"
+      },
+      "content": {
+        "title": "Inhalt"
+      },
+      "attachments": {
+        "title": "Anhänge",
+        "size-unknown": "unbekannt",
+        "download": "Herunterladen",
+        "size": "Dateigröße",
+        "file-name": "Name",
+        "type": "MIME type",
+        "no-attachments-alert": "Diese E-Mail enthält keine Anhänge.",
+        "attachments-incomplete-alert": "Möglicherweise werden nicht alle Anhänge angezeigt, während die E-Mail im \"ausstehend\" Status ist."
+      },
+      "alert": {
+        "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
+      },
+      "resend-success-notification": {
+        "message": "Der E-Mail-Versand wurde gestartet.",
+        "title": "Mail Archiv"
+      },
+      "resend-error-notification": {
+        "title": "Mail Archiv",
+        "message": "Fehler beim Senden der E-Mail"
+      },
+      "resend-grid": {
+        "navigate": "Anzeigen",
+        "column-created-at": "Gesendet am",
+        "column-state": "Status",
+        "currently-selected": "ausgewählt",
+        "title": "Sendeverlauf"
+      }
     }
+  }
 }

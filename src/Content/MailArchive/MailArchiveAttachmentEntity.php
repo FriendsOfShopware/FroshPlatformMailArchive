@@ -13,7 +13,7 @@ class MailArchiveAttachmentEntity extends Entity
 
     protected string $mailArchiveId;
 
-    protected ?MailArchiveEntity $mailArchive;
+    protected ?MailArchiveEntity $mailArchive = null;
 
     protected string $fileName;
 
