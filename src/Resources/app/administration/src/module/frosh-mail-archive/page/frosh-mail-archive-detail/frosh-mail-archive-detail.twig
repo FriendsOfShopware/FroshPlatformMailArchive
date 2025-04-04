@@ -91,11 +91,15 @@
                     :title="$t('frosh-mail-archive.detail.content.title')"
                     position-identifier="frosh-mail-archive-content"
             >
-                <h4>HTML</h4>
-                <iframe :src="htmlText" sandbox frameborder="0"></iframe>
+                <template v-if="archive.htmlText">
+                    <h4>HTML</h4>
+                    <iframe :src="htmlText" sandbox frameborder="0"></iframe>
+                </template>
 
-                <h4>Plain</h4>
-                <iframe :src="plainText" sandbox frameborder="0"></iframe>
+                <template v-if="archive.plainText">
+                    <h4>Plain</h4>
+                    <iframe :src="plainText" sandbox frameborder="0"></iframe>
+                </template>
             </sw-card>
             <sw-card :title="$t('frosh-mail-archive.detail.attachments.title')"
                      position-identifier="frosh-mail-archive-attachments"
