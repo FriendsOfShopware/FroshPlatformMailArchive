@@ -65,9 +65,16 @@ class MailArchiveController extends AbstractController
         }
 
         $mainRequest->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
-        $emlMessage = $this->emlFileManager->getEmlAsMessage($mailArchive->getEmlPath());
 
-        $headers = [];
+        $emlPath = $mailArchive->getEmlPath();
+        if ($emlPath === null) {
+            return new JsonResponse([
+                'headers' => [],
+            ]);
+        }
+
+        $emlMessage = $this->emlFileManager->getEmlAsMessage($emlPath);
+        $headers = $emlMessage->getAllHeaders() ?? [];
         foreach ($emlMessage->getAllHeaders() as $header) {
             $headers[$header->getName()] = $header->getValue();
         }
