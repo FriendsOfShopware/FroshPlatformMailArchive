@@ -5,6 +5,21 @@ class ApiClient extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
+    fetchEmlHeaders(mailId) {
+        const headers = this.getBasicHeaders({});
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/fetch-eml-headers`, {
+                mailId,
+            }, {
+                ...this.basicConfig,
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     resendMail(mailId) {
         const headers = this.getBasicHeaders({});
 

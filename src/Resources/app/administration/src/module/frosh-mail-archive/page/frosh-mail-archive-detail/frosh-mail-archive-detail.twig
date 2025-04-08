@@ -47,11 +47,11 @@
                     </sw-description-list>
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.cc') }}</dt>
-                        <dd>{{ jsonToTextConcat('cc') }}</dd>
+                        <dd>{{ emlHeaders.Cc ?? '-' }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.bcc') }}</dt>
-                        <dd>{{ jsonToTextConcat('bcc') }}</dd>
+                        <dd>{{ emlHeaders.Bcc  ?? '-' }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>{{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}</dt>
