@@ -89,6 +89,13 @@ class MailArchiveEntity extends Entity
         return $this->receiver;
     }
 
+    /**
+     * @param array<string, string> $receiver
+     */
+    public function setReceiver(array $receiver): void
+    {
+        $this->receiver = $receiver;
+    }
 
     public function getSubject(): string
     {
@@ -98,14 +105,6 @@ class MailArchiveEntity extends Entity
     public function setSubject(string $subject): void
     {
         $this->subject = $subject;
-    }
-
-    /**
-     * @param array<string, string> $receiver
-     */
-    public function setReceiver(array $receiver): void
-    {
-        $this->receiver = $receiver;
     }
 
     public function getPlainText(): ?string
