@@ -115,8 +115,8 @@ Component.register('frosh-mail-archive-detail', {
                 this.archive = archive;
             })
 
-            this.froshMailArchiveService.fetchEmlHeaders(this.archiveId).then(response => {
-              this.emlHeaders = response.headers;
+            this.froshMailArchiveService.fetchEmlHeaders(this.archiveId).then(headers => {
+              this.emlHeaders = headers;
             })
         },
         getContent(html) {

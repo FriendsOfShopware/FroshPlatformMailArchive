@@ -68,20 +68,20 @@ class MailArchiveController extends AbstractController
 
         $emlPath = $mailArchive->getEmlPath();
         if ($emlPath === null) {
-            return new JsonResponse([
-                'headers' => [],
-            ]);
+            return new JsonResponse([]);
         }
 
         $emlMessage = $this->emlFileManager->getEmlAsMessage($emlPath);
-        $headers = $emlMessage->getAllHeaders() ?? [];
+        if ($emlMessage === false) {
+            return new JsonResponse([]);
+        }
+
+        $headers = [];
         foreach ($emlMessage->getAllHeaders() as $header) {
             $headers[$header->getName()] = $header->getValue();
         }
 
-        return new JsonResponse([
-            'headers' => $headers,
-        ]);
+        return new JsonResponse($headers);
     }
 
     #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
