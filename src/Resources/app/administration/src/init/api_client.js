@@ -1,76 +1,94 @@
-const ApiService = Shopware.Classes.ApiService;
+const ApiService = Shopware.Classes.ApiService
 
 class ApiClient extends ApiService {
-    constructor(httpClient, loginService, apiEndpoint = 'frosh-mail-archive') {
-        super(httpClient, loginService, apiEndpoint);
-    }
+  constructor(httpClient, loginService, apiEndpoint = 'frosh-mail-archive') {
+    super(httpClient, loginService, apiEndpoint)
+  }
 
-    resendMail(mailId) {
-        const headers = this.getBasicHeaders({});
+  resendMail(mailId) {
+    const headers = this.getBasicHeaders({})
 
-        return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/resend-mail`, {
-                mailId,
-            }, {
-                ...this.basicConfig,
-                headers
-            })
-            .then((response) => {
-                return ApiService.handleResponse(response);
-            });
-    }
+    return this.httpClient
+      .post(
+        `_action/${this.getApiBasePath()}/resend-mail`,
+        {
+          mailId,
+        },
+        {
+          ...this.basicConfig,
+          headers,
+        }
+      )
+      .then((response) => {
+        return ApiService.handleResponse(response)
+      })
+  }
 
-    downloadMail(mailId) {
-        const headers = this.getBasicHeaders({});
+  downloadMail(mailId) {
+    const headers = this.getBasicHeaders({})
 
-        return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/content`, {
-                mailId,
-            }, {
-                ...this.basicConfig,
-                headers
-            })
-            .then((response) => {
-                const handledResponse = ApiService.handleResponse(response);
+    return this.httpClient
+      .post(
+        `_action/${this.getApiBasePath()}/content`,
+        {
+          mailId,
+        },
+        {
+          ...this.basicConfig,
+          headers,
+        }
+      )
+      .then((response) => {
+        const handledResponse = ApiService.handleResponse(response)
 
-                if (!handledResponse.success) {
-                    return handledResponse;
-                }
+        if (!handledResponse.success) {
+          return handledResponse
+        }
 
-                const objectUrl = window.URL.createObjectURL(new Blob([handledResponse.content]));
+        const objectUrl = window.URL.createObjectURL(
+          new Blob([handledResponse.content])
+        )
 
-                const link = document.createElement('a');
-                link.href = objectUrl;
-                link.setAttribute('download', handledResponse.fileName);
-                document.body.appendChild(link);
-                link.click();
-            });
-    }
+        const link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', handledResponse.fileName)
+        document.body.appendChild(link)
+        link.click()
+      })
+  }
 
-    downloadAttachment(attachmentId) {
-        const headers = this.getBasicHeaders({});
+  downloadAttachment(attachmentId) {
+    const headers = this.getBasicHeaders({})
 
-        return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/attachment`, {
-                attachmentId
-            }, {
-                ...this.basicConfig,
-                headers
-            })
-            .then((response) => {
-                const handledResponse = ApiService.handleResponse(response);
+    return this.httpClient
+      .post(
+        `_action/${this.getApiBasePath()}/attachment`,
+        {
+          attachmentId,
+        },
+        {
+          ...this.basicConfig,
+          headers,
+        }
+      )
+      .then((response) => {
+        const handledResponse = ApiService.handleResponse(response)
 
-                if (!handledResponse.success) {
-                    return handledResponse;
-                }
+        if (!handledResponse.success) {
+          return handledResponse
+        }
 
-                const link = document.createElement('a');
-                link.href = 'data:' + handledResponse.contentType + ';base64,' + handledResponse.content
-                link.setAttribute('download', handledResponse.fileName);
-                document.body.appendChild(link);
-                link.click();
-            });
-    }
+        const link = document.createElement('a')
+        link.href =
+          'data:' +
+          handledResponse.contentType +
+          ';base64,' +
+          handledResponse.content
+        link.setAttribute('download', handledResponse.fileName)
+        document.body.appendChild(link)
+        link.click()
+      })
+  }
 }
 
-export default ApiClient;
+export default ApiClient
