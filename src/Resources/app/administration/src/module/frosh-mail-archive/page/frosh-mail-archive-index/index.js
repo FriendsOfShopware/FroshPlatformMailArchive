@@ -178,13 +178,18 @@ Component.register('frosh-mail-archive-index', {
             }
             this.isLoading = true;
 
-            Promise.all(ids.map((id) => {
-                return this.froshMailArchiveService.resendMail(id);
-            })).finally(async () => {
+            this.bulkResendFunc(ids).then(async () => {
                 this.$refs.table?.resetSelection();
                 await this.getList();
                 this.isLoading = false;
             });
+        },
+
+        async bulkResendFunc(ids) {
+            for (let i = 0; i < ids.length; i++) {
+                let id = ids[i];
+                await this.froshMailArchiveService.resendMail(id);
+            }
         },
 
         onSelectionChanged(selection) {
