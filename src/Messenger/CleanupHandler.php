@@ -19,8 +19,7 @@ class CleanupHandler
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EmlFileManager $emlFileManager,
-    ) {
-    }
+    ) {}
 
     public function __invoke(CleanupMessage $message): void
     {
@@ -31,7 +30,7 @@ class CleanupHandler
         }
 
         $time = new \DateTime();
-        $time->modify(sprintf('-%s days', $days));
+        $time->modify(\sprintf('-%s days', $days));
 
         $query = $this->connection->createQueryBuilder();
 

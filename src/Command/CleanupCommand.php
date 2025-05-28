@@ -16,7 +16,6 @@ class CleanupCommand extends Command
 {
     public function __construct(
         private readonly MessageBusInterface $messageBus,
-
     ) {
         parent::__construct();
     }
