@@ -17,6 +17,6 @@ class CleanupTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 86400;
+        return 86400; // 1 day
     }
 }
