@@ -1,6 +1,6 @@
 import './page/frosh-mail-archive-index/index';
 import './page/frosh-mail-archive-detail/index';
-import './component/frosh-mail-resend-history'
+import './component/frosh-mail-resend-history';
 
 Shopware.Module.register('frosh-mail-archive', {
     type: 'plugin',
@@ -17,7 +17,7 @@ Shopware.Module.register('frosh-mail-archive', {
             path: 'list',
             meta: {
                 privilege: 'frosh_mail_archive:read',
-                parentPath: 'sw.settings.index.plugins'
+                parentPath: 'sw.settings.index.plugins',
             },
         },
         detail: {
@@ -25,14 +25,14 @@ Shopware.Module.register('frosh-mail-archive', {
             path: 'detail/:id',
             meta: {
                 parentPath: 'frosh.mail.archive.list',
-                privilege: 'frosh_mail_archive:read'
+                privilege: 'frosh_mail_archive:read',
             },
             props: {
                 default: ($route) => {
                     return { archiveId: $route.params.id };
                 },
             },
-        }
+        },
     },
 
     settingsItem: [
@@ -41,7 +41,7 @@ Shopware.Module.register('frosh-mail-archive', {
             to: 'frosh.mail.archive.list',
             icon: 'regular-envelope',
             name: 'frosh-mail-archive.title',
-            privilege: 'frosh_mail_archive:read'
-        }
-    ]
+            privilege: 'frosh_mail_archive:read',
+        },
+    ],
 });

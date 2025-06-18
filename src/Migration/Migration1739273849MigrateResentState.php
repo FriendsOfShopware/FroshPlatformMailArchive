@@ -19,7 +19,7 @@ class Migration1739273849MigrateResentState extends MigrationStep
     {
         $sourceMailIds = $connection->fetchFirstColumn('SELECT source_mail_id FROM frosh_mail_archive WHERE source_mail_id IS NOT NULL GROUP BY source_mail_id;');
 
-        if (empty($sourceMailIds)) {
+        if ($sourceMailIds === []) {
             return;
         }
 
@@ -34,5 +34,7 @@ class Migration1739273849MigrateResentState extends MigrationStep
         }
     }
 
-    public function updateDestructive(Connection $connection): void {}
+    public function updateDestructive(Connection $connection): void
+    {
+    }
 }

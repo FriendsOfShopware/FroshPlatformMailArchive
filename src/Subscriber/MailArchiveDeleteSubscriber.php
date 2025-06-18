@@ -9,8 +9,8 @@ use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityDeleteEvent;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MailArchiveDeleteSubscriber implements EventSubscriberInterface
@@ -20,8 +20,9 @@ class MailArchiveDeleteSubscriber implements EventSubscriberInterface
      */
     public function __construct(
         private readonly EntityRepository $froshMailArchiveRepository,
-        private readonly EmlFileManager   $emlFileManager,
-    ) {}
+        private readonly EmlFileManager $emlFileManager,
+    ) {
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -48,7 +49,7 @@ class MailArchiveDeleteSubscriber implements EventSubscriberInterface
                 continue;
             }
 
-            $event->addSuccess(function () use ($emlPath) {
+            $event->addSuccess(function () use ($emlPath): void {
                 $this->emlFileManager->deleteEmlFile($emlPath);
             });
         }

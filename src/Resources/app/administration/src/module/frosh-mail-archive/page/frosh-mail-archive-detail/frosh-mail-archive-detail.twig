@@ -4,13 +4,20 @@
     </template>
 
     <template #smart-bar-actions>
-        <sw-button-process :isLoading="downloadIsLoading" :process-success="downloadIsSuccessful" @click="downloadMail"
-                           @update:process-success="downloadFinish">
+        <sw-button-process
+            :isLoading="downloadIsLoading"
+            :process-success="downloadIsSuccessful"
+            @click="downloadMail"
+            @update:process-success="downloadFinish"
+        >
             {{ $t('frosh-mail-archive.detail.toolbar.downloadEml') }}
         </sw-button-process>
-
-        <sw-button-process :isLoading="resendIsLoading" :processSuccess="resendIsSuccessful" @click="resendMail"
-                           @update:process-success="resendFinish">
+        <sw-button-process
+            :isLoading="resendIsLoading"
+            :processSuccess="resendIsSuccessful"
+            @click="resendMail"
+            @update:process-success="resendFinish"
+        >
             {{ $t('frosh-mail-archive.detail.toolbar.resend') }}
         </sw-button-process>
     </template>
@@ -18,66 +25,92 @@
     <template #content>
         <sw-card-view v-if="archive">
             <sw-alert
-                    v-if="archive.transportState === 'failed'"
-                    variant="warning"
-                    class="frosh-mail-archive__detail-alert"
+                v-if="archive.transportState === 'failed'"
+                variant="warning"
+                class="frosh-mail-archive__detail-alert"
+                deprecated
             >
                 {{ $t('frosh-mail-archive.detail.alert.transportFailed') }}
             </sw-alert>
             <sw-card
-                    :title="$t('frosh-mail-archive.detail.metadata.title')"
-                    position-identifier="frosh-mail-archive-metadata"
+                :title="$t('frosh-mail-archive.detail.metadata.title')"
+                position-identifier="frosh-mail-archive-metadata"
             >
                 <sw-container
-                        columns="1fr 1fr"
-                        gap="0px 15px"
-                        class="frosh-mail-archive__detail-metadata"
+                    columns="1fr 1fr"
+                    gap="0px 15px"
+                    class="frosh-mail-archive__detail-metadata"
                 >
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.receiver') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.receiver') }}
+                        </dt>
                         <dd>{{ receiverText }}</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.sender') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.sender') }}
+                        </dt>
                         <dd>{{ senderText }}</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.subject') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.subject') }}
+                        </dt>
                         <dd>{{ archive.subject }}</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}
+                        </dt>
                         <dd>{{ createdAtDate }}</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.salesChannel') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.salesChannel') }}
+                        </dt>
                         <dd v-if="archive.salesChannel">
                             {{ archive.salesChannel.name }}
                         </dd>
                         <dd v-else>-</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.customer') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.customer') }}
+                        </dt>
                         <dd v-if="archive.customer">
-                            <router-link :to="{ name: 'sw.customer.detail', params: {id: archive.customerId} }">
-                                {{ archive.customer.customerNumber }} - {{ archive.customer.firstName }} {{ archive.customer.lastName }}
+                            <router-link
+                                :to="{ name: 'sw.customer.detail', params: {id: archive.customerId} }"
+                            >
+                                {{ archive.customer.customerNumber }}
+                                -
+                                {{ archive.customer.firstName }}
+                                {{ archive.customer.lastName }}
                             </router-link>
                         </dd>
                         <dd v-else>-</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.order') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.order') }}
+                        </dt>
                         <dd v-if="archive.order">
-                            <router-link :to="{ name: 'sw.order.detail', params: {id: archive.orderId}}">
+                            <router-link
+                                :to="{ name: 'sw.order.detail', params: {id: archive.orderId}}"
+                            >
                                 {{ archive.order.orderNumber }}
                             </router-link>
                         </dd>
                         <dd v-else>-</dd>
                     </sw-description-list>
                     <sw-description-list>
-                        <dt>{{ $tc('frosh-mail-archive.detail.metadata.flow') }}</dt>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.flow') }}
+                        </dt>
                         <dd v-if="archive.flow">
-                            <router-link :to="{ name: 'sw.flow.detail', params: {id: archive.flowId}}">
+                            <router-link
+                                :to="{ name: 'sw.flow.detail', params: {id: archive.flowId}}"
+                            >
                                 {{ archive.flow.name }}
                             </router-link>
                         </dd>
@@ -85,29 +118,47 @@
                     </sw-description-list>
                 </sw-container>
             </sw-card>
-            <frosh-mail-resend-history :key="resendKey" :currentMailId="archive.id"
-                                       :sourceMailId="archive.sourceMailId ?? archive.id"/>
+            <frosh-mail-resend-history
+                :key="resendKey"
+                :currentMailId="archive.id"
+                :sourceMailId="archive.sourceMailId ?? archive.id"
+            />
             <sw-card
-                    :title="$t('frosh-mail-archive.detail.content.title')"
-                    position-identifier="frosh-mail-archive-content"
+                :title="$t('frosh-mail-archive.detail.content.title')"
+                position-identifier="frosh-mail-archive-content"
             >
                 <template v-if="archive.htmlText">
                     <h4>HTML</h4>
-                    <iframe :src="htmlText" sandbox frameborder="0"></iframe>
+                    <iframe
+                        :src="htmlText"
+                        sandbox
+                        frameborder="0"
+                    ></iframe>
                 </template>
 
                 <template v-if="archive.plainText">
                     <h4>Plain</h4>
-                    <iframe :src="plainText" sandbox frameborder="0"></iframe>
+                    <iframe
+                        :src="plainText"
+                        sandbox
+                        frameborder="0"
+                    ></iframe>
                 </template>
             </sw-card>
-            <sw-card :title="$t('frosh-mail-archive.detail.attachments.title')"
-                     position-identifier="frosh-mail-archive-attachments"
+            <sw-card
+                :title="$t('frosh-mail-archive.detail.attachments.title')"
+                position-identifier="frosh-mail-archive-attachments"
             >
                 <template #grid>
-                    <sw-card-section v-if="archive.transportState === 'pending' || archive.attachments.length === 0"
-                                     secondary divider="bottom">
-                        <sw-alert variant="warning" v-if="archive.transportState === 'pending'">
+                    <sw-card-section
+                        v-if="archive.transportState === 'pending' || archive.attachments.length === 0"
+                        secondary
+                        divider="bottom"
+                    >
+                        <sw-alert
+                            variant="warning"
+                            v-if="archive.transportState === 'pending'"
+                        >
                             {{ $t('frosh-mail-archive.detail.attachments.attachments-incomplete-alert') }}
                         </sw-alert>
                         <sw-alert v-if="archive.attachments.length === 0">
@@ -115,22 +166,25 @@
                         </sw-alert>
                     </sw-card-section>
                     <sw-data-grid
-                            :showSelection="false"
-                            :dataSource="archive.attachments"
-                            :columns="attachmentsColumns"
+                        :showSelection="false"
+                        :dataSource="archive.attachments"
+                        :columns="attachmentsColumns"
                     >
                         <template #column-fileSize="{ item }">
                             <template v-if="item.fileSize < 0">
                                 {{ $t('frosh-mail-archive.detail.attachments.size-unknown') }}
                             </template>
+
                             <template v-else>
                                 {{ formatSize(item.fileSize) }}
                             </template>
                         </template>
 
                         <template #actions="{ item }">
-                            <sw-context-menu-item class="sw-entity-listing__context-menu-show-action"
-                                                  @click="downloadAttachment(item.id)">
+                            <sw-context-menu-item
+                                class="sw-entity-listing__context-menu-show-action"
+                                @click="downloadAttachment(item.id)"
+                            >
                                 {{ $t('frosh-mail-archive.detail.attachments.download') }}
                             </sw-context-menu-item>
                         </template>

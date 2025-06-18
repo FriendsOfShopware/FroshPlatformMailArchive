@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Subscriber;
 
@@ -18,13 +18,13 @@ class MailBeforeSentSubscriber implements EventSubscriberInterface
     public function onMailBeforeSent(MailBeforeSentEvent $e): void
     {
         /** @var string $customerId */
-        $customerId = $e->getData()['customerId'] ?? "";
+        $customerId = $e->getData()['customerId'] ?? '';
 
         /** @var string $orderId */
-        $orderId = $e->getData()['orderId'] ?? "";
+        $orderId = $e->getData()['orderId'] ?? '';
 
         /** @var string $flowId */
-        $flowId = $e->getData()['flowId'] ?? "";
+        $flowId = $e->getData()['flowId'] ?? '';
 
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_CUSTOMER_ID_HEADER, $customerId);
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_ORDER_ID_HEADER, $orderId);

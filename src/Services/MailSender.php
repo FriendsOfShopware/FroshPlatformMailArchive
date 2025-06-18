@@ -8,6 +8,7 @@ use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -16,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
@@ -40,11 +42,12 @@ class MailSender extends AbstractMailSender
      */
     public function __construct(
         private readonly AbstractMailSender $mailSender,
-        private readonly RequestStack       $requestStack,
-        private readonly EntityRepository   $froshMailArchiveRepository,
-        private readonly EntityRepository   $customerRepository,
-        private readonly EmlFileManager     $emlFileManager,
-    ) {}
+        private readonly RequestStack $requestStack,
+        private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly EntityRepository $customerRepository,
+        private readonly EmlFileManager $emlFileManager,
+    ) {
+    }
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
@@ -56,8 +59,7 @@ class MailSender extends AbstractMailSender
 
         // save the mail first, to make sure it exists in the database when we want to update its state
         $this->saveMail($id, $email, $metadata);
-        $this->mailSender->send($email, $envelope);
-
+        $this->mailSender->send($email, $envelope); // @phpstan-ignore-line
     }
 
     public function getDecorated(): AbstractMailSender
@@ -72,7 +74,7 @@ class MailSender extends AbstractMailSender
     {
         $emlPath = $this->emlFileManager->writeFile($id, $message->toString());
 
-        $context = Context::createDefaultContext();
+        $context = new Context(new SystemSource());
         $this->froshMailArchiveRepository->create([
             [
                 'id' => $id,
@@ -94,7 +96,7 @@ class MailSender extends AbstractMailSender
 
     private function getCurrentSalesChannelId(): ?string
     {
-        if ($this->requestStack->getMainRequest() === null) {
+        if (!$this->requestStack->getMainRequest() instanceof Request) {
             return null;
         }
 
@@ -109,7 +111,7 @@ class MailSender extends AbstractMailSender
     private function getSourceMailId(Context $context): ?string
     {
         $request = $this->requestStack->getMainRequest();
-        if ($request === null) {
+        if (!$request instanceof Request) {
             return null;
         }
 
@@ -138,17 +140,19 @@ class MailSender extends AbstractMailSender
     {
         $criteria = new Criteria();
 
-        $addresses = \array_map(function (Address $mail) {
-            return $mail->getAddress();
-        }, $to);
+        /** @var list<string> $addresses */
+        $addresses = \array_map(fn (Address $mail) => $mail->getAddress(), $to);
 
         $criteria->addFilter(new EqualsAnyFilter('email', $addresses));
 
-        return $this->customerRepository->searchIds($criteria, Context::createDefaultContext())->firstId();
+        $context = new Context(new SystemSource());
+
+        return $this->customerRepository->searchIds($criteria, $context)->firstId();
     }
 
     /**
      * @param Address[] $addresses
+     *
      * @return array<string, string>
      */
     private function convertAddress(array $addresses): array

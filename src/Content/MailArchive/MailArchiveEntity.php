@@ -16,54 +16,57 @@ class MailArchiveEntity extends Entity
 {
     use EntityIdTrait;
 
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     */
     protected array $sender;
 
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     */
     protected array $receiver;
 
     protected string $subject;
 
-    protected ?string $plainText;
+    protected ?string $plainText = null;
 
-    protected ?string $htmlText;
+    protected ?string $htmlText = null;
 
-    protected ?string $transportState;
+    protected ?string $transportState = null;
 
-    protected ?string $emlPath;
+    protected ?string $emlPath = null;
 
-    protected ?string $salesChannelId;
+    protected ?string $salesChannelId = null;
 
-    protected ?SalesChannelEntity $salesChannel;
+    protected ?SalesChannelEntity $salesChannel = null;
 
-    protected ?string $customerId;
+    protected ?string $customerId = null;
 
-    protected ?CustomerEntity $customer;
+    protected ?CustomerEntity $customer = null;
 
-    protected ?string $orderId;
+    protected ?string $orderId = null;
 
-    protected ?string $orderVersionId;
+    protected ?string $orderVersionId = null;
 
-    protected ?OrderEntity $order;
+    protected ?OrderEntity $order = null;
 
-    protected ?string $flowId;
+    protected ?string $flowId = null;
 
-    protected ?FlowEntity $flow;
+    protected ?FlowEntity $flow = null;
 
     /**
      * @var EntityCollection<MailArchiveAttachmentEntity>|null
      */
     protected ?EntityCollection $attachments = null;
 
-    protected ?string $sourceMailId;
+    protected ?string $sourceMailId = null;
 
-    protected ?MailArchiveEntity $sourceMail;
+    protected ?MailArchiveEntity $sourceMail = null;
 
     /**
      * @var EntityCollection<MailArchiveEntity>|null
      */
     protected ?EntityCollection $sourceMails = null;
-
 
     /**
      * @return array<string, string>
@@ -288,5 +291,4 @@ class MailArchiveEntity extends Entity
     {
         $this->orderVersionId = $orderVersionId;
     }
-
 }
