@@ -41,7 +41,7 @@
     },
     "require": {
         "shopware/core": "~6.6.0 || ~6.7.0",
-        "zbateson/mail-mime-parser": "^2.4"
+        "zbateson/mail-mime-parser": "^3.0"
     },
     "config": {
         "allow-plugins": {
