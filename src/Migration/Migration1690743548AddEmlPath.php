@@ -20,7 +20,5 @@ class Migration1690743548AddEmlPath extends MigrationStep
                                             ADD `eml_path` varchar(2048) NULL;');
     }
 
-    public function updateDestructive(Connection $connection): void
-    {
-    }
+    public function updateDestructive(Connection $connection): void {}
 }

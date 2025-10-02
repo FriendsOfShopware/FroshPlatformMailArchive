@@ -19,7 +19,5 @@ class Migration1713775973AlterSubjectFieldLength extends MigrationStep
         $connection->executeStatement('ALTER TABLE `frosh_mail_archive` MODIFY `subject` VARCHAR(998) NOT NULL;');
     }
 
-    public function updateDestructive(Connection $connection): void
-    {
-    }
+    public function updateDestructive(Connection $connection): void {}
 }

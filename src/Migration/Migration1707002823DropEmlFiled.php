@@ -19,7 +19,5 @@ class Migration1707002823DropEmlFiled extends MigrationStep
         $connection->executeStatement('ALTER TABLE `frosh_mail_archive` DROP COLUMN `eml`');
     }
 
-    public function updateDestructive(Connection $connection): void
-    {
-    }
+    public function updateDestructive(Connection $connection): void {}
 }

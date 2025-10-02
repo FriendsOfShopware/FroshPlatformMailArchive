@@ -21,7 +21,5 @@ class Migration1598204175SenderToJson extends MigrationStep
 CHANGE `sender` `sender` json NOT NULL AFTER `id`;');
     }
 
-    public function updateDestructive(Connection $connection): void
-    {
-    }
+    public function updateDestructive(Connection $connection): void {}
 }

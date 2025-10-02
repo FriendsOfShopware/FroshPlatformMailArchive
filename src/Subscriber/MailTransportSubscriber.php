@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Frosh\MailArchive\Subscriber;
 
@@ -24,8 +26,7 @@ readonly class MailTransportSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityRepository $froshMailArchiveRepository,
         private EmlFileManager $emlFileManager,
-    ) {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -77,7 +78,7 @@ readonly class MailTransportSubscriber implements EventSubscriberInterface
     {
         $attachments = $message->getAttachments();
 
-        return array_map(static fn (DataPart $attachment) => [
+        return array_map(static fn(DataPart $attachment) => [
             'fileName' => $attachment->getFilename() ?? 'attachment',
             'contentType' => $attachment->getContentType(),
             'fileSize' => \strlen($attachment->getBody()),

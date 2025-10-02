@@ -123,17 +123,12 @@ Component.register('frosh-mail-archive-detail', {
                 });
         },
         getContent(html) {
+            const binary = new TextEncoder().encode(html);
+            let result = '';
+            binary.forEach(b => result += String.fromCharCode(b));
+
             return (
-                'data:text/html;base64,' +
-                btoa(
-                    unescape(
-                        encodeURIComponent(
-                            html.replace(/[\u00A0-\u2666]/g, function (c) {
-                                return '&#' + c.charCodeAt(0) + ';';
-                            })
-                        )
-                    )
-                )
+                'data:text/html;base64;charset=utf-8,' + btoa(result)
             );
         },
         openCustomer() {
