@@ -46,8 +46,7 @@ class MailSender extends AbstractMailSender
         private readonly EntityRepository $froshMailArchiveRepository,
         private readonly EntityRepository $customerRepository,
         private readonly EmlFileManager $emlFileManager,
-    ) {
-    }
+    ) {}
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
@@ -141,7 +140,7 @@ class MailSender extends AbstractMailSender
         $criteria = new Criteria();
 
         /** @var list<string> $addresses */
-        $addresses = \array_map(fn (Address $mail) => $mail->getAddress(), $to);
+        $addresses = \array_map(fn(Address $mail) => $mail->getAddress(), $to);
 
         $criteria->addFilter(new EqualsAnyFilter('email', $addresses));
 

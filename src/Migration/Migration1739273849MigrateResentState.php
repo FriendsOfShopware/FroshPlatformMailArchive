@@ -34,7 +34,5 @@ class Migration1739273849MigrateResentState extends MigrationStep
         }
     }
 
-    public function updateDestructive(Connection $connection): void
-    {
-    }
+    public function updateDestructive(Connection $connection): void {}
 }
