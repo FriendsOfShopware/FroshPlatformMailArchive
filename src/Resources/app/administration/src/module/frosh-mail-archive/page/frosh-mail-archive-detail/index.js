@@ -128,7 +128,7 @@ Component.register('frosh-mail-archive-detail', {
             binary.forEach(b => result += String.fromCharCode(b));
 
             return (
-                'data:text/html;base64;charset=utf-8,' + btoa(result)
+                'data:text/html;charset=utf-8;base64,' + btoa(result)
             );
         },
         openCustomer() {
