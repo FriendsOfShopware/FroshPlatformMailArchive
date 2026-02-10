@@ -77,7 +77,7 @@ class MailArchiveController extends AbstractController
             $this->enrichFromDatabase($mailArchive, $email);
         }
 
-        if($emailAddress){
+        if ($emailAddress) {
             $email->to($emailAddress);
         }
 
