@@ -15,7 +15,7 @@
         <sw-button-process
             :isLoading="resendIsLoading"
             :processSuccess="resendIsSuccessful"
-            @click="resendMail"
+            @click="resendMailPreview"
             @update:process-success="resendFinish"
         >
             {{ $t('frosh-mail-archive.detail.toolbar.resend') }}
@@ -189,6 +189,27 @@
                             </sw-context-menu-item>
                         </template>
                     </sw-data-grid>
+                    {% block frosh_mail_archive_resend_modal %}
+                        <sw-modal 
+                            v-if="showResendModal" 
+                            :title="$tc('frosh-mail-archive.detail.toolbar.resend')" 
+                            :closable="true"
+                            @modal-close="closeResendModal"
+                        >
+                            <sw-email-field v-model:value="selectedEmailAdress" :label="$tc('frosh-mail-archive.detail.metadata.receiver')">
+                                {{selectedEmailAdress}}
+                            </sw-email-field>
+                            <sw-button 
+                                :disabled="false" variant="primary" 
+                                :square="false" 
+                                :block="false" 
+                                :isLoading="false"
+                                @click="resendMail(resendItem, selectedEmailAdress)"
+                            >
+                                {{$tc('frosh-mail-archive.list.actions.bulkResendAction')}}
+                            </sw-button>
+                        </sw-modal>
+                    {% endblock %}
                 </template>
             </sw-card>
         </sw-card-view>
