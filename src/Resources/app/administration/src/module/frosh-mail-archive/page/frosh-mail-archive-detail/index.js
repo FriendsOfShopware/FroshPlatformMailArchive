@@ -115,6 +115,7 @@ Component.register('frosh-mail-archive-detail', {
             criteria.addAssociation('customer');
             criteria.addAssociation('order');
             criteria.addAssociation('flow');
+            criteria.addAssociation('mailTemplate.mailTemplateType');
 
             this.repository
                 .get(this.archiveId, Shopware.Context.api, criteria)

@@ -28,8 +28,12 @@ class MailBeforeSentSubscriber implements EventSubscriberInterface
         /** @var string $flowId */
         $flowId = $e->getData()['flowId'] ?? '';
 
+        /** @var string $mailTemplateId */
+        $mailTemplateId = $e->getData()['templateId'] ?? $e->getData()['mailTemplateId'] ?? '';
+
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_CUSTOMER_ID_HEADER, $customerId);
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_ORDER_ID_HEADER, $orderId);
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_FLOW_ID_HEADER, $flowId);
+        $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_MAIL_TEMPLATE_ID_HEADER, $mailTemplateId);
     }
 }

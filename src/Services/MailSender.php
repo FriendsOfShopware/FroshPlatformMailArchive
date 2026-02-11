@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use function Psl\Vec\map;
 
 #[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
@@ -35,6 +36,8 @@ class MailSender extends AbstractMailSender
     public const FROSH_CUSTOMER_ID_HEADER = 'X-Frosh-Customer-ID';
     public const FROSH_ORDER_ID_HEADER = 'X-Frosh-Order-ID';
     public const FROSH_FLOW_ID_HEADER = 'X-Frosh-Flow-ID';
+
+    public const FROSH_MAIL_TEMPLATE_ID_HEADER = 'X-Frosh-Mail-Template-ID';
 
     /**
      * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
@@ -89,6 +92,7 @@ class MailSender extends AbstractMailSender
                 'transportState' => self::TRANSPORT_STATE_PENDING,
                 'orderId' => $metadata['orderId'],
                 'flowId' => $metadata['flowId'],
+                'mailTemplateId' => $metadata['mailTemplateId'],
             ],
         ], $context);
     }
@@ -179,10 +183,14 @@ class MailSender extends AbstractMailSender
         $flowIdHeader = $email->getHeaders()->get(self::FROSH_FLOW_ID_HEADER);
         $email->getHeaders()->remove(self::FROSH_FLOW_ID_HEADER);
 
+        $mailTemplateIdHeader = $email->getHeaders()->get(self::FROSH_MAIL_TEMPLATE_ID_HEADER);
+        $email->getHeaders()->remove(self::FROSH_MAIL_TEMPLATE_ID_HEADER);
+
         return [
             'customerId' => $customerIdHeader?->getBodyAsString() ?: null,
             'orderId' => $orderIdHeader?->getBodyAsString() ?: null,
             'flowId' => $flowIdHeader?->getBodyAsString() ?: null,
+            'mailTemplateId' => $mailTemplateIdHeader?->getBodyAsString() ?: null,
         ];
     }
 }

@@ -50,7 +50,8 @@
                 "salesChannel": "Sales Channel",
                 "customer": "Customer",
                 "order": "Order",
-                "flow": "Flow"
+                "flow": "Flow",
+                "mail-template": "Email template"
             },
             "content": {
                 "title": "Content"
