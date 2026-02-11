@@ -21,5 +21,7 @@ class Migration1739741754AddFlowId extends MigrationStep
             ADD COLUMN `flow_id` BINARY(16) NULL;');
     }
 
-    public function updateDestructive(Connection $connection): void {}
+    public function updateDestructive(Connection $connection): void
+    {
+    }
 }

@@ -122,7 +122,7 @@
                         </dt>
                         <dd v-if="archive.mailTemplateId">
                             <router-link
-                                    :to="{ name: 'sw.mail.template.detail', params: {id: archive.mailTemplateId}}"
+                                :to="{ name: 'sw.mail.template.detail', params: {id: archive.mailTemplateId}}"
                             >
                                 {{ archive.mailTemplate.mailTemplateType.translated.name }}
                             </router-link>

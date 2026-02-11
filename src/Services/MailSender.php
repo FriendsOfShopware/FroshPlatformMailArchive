@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use function Psl\Vec\map;
 
 #[AsDecorator(decorates: \Shopware\Core\Content\Mail\Service\MailSender::class)]
 class MailSender extends AbstractMailSender
@@ -49,7 +48,8 @@ class MailSender extends AbstractMailSender
         private readonly EntityRepository $froshMailArchiveRepository,
         private readonly EntityRepository $customerRepository,
         private readonly EmlFileManager $emlFileManager,
-    ) {}
+    ) {
+    }
 
     public function send(Email $email, ?Envelope $envelope = null): void
     {
@@ -144,7 +144,7 @@ class MailSender extends AbstractMailSender
         $criteria = new Criteria();
 
         /** @var list<string> $addresses */
-        $addresses = \array_map(fn(Address $mail) => $mail->getAddress(), $to);
+        $addresses = \array_map(fn (Address $mail) => $mail->getAddress(), $to);
 
         $criteria->addFilter(new EqualsAnyFilter('email', $addresses));
 
