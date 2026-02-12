@@ -7,6 +7,7 @@ namespace Frosh\MailArchive\Content\MailArchive;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Flow\FlowEntity;
+use Shopware\Core\Content\MailTemplate\MailTemplateEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
@@ -67,6 +68,10 @@ class MailArchiveEntity extends Entity
      * @var EntityCollection<MailArchiveEntity>|null
      */
     protected ?EntityCollection $sourceMails = null;
+
+    protected ?string $mailTemplateId = null;
+
+    protected ?MailTemplateEntity $mailTemplate = null;
 
     /**
      * @return array<string, string>
@@ -290,5 +295,25 @@ class MailArchiveEntity extends Entity
     public function setOrderVersionId(?string $orderVersionId): void
     {
         $this->orderVersionId = $orderVersionId;
+    }
+
+    public function getMailTemplateId(): ?string
+    {
+        return $this->mailTemplateId;
+    }
+
+    public function setMailTemplateId(?string $mailTemplateId): void
+    {
+        $this->mailTemplateId = $mailTemplateId;
+    }
+
+    public function getMailTemplate(): ?MailTemplateEntity
+    {
+        return $this->mailTemplate;
+    }
+
+    public function setMailTemplate(?MailTemplateEntity $mailTemplate): void
+    {
+        $this->mailTemplate = $mailTemplate;
     }
 }

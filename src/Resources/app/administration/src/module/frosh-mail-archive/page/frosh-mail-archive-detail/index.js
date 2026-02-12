@@ -115,6 +115,7 @@ Component.register('frosh-mail-archive-detail', {
             criteria.addAssociation('customer');
             criteria.addAssociation('order');
             criteria.addAssociation('flow');
+            criteria.addAssociation('mailTemplate.mailTemplateType');
 
             this.repository
                 .get(this.archiveId, Shopware.Context.api, criteria)
@@ -125,11 +126,9 @@ Component.register('frosh-mail-archive-detail', {
         getContent(html) {
             const binary = new TextEncoder().encode(html);
             let result = '';
-            binary.forEach(b => result += String.fromCharCode(b));
+            binary.forEach((b) => (result += String.fromCharCode(b)));
 
-            return (
-                'data:text/html;charset=utf-8;base64,' + btoa(result)
-            );
+            return 'data:text/html;charset=utf-8;base64,' + btoa(result);
         },
         openCustomer() {
             this.$router.push({

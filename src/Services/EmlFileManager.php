@@ -17,7 +17,8 @@ class EmlFileManager
     public function __construct(
         #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')]
         private readonly FilesystemOperator $filesystem,
-    ) {}
+    ) {
+    }
 
     /**
      * @return string Path to the eml file

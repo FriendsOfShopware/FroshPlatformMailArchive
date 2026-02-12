@@ -19,5 +19,7 @@ class Migration1694604822AddSourceMailId extends MigrationStep
         $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD `source_mail_id` BINARY(16) NULL;');
     }
 
-    public function updateDestructive(Connection $connection): void {}
+    public function updateDestructive(Connection $connection): void
+    {
+    }
 }

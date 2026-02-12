@@ -7,18 +7,16 @@ namespace Frosh\MailArchive\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1598204175SenderToJson extends MigrationStep
+class Migration1770821445AddMailTemplateId extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1598204175;
+        return 1770821445;
     }
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('UPDATE frosh_mail_archive SET sender = JSON_OBJECT(sender, \'\')');
-        $connection->executeStatement('ALTER TABLE `frosh_mail_archive`
-CHANGE `sender` `sender` json NOT NULL AFTER `id`;');
+        $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD COLUMN `mail_template_id` BINARY(16) NULL');
     }
 
     public function updateDestructive(Connection $connection): void

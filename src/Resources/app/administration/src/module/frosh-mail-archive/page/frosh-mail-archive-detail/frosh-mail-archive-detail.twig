@@ -116,6 +116,19 @@
                         </dd>
                         <dd v-else>-</dd>
                     </sw-description-list>
+                    <sw-description-list>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.mail-template') }}
+                        </dt>
+                        <dd v-if="archive.mailTemplateId">
+                            <router-link
+                                :to="{ name: 'sw.mail.template.detail', params: {id: archive.mailTemplateId}}"
+                            >
+                                {{ archive.mailTemplate.mailTemplateType.translated.name }}
+                            </router-link>
+                        </dd>
+                        <dd v-else>-</dd>
+                    </sw-description-list>
                 </sw-container>
             </sw-card>
             <frosh-mail-resend-history

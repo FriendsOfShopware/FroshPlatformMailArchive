@@ -50,7 +50,8 @@
                 "salesChannel": "Verkaufskanal",
                 "customer": "Kunde",
                 "order": "Bestellung",
-                "flow": "Flow"
+                "flow": "Flow",
+                "mail-template": "E-Mail Template"
             },
             "content": {
                 "title": "Inhalt"

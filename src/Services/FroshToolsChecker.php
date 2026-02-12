@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Frosh\MailArchive\Services;
 
@@ -14,9 +14,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-if (\interface_exists(CheckerInterface::class) &&
-    \class_exists(HealthCollection::class) &&
-    \class_exists(SettingsResult::class)) {
+if (\interface_exists(CheckerInterface::class)
+    && \class_exists(HealthCollection::class)
+    && \class_exists(SettingsResult::class)) {
     #[AutoconfigureTag('frosh_tools.health_checker')]
     class FroshToolsChecker implements CheckerInterface
     {
@@ -25,7 +25,8 @@ if (\interface_exists(CheckerInterface::class) &&
          */
         public function __construct(
             private readonly EntityRepository $froshMailArchiveRepository,
-        ) {}
+        ) {
+        }
 
         public function collect(HealthCollection $collection): void
         {
@@ -47,5 +48,7 @@ if (\interface_exists(CheckerInterface::class) &&
         }
     }
 } else {
-    class FroshToolsChecker {}
+    class FroshToolsChecker
+    {
+    }
 }
