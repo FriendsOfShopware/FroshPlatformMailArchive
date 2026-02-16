@@ -16,12 +16,17 @@ class Migration1739730285AddOrderId extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('
-            ALTER TABLE `frosh_mail_archive`
-            ADD COLUMN `order_id` BINARY(16) NULL,
-            ADD COLUMN `order_version_id` BINARY(16) NULL
-            ;
-        ');
+        if (!$this->columnExists($connection, 'frosh_mail_archive', 'order_id')) {
+            $connection->executeStatement('
+                ALTER TABLE `frosh_mail_archive` ADD COLUMN `order_id` BINARY(16) NULL;
+            ');
+        }
+
+        if (!$this->columnExists($connection, 'frosh_mail_archive', 'order_version_id')) {
+            $connection->executeStatement('
+                ALTER TABLE `frosh_mail_archive` ADD COLUMN `order_version_id` BINARY(16) NULL;
+            ');
+        }
     }
 
     public function updateDestructive(Connection $connection): void

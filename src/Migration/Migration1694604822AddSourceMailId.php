@@ -16,6 +16,9 @@ class Migration1694604822AddSourceMailId extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        if ($this->columnExists($connection, 'frosh_mail_archive', 'source_mail_id')) {
+            return;
+        }
         $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD `source_mail_id` BINARY(16) NULL;');
     }
 

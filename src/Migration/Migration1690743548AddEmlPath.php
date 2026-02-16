@@ -16,6 +16,9 @@ class Migration1690743548AddEmlPath extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        if ($this->columnExists($connection, 'frosh_mail_archive', 'eml_path')) {
+            return;
+        }
         $connection->executeStatement('ALTER TABLE `frosh_mail_archive`
                                             ADD `eml_path` varchar(2048) NULL;');
     }

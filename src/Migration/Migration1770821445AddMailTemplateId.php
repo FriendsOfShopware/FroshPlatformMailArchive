@@ -16,6 +16,9 @@ class Migration1770821445AddMailTemplateId extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        if ($this->columnExists($connection, 'frosh_mail_archive', 'mail_template_id')) {
+            return;
+        }
         $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD COLUMN `mail_template_id` BINARY(16) NULL');
     }
 
