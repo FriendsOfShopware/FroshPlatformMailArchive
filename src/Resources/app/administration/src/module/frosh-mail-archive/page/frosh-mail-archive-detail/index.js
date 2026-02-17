@@ -15,6 +15,9 @@ Component.register('frosh-mail-archive-detail', {
             downloadIsLoading: false,
             downloadIsSuccessful: false,
             resendCounter: 0,
+            selectedEmailAdress: null,
+            resendItem: null,
+            showResendModal: false
         };
     },
 
@@ -109,6 +112,14 @@ Component.register('frosh-mail-archive-detail', {
     },
 
     methods: {
+        resendMailPreview(){
+            item = this.archive
+            this.isLoading = true;
+            this.showResendModal = true;
+            const email = Object.keys(item.receiver)[0];
+            this.selectedEmailAdress = email;
+            this.resendItem = item;
+        },
         loadMail() {
             const criteria = new Criteria();
             criteria.addAssociation('attachments');
@@ -143,10 +154,8 @@ Component.register('frosh-mail-archive-detail', {
             this.downloadIsSuccessful = false;
         },
         resendMail() {
-            this.resendIsLoading = true;
-
             this.froshMailArchiveService
-                .resendMail(this.archive.id)
+                .resendMail(this.archive.id, this.selectedEmailAdress)
                 .then(() => {
                     this.resendIsSuccessful = true;
                     this.createNotificationSuccess({
@@ -172,7 +181,12 @@ Component.register('frosh-mail-archive-detail', {
                 .finally(() => {
                     this.resendIsLoading = false;
                     this.resendCounter++;
+                    this.showResendModal = false;
                 });
+        },
+        closeResendModal(){
+            this.showResendModal = false;
+            this.isLoading = false;
         },
         downloadMail() {
             this.downloadIsLoading = true;

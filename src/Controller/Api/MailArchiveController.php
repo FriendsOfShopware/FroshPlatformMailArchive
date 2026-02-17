@@ -50,6 +50,7 @@ class MailArchiveController extends AbstractController
     public function resend(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
+        $emailAddress = $request->request->get('email');
 
         if (!\is_string($mailId)) {
             throw MailArchiveException::parameterMissing('mailId');
@@ -75,6 +76,10 @@ class MailArchiveController extends AbstractController
             $this->enrichFromEml($emlPath, $email);
         } else {
             $this->enrichFromDatabase($mailArchive, $email);
+        }
+
+        if ($emailAddress) {
+            $email->to($emailAddress);
         }
 
         $this->mailSender->send($email);
