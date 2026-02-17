@@ -16,6 +16,9 @@ class Migration1739741754AddFlowId extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        if ($this->columnExists($connection, 'frosh_mail_archive', 'flow_id')) {
+            return;
+        }
         $connection->executeStatement('
             ALTER TABLE `frosh_mail_archive`
             ADD COLUMN `flow_id` BINARY(16) NULL;');
