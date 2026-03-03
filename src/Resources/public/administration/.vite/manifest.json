@@ -1,0 +1,11 @@
+{
+  "main.js": {
+    "file": "js/frosh-platform-mail-archive.js",
+    "name": "frosh-platform-mail-archive",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [
+      "css/frosh-platform-mail-archive.css"
+    ]
+  }
+}

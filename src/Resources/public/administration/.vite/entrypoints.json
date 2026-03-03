@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/froshplatformmailarchive/administration/",
+  "entryPoints": {
+    "frosh-platform-mail-archive": {
+      "css": [
+        "/bundles/froshplatformmailarchive/administration/css/frosh-platform-mail-archive.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/froshplatformmailarchive/administration/js/frosh-platform-mail-archive.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.0.4",
+    7,
+    0,
+    4
+  ],
+  "viteServer": null
+}
