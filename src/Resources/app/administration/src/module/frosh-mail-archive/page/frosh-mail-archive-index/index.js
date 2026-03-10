@@ -30,6 +30,9 @@ Component.register('frosh-mail-archive-index', {
                 term: null,
             },
             selectedItems: {},
+            selectedEmailAdress: null,
+            resendItem: null,
+            showResendModal: false
         };
     },
 
@@ -93,6 +96,10 @@ Component.register('frosh-mail-archive-index', {
     },
 
     methods: {
+        closeResendModal(){
+            this.showResendModal = false;
+            this.isLoading = false;
+        },
         translateState(state) {
             return this.$tc(`frosh-mail-archive.state.${state}`);
         },
@@ -163,11 +170,16 @@ Component.register('frosh-mail-archive-index', {
                 });
         },
 
-        resendMail(item) {
+        resendMailPreview(item){
             this.isLoading = true;
-
+            this.showResendModal = true;
+            const email = Object.keys(item.receiver)[0];
+            this.selectedEmailAdress = email;
+            this.resendItem = item;
+        },
+        resendMail(item, email = Object.keys(item.receiver)[0]) {
             this.froshMailArchiveService
-                .resendMail(item.id)
+                .resendMail(item.id, email)
                 .then(async () => {
                     this.createNotificationSuccess({
                         title: this.$tc(
@@ -191,6 +203,7 @@ Component.register('frosh-mail-archive-index', {
                 })
                 .finally(() => {
                     this.isLoading = false;
+                    this.showResendModal = false;
                 });
         },
 

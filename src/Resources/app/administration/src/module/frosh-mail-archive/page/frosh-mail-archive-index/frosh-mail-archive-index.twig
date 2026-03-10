@@ -60,7 +60,7 @@
                         square
                         size="small"
                         variant="context"
-                        @click="resendMail(item)"
+                        @click="resendMailPreview(item)"
                         deprecated
                     >
                         <sw-icon
@@ -83,7 +83,7 @@
                 </sw-context-menu-item>
                 <sw-context-menu-item
                     class="sw-entity-listing__context-menu-show-action"
-                    @click="resendMail(item)"
+                    @click="resendMailPreview(item)"
                 >
                     {{ $tc('frosh-mail-archive.list.actions.resendAction') }}
                 </sw-context-menu-item>
@@ -107,6 +107,27 @@
                 </a>
             </template>
         </sw-entity-listing>
+        {% block frosh_mail_archive_resend_modal %}
+            <sw-modal 
+                v-if="showResendModal" 
+                :title="$tc('frosh-mail-archive.detail.toolbar.resend')" 
+                :closable="true"
+                @modal-close="closeResendModal"
+            >
+                <sw-email-field v-model:value="selectedEmailAdress" :label="$tc('frosh-mail-archive.detail.metadata.receiver')">
+                    {{selectedEmailAdress}}
+                </sw-email-field>
+                <sw-button 
+                    :disabled="false" variant="primary" 
+                    :square="false" 
+                    :block="false" 
+                    :isLoading="false"
+                    @click="resendMail(resendItem, selectedEmailAdress)"
+                >
+                    {{$tc('frosh-mail-archive.list.actions.bulkResendAction')}}
+                </sw-button>
+            </sw-modal>
+        {% endblock %}
     </template>
 
     <template #sidebar>
