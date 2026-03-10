@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Frosh\MailArchive\Subscriber;
 
 use Shopware\Core\Content\Flow\Events\FlowSendMailActionEvent;

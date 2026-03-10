@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\Header\IHeader;
@@ -37,13 +37,14 @@ class MailArchiveController extends AbstractController
      * @param EntityRepository<EntityCollection<MailArchiveAttachmentEntity>> $froshMailArchiveAttachmentRepository
      */
     public function __construct(
-        private readonly EntityRepository   $froshMailArchiveRepository,
-        private readonly EntityRepository   $froshMailArchiveAttachmentRepository,
+        private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly EntityRepository $froshMailArchiveAttachmentRepository,
         #[Autowire(service: MailSender::class)]
         private readonly AbstractMailSender $mailSender,
-        private readonly RequestStack       $requestStack,
-        private readonly EmlFileManager     $emlFileManager,
-    ) {}
+        private readonly RequestStack $requestStack,
+        private readonly EmlFileManager $emlFileManager,
+    ) {
+    }
 
     #[Route(path: '/api/_action/frosh-mail-archive/fetch-eml-headers', name: 'api.action.frosh-mail-archive.fetch-eml-headers')]
     public function fetchEmlHeaders(Request $request, Context $context): JsonResponse
@@ -107,7 +108,7 @@ class MailArchiveController extends AbstractController
 
         $email = new Email();
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath);
+        $isEml = $emlPath !== '' && $emlPath !== '0' && \is_string($emlPath);
 
         if ($isEml) {
             $this->enrichFromEml($emlPath, $email);
@@ -149,7 +150,7 @@ class MailArchiveController extends AbstractController
 
         $fileNameParts = [];
 
-        if ($mailArchive->getCreatedAt() !== null) {
+        if ($mailArchive->getCreatedAt() instanceof \DateTimeInterface) {
             $fileNameParts[] = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s');
         }
 
@@ -186,7 +187,7 @@ class MailArchiveController extends AbstractController
         }
 
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath);
+        $isEml = $emlPath !== '' && $emlPath !== '0' && \is_string($emlPath);
 
         if (!$isEml) {
             throw new \RuntimeException('Cannot read eml file or file is empty');
@@ -214,7 +215,7 @@ class MailArchiveController extends AbstractController
 
         $fileNameParts = [];
 
-        if ($mailArchive->getCreatedAt() !== null) {
+        if ($mailArchive->getCreatedAt() instanceof \DateTimeInterface) {
             $fileNameParts[] = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s');
         }
 
@@ -289,7 +290,7 @@ class MailArchiveController extends AbstractController
     /**
      * @return string|array<string|Address>|\DateTimeImmutable|null
      */
-    private function getHeaderValue(IHeader $header): string|array|null|\DateTimeImmutable
+    private function getHeaderValue(IHeader $header): string|array|\DateTimeImmutable|null
     {
         if ($header instanceof AddressHeader) {
             /** @var AddressPart[] $addressParts */
@@ -325,7 +326,7 @@ class MailArchiveController extends AbstractController
 
     private function getContent(?string $emlPath): false|string
     {
-        if (empty($emlPath) || !\is_string($emlPath)) {
+        if ($emlPath === '' || $emlPath === '0' || !\is_string($emlPath)) {
             return false;
         }
 
@@ -338,7 +339,7 @@ class MailArchiveController extends AbstractController
     private function determineReturnPath(\DateTimeImmutable|array|string|null $headerValue): ?string
     {
         // Extract first item for return-path since Symfony/Mailer needs to be a string value here
-        if (is_array($headerValue)) {
+        if (\is_array($headerValue)) {
             $headerValue = array_pop($headerValue);
         }
 
@@ -348,7 +349,7 @@ class MailArchiveController extends AbstractController
             return $headerValue->getEncodedAddress();
         }
 
-        if (is_string($headerValue)) {
+        if (\is_string($headerValue)) {
             $regex = '/[<"]([^<>"\s]+@[^<>"\s]+)[>"]/';
             preg_match($regex, $headerValue, $matches);
             if (isset($matches[1])) {
@@ -356,7 +357,7 @@ class MailArchiveController extends AbstractController
             }
         }
 
-        if (is_string($headerValue)) {
+        if (\is_string($headerValue)) {
             try {
                 return (new Address($headerValue))->getEncodedAddress();
             } catch (\Throwable) {

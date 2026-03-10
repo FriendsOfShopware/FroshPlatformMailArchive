@@ -5,10 +5,10 @@
         <title lang="de-DE">Aufräumen</title>
         <input-field type="int">
             <name>deleteMessageAfterDays</name>
-            <label>Delete messages after x days</label>
-            <label lang="de-DE">Nachrichten nach x Tagen löschen</label>
+            <label>Automatically delete emails older than specified days</label>
+            <label lang="de-DE">E-Mails älter als angegebene Tage automatisch löschen</label>
             <placeholder>Use 0 to disable this</placeholder>
-            <placeholder lang="de-DE">Benutze 0 Tage um dieses Feature zu deaktivieren</placeholder>
+            <placeholder lang="de-DE">Benutze 0 um dieses Feature zu deaktivieren</placeholder>
         </input-field>
     </card>
 </config>

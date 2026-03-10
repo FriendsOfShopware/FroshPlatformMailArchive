@@ -11,32 +11,44 @@
         >
             <template #column-createdAt="{item}">
                 <template v-if="currentMailId === item.id">
-                    {{ date(item.createdAt) }} ({{ $tc('frosh-mail-archive.detail.resend-grid.currently-selected') }})
+                    {{ date(item.createdAt) }}
+                    (
+                    {{ $tc('frosh-mail-archive.detail.resend-grid.currently-selected') }}
+                    )
                 </template>
-                <router-link v-else :to="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
+                <router-link
+                    v-else
+                    :to="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }"
+                >
                     {{ date(item.createdAt) }}
                 </router-link>
             </template>
+
             <template #column-success="{item}">
                 <div>
-                    <sw-color-badge v-if="item.transportState === 'sent' || item.transportState === 'resent'"
+                    <sw-color-badge
+                        v-if="item.transportState === 'sent' || item.transportState === 'resent'"
                         color="#37d046"
                         rounded
                     />
-                    <sw-color-badge v-else-if="item.transportState === 'failed'"
-                            color="#de294c"
-                            rounded
+                    <sw-color-badge
+                        v-else-if="item.transportState === 'failed'"
+                        color="#de294c"
+                        rounded
                     />
-                    <sw-color-badge v-else
-                            color="#ffab22"
-                            rounded
+                    <sw-color-badge
+                        v-else
+                        color="#ffab22"
+                        rounded
                     />
                     {{ translateState(item.transportState) }}
                 </div>
             </template>
+
             <template #actions="{ item }">
-                <sw-context-menu-item :disabled="currentMailId === item.id"
-                                      @click="navigateToDetailPage(item.id)"
+                <sw-context-menu-item
+                    :disabled="currentMailId === item.id"
+                    @click="navigateToDetailPage(item.id)"
                 >
                     {{ $tc('frosh-mail-archive.detail.resend-grid.navigate') }}
                 </sw-context-menu-item>

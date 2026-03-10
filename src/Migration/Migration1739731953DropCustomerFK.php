@@ -22,5 +22,7 @@ class Migration1739731953DropCustomerFK extends MigrationStep
         ');
     }
 
-    public function updateDestructive(Connection $connection): void {}
+    public function updateDestructive(Connection $connection): void
+    {
+    }
 }

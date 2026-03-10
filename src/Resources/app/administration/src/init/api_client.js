@@ -24,12 +24,16 @@ class ApiClient extends ApiService {
         const headers = this.getBasicHeaders({});
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/resend-mail`, {
-                mailId,
-            }, {
-                ...this.basicConfig,
-                headers
-            })
+            .post(
+                `_action/${this.getApiBasePath()}/resend-mail`,
+                {
+                    mailId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                }
+            )
             .then((response) => {
                 return ApiService.handleResponse(response);
             });
@@ -39,12 +43,16 @@ class ApiClient extends ApiService {
         const headers = this.getBasicHeaders({});
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/content`, {
-                mailId,
-            }, {
-                ...this.basicConfig,
-                headers
-            })
+            .post(
+                `_action/${this.getApiBasePath()}/content`,
+                {
+                    mailId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                }
+            )
             .then((response) => {
                 const handledResponse = ApiService.handleResponse(response);
 
@@ -52,7 +60,9 @@ class ApiClient extends ApiService {
                     return handledResponse;
                 }
 
-                const objectUrl = window.URL.createObjectURL(new Blob([handledResponse.content]));
+                const objectUrl = window.URL.createObjectURL(
+                    new Blob([handledResponse.content])
+                );
 
                 const link = document.createElement('a');
                 link.href = objectUrl;
@@ -66,12 +76,16 @@ class ApiClient extends ApiService {
         const headers = this.getBasicHeaders({});
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/attachment`, {
-                attachmentId
-            }, {
-                ...this.basicConfig,
-                headers
-            })
+            .post(
+                `_action/${this.getApiBasePath()}/attachment`,
+                {
+                    attachmentId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                }
+            )
             .then((response) => {
                 const handledResponse = ApiService.handleResponse(response);
 
@@ -80,7 +94,11 @@ class ApiClient extends ApiService {
                 }
 
                 const link = document.createElement('a');
-                link.href = 'data:' + handledResponse.contentType + ';base64,' + handledResponse.content
+                link.href =
+                    'data:' +
+                    handledResponse.contentType +
+                    ';base64,' +
+                    handledResponse.content;
                 link.setAttribute('download', handledResponse.fileName);
                 document.body.appendChild(link);
                 link.click();

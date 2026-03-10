@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Frosh\MailArchive\Extension\Content\Flow;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
@@ -11,11 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class FlowExtension extends EntityExtension
 {
-    public function getDefinitionClass(): string
-    {
-        return FlowDefinition::class;
-    }
-
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
@@ -25,5 +22,15 @@ class FlowExtension extends EntityExtension
                 'flow_id',
             ))->addFlags(new SetNullOnDelete(false)),
         );
+    }
+
+    public function getEntityName(): string
+    {
+        return FlowDefinition::ENTITY_NAME;
+    }
+
+    public function getDefinitionClass(): string
+    {
+        return FlowDefinition::class;
     }
 }

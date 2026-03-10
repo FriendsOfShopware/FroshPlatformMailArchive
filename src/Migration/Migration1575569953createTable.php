@@ -16,7 +16,7 @@ class Migration1575569953createTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('CREATE TABLE `frosh_mail_archive` (
+        $connection->executeStatement('CREATE TABLE IF NOT EXISTS `frosh_mail_archive` (
     `id` BINARY(16) NOT NULL,
     `sender` VARCHAR(255) NOT NULL,
     `receiver` JSON NOT NULL,

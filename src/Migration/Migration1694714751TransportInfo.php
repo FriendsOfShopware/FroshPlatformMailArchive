@@ -16,8 +16,13 @@ class Migration1694714751TransportInfo extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement("ALTER TABLE `frosh_mail_archive` ADD `transport_state` VARCHAR(255) NULL;");
+        if ($this->columnExists($connection, 'frosh_mail_archive', 'transport_state')) {
+            return;
+        }
+        $connection->executeStatement('ALTER TABLE `frosh_mail_archive` ADD `transport_state` VARCHAR(255) NULL;');
     }
 
-    public function updateDestructive(Connection $connection): void {}
+    public function updateDestructive(Connection $connection): void
+    {
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Frosh\MailArchive\Subscriber;
 
 use Frosh\MailArchive\Services\MailSender;
@@ -18,16 +20,20 @@ class MailBeforeSentSubscriber implements EventSubscriberInterface
     public function onMailBeforeSent(MailBeforeSentEvent $e): void
     {
         /** @var string $customerId */
-        $customerId = $e->getData()['customerId'] ?? "";
+        $customerId = $e->getData()['customerId'] ?? '';
 
         /** @var string $orderId */
-        $orderId = $e->getData()['orderId'] ?? "";
+        $orderId = $e->getData()['orderId'] ?? '';
 
         /** @var string $flowId */
-        $flowId = $e->getData()['flowId'] ?? "";
+        $flowId = $e->getData()['flowId'] ?? '';
+
+        /** @var string $mailTemplateId */
+        $mailTemplateId = $e->getData()['templateId'] ?? $e->getData()['mailTemplateId'] ?? '';
 
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_CUSTOMER_ID_HEADER, $customerId);
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_ORDER_ID_HEADER, $orderId);
         $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_FLOW_ID_HEADER, $flowId);
+        $e->getMessage()->getHeaders()->addTextHeader(MailSender::FROSH_MAIL_TEMPLATE_ID_HEADER, $mailTemplateId);
     }
 }
