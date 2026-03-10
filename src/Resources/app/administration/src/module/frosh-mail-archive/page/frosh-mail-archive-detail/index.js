@@ -123,10 +123,12 @@ Component.register('frosh-mail-archive-detail', {
                 .then((archive) => {
                     this.archive = archive;
                 });
-          
-            this.froshMailArchiveService.fetchEmlHeaders(this.archiveId).then(headers => {
-              this.emlHeaders = headers;
-            })
+
+            this.froshMailArchiveService
+                .fetchEmlHeaders(this.archiveId)
+                .then((headers) => {
+                    this.emlHeaders = headers;
+                });
         },
         getContent(html) {
             const binary = new TextEncoder().encode(html);
