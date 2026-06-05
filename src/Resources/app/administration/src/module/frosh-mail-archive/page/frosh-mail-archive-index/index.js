@@ -28,6 +28,8 @@ Component.register('frosh-mail-archive-index', {
                 transportState: null,
                 customerId: null,
                 term: null,
+                dateFrom: null,
+                dateTo: null,
             },
             selectedItems: {},
         };
@@ -151,6 +153,21 @@ Component.register('frosh-mail-archive-index', {
                 criteria.setTerm(this.filter.term);
             }
 
+            if (this.filter.dateFrom) {
+                criteria.addFilter(
+                    Criteria.range('createdAt', { gte: this.filter.dateFrom })
+                );
+            }
+
+            if (this.filter.dateTo) {
+                // Add one day to include the entire "to" date
+                const dateTo = new Date(this.filter.dateTo);
+                dateTo.setDate(dateTo.getDate() + 1);
+                criteria.addFilter(
+                    Criteria.range('createdAt', { lt: dateTo.toISOString() })
+                );
+            }
+
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
             return this.mailArchiveRepository
@@ -219,8 +236,11 @@ Component.register('frosh-mail-archive-index', {
         resetFilter() {
             this.filter = {
                 salesChannelId: null,
+                transportState: null,
                 customerId: null,
                 term: null,
+                dateFrom: null,
+                dateTo: null,
             };
         },
     },
