@@ -31,7 +31,8 @@ class MailSender extends AbstractMailSender
     public const TRANSPORT_STATE_SENT = 'sent';
     public const TRANSPORT_STATE_RESENT = 'resent';
 
-    public const FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
+    public const FROSH_MESSAGE_ID_HEADER = 'X-Frosh-Message-ID';
+    public const LEGACY_FROSH_MESSAGE_ID_HEADER = 'Frosh-Message-ID';
     public const FROSH_CUSTOMER_ID_HEADER = 'X-Frosh-Customer-ID';
     public const FROSH_ORDER_ID_HEADER = 'X-Frosh-Order-ID';
     public const FROSH_FLOW_ID_HEADER = 'X-Frosh-Flow-ID';
@@ -55,6 +56,7 @@ class MailSender extends AbstractMailSender
     {
         $id = Uuid::randomHex();
         $email->getHeaders()->remove(self::FROSH_MESSAGE_ID_HEADER);
+        $email->getHeaders()->remove(self::LEGACY_FROSH_MESSAGE_ID_HEADER);
         $email->getHeaders()->addHeader(self::FROSH_MESSAGE_ID_HEADER, $id);
 
         $metadata = $this->getMailMetadata($email);
