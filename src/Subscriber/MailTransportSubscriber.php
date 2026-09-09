@@ -90,6 +90,10 @@ readonly class MailTransportSubscriber implements EventSubscriberInterface
     {
         $messageId = $message->getHeaders()->get(MailSender::FROSH_MESSAGE_ID_HEADER)?->getBody();
 
+        if (!\is_string($messageId)) {
+            $messageId = $message->getHeaders()->get(MailSender::LEGACY_FROSH_MESSAGE_ID_HEADER)?->getBody();
+        }
+
         if (\is_string($messageId)) {
             return $messageId;
         }
