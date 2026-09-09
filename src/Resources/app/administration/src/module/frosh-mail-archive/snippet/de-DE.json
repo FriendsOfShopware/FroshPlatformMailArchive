@@ -46,6 +46,8 @@
                 "sentDate": "Versanddatum",
                 "sender": "Absender",
                 "receiver": "Empfänger",
+                "cc": "CC",
+                "bcc": "BCC",
                 "subject": "Betreff",
                 "salesChannel": "Verkaufskanal",
                 "customer": "Kunde",

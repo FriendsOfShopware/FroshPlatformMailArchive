@@ -61,6 +61,18 @@
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.cc') }}
+                        </dt>
+                        <dd>{{ emlHeaders.Cc ?? '-' }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>
+                            {{ $tc('frosh-mail-archive.detail.metadata.bcc') }}
+                        </dt>
+                        <dd>{{ emlHeaders.Bcc  ?? '-' }}</dd>
+                    </sw-description-list>
+                    <sw-description-list>
+                        <dt>
                             {{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}
                         </dt>
                         <dd>{{ createdAtDate }}</dd>
