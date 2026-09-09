@@ -132,7 +132,7 @@ class MailSender extends AbstractMailSender
         }
 
         /** @var MailArchiveEntity|null $sourceMail */
-        $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->first();
+        $sourceMail = $this->froshMailArchiveRepository->search(new Criteria([$sourceMailId]), $context)->getEntities()->first();
 
         // In case the source Mail is a resend, we want to save the original source mail id
         return $sourceMail?->getSourceMailId() ?? $sourceMailId;

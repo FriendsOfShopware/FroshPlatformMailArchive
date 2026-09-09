@@ -55,7 +55,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
@@ -98,7 +98,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
@@ -137,7 +137,7 @@ class MailArchiveController extends AbstractController
         $criteria = new Criteria([$attachmentId]);
         $criteria->addAssociation('mailArchive');
 
-        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, $context)->first();
+        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, $context)->getEntities()->first();
         if (!$attachment instanceof MailArchiveAttachmentEntity) {
             throw MailArchiveException::notFound();
         }
