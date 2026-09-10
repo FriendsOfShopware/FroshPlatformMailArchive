@@ -5,7 +5,7 @@ class ApiClient extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    resendMail(mailId) {
+    resendMail(mailId, email) {
         const headers = this.getBasicHeaders({});
 
         return this.httpClient
@@ -13,6 +13,7 @@ class ApiClient extends ApiService {
                 `_action/${this.getApiBasePath()}/resend-mail`,
                 {
                     mailId,
+                    email
                 },
                 {
                     ...this.basicConfig,
