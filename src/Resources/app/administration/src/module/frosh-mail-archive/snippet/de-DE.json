@@ -71,6 +71,13 @@
             "alert": {
                 "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             },
+            "resend-modal": {
+                "title": "E-Mail erneut versenden",
+                "receiverLabel": "Empfänger",
+                "receiverHelpText": "Passe die Empfänger vor dem erneuten Versenden an. Nutze das Format \"Name <mail{'@'}example.com>\", um einen Namen anzugeben.",
+                "cancel": "Abbrechen",
+                "confirm": "E-Mail erneut versenden"
+            },
             "resend-success-notification": {
                 "message": "Der E-Mail-Versand wurde gestartet.",
                 "title": "Mail Archiv"

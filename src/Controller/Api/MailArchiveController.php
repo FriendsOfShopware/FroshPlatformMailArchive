@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Exception\ExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\DateHeader;
@@ -75,6 +76,12 @@ class MailArchiveController extends AbstractController
             $this->enrichFromEml($emlPath, $email);
         } else {
             $this->enrichFromDatabase($mailArchive, $email);
+        }
+
+        $receiver = $request->request->all()['receiver'] ?? null;
+
+        if ($receiver !== null) {
+            $email->to(...$this->createReceiverAddresses($receiver));
         }
 
         $this->mailSender->send($email);
@@ -246,6 +253,32 @@ class MailArchiveController extends AbstractController
 
         $email->html($mailArchive->getHtmlText());
         $email->text($mailArchive->getPlainText());
+    }
+
+    /**
+     * @return Address[]
+     */
+    private function createReceiverAddresses(mixed $receiver): array
+    {
+        if (!\is_array($receiver) || $receiver === []) {
+            throw MailArchiveException::parameterInvalidReceiver();
+        }
+
+        $addresses = [];
+
+        foreach ($receiver as $entry) {
+            if (!\is_string($entry) || \trim($entry) === '') {
+                throw MailArchiveException::parameterInvalidReceiver();
+            }
+
+            try {
+                $addresses[] = Address::create(\trim($entry));
+            } catch (ExceptionInterface) {
+                throw MailArchiveException::parameterInvalidReceiver();
+            }
+        }
+
+        return $addresses;
     }
 
     /**
