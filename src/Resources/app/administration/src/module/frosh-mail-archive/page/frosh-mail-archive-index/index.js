@@ -27,6 +27,8 @@ Component.register('frosh-mail-archive-index', {
                 salesChannelId: null,
                 transportState: null,
                 customerId: null,
+                dateFrom: null,
+                dateTo: null,
                 term: null,
             },
             selectedItems: {},
@@ -97,6 +99,21 @@ Component.register('frosh-mail-archive-index', {
             return this.$tc(`frosh-mail-archive.state.${state}`);
         },
 
+        getDateBoundary(value, endOfDay) {
+            // A date-only string (YYYY-MM-DD) would be parsed as UTC, so append the time to parse it as local time
+            const date = new Date(
+                value.length === 10 ? `${value}T00:00:00` : value
+            );
+
+            if (endOfDay) {
+                date.setHours(23, 59, 59, 999);
+            } else {
+                date.setHours(0, 0, 0, 0);
+            }
+
+            return date.toISOString();
+        },
+
         updateData(query) {
             for (const filter in this.filter) {
                 this.filter[filter] = query[filter] ?? null;
@@ -145,6 +162,20 @@ Component.register('frosh-mail-archive-index', {
                 criteria.addFilter(
                     Criteria.equals('customerId', this.filter.customerId)
                 );
+            }
+
+            const dateRange = {};
+
+            if (this.filter.dateFrom) {
+                dateRange.gte = this.getDateBoundary(this.filter.dateFrom, false);
+            }
+
+            if (this.filter.dateTo) {
+                dateRange.lte = this.getDateBoundary(this.filter.dateTo, true);
+            }
+
+            if (Object.keys(dateRange).length > 0) {
+                criteria.addFilter(Criteria.range('createdAt', dateRange));
             }
 
             if (this.filter.term) {
@@ -219,7 +250,10 @@ Component.register('frosh-mail-archive-index', {
         resetFilter() {
             this.filter = {
                 salesChannelId: null,
+                transportState: null,
                 customerId: null,
+                dateFrom: null,
+                dateTo: null,
                 term: null,
             };
         },
