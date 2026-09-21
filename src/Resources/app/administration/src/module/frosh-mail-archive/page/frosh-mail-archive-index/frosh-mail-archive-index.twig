@@ -152,6 +152,18 @@
                         </sw-highlight-text>
                     </template>
                 </sw-entity-single-select>
+                <sw-datepicker
+                    v-model:value="filter.dateFrom"
+                    dateType="date"
+                    :label="$tc('frosh-mail-archive.list.sidebar.filters.dateFrom')"
+                    deprecated
+                ></sw-datepicker>
+                <sw-datepicker
+                    v-model:value="filter.dateTo"
+                    dateType="date"
+                    :label="$tc('frosh-mail-archive.list.sidebar.filters.dateTo')"
+                    deprecated
+                ></sw-datepicker>
                 <sw-button
                     variant="ghost"
                     @click="resetFilter"

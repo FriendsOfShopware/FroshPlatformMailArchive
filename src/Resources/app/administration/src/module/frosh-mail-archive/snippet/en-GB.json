@@ -31,6 +31,8 @@
                     "salesChannel": "Sales Channel",
                     "transportStateLabel": "State",
                     "transportStatePlaceholder": "Select state",
+                    "dateFrom": "Sent date from",
+                    "dateTo": "Sent date to",
                     "resetFilter": "Reset filter"
                 }
             }

@@ -31,6 +31,8 @@
                     "salesChannel": "Verkaufskanal",
                     "transportStateLabel": "Status",
                     "transportStatePlaceholder": "Status auswählen",
+                    "dateFrom": "Versanddatum von",
+                    "dateTo": "Versanddatum bis",
                     "resetFilter": "Filter zurücksetzen"
                 }
             }
