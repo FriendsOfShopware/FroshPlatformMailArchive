@@ -64,7 +64,7 @@ readonly class MailTransportSubscriber implements EventSubscriberInterface
 
         $this->emlFileManager->writeFile($archiveId, $message->toString());
 
-        $attachments = $this->getAttachments($message);
+        $attachments = $this->getAttachments($message, $archiveId);
         $this->froshMailArchiveRepository->update([[
             'id' => $archiveId,
             'transportState' => $newState,
@@ -73,17 +73,20 @@ readonly class MailTransportSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @return array<array{'fileName': string, 'contentType': string, 'fileSize': int}>
+     * @return array<array{'id': string, 'fileName': string, 'contentType': string, 'fileSize': int}>
      */
-    private function getAttachments(Email $message): array
+    private function getAttachments(Email $message, string $archiveId): array
     {
         $attachments = $message->getAttachments();
 
-        return array_map(static fn (DataPart $attachment) => [
+        // Deterministic IDs make repeated transport events update the same
+        // attachment records instead of inserting duplicates.
+        return array_map(static fn (DataPart $attachment, int $index) => [
+            'id' => md5($archiveId . ':' . $index),
             'fileName' => $attachment->getFilename() ?? 'attachment',
             'contentType' => $attachment->getContentType(),
             'fileSize' => \strlen($attachment->getBody()),
-        ], $attachments);
+        ], $attachments, array_keys($attachments));
     }
 
     private function getArchiveIdByMessage(Email $message): ?string
