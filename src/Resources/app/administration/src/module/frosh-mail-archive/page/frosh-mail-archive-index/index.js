@@ -167,7 +167,10 @@ Component.register('frosh-mail-archive-index', {
             const dateRange = {};
 
             if (this.filter.dateFrom) {
-                dateRange.gte = this.getDateBoundary(this.filter.dateFrom, false);
+                dateRange.gte = this.getDateBoundary(
+                    this.filter.dateFrom,
+                    false
+                );
             }
 
             if (this.filter.dateTo) {
