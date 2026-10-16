@@ -10,6 +10,7 @@ Component.register('frosh-mail-archive-detail', {
     data() {
         return {
             archive: null,
+            emlHeaders: {},
             resendIsLoading: false,
             resendIsSuccessful: false,
             downloadIsLoading: false,
@@ -121,6 +122,12 @@ Component.register('frosh-mail-archive-detail', {
                 .get(this.archiveId, Shopware.Context.api, criteria)
                 .then((archive) => {
                     this.archive = archive;
+                });
+
+            this.froshMailArchiveService
+                .fetchEmlHeaders(this.archiveId)
+                .then((headers) => {
+                    this.emlHeaders = headers;
                 });
         },
         getContent(html) {
