@@ -12,6 +12,7 @@ class MailArchiveException extends HttpException
     public const NOT_FOUND_CODE = 'MAIL_ARCHIVE__NOT_FOUND';
     public const MISSING_PARAMETER_CODE = 'MAIL_ARCHIVE__MISSING_PARAMETER';
     public const INVALID_UUID_CODE = 'MAIL_ARCHIVE__PARAMETER_INVALID_UUID';
+    public const INVALID_RECEIVER_CODE = 'MAIL_ARCHIVE__PARAMETER_INVALID_RECEIVER';
     public const UNREADABLE_EML_CODE = 'MAIL_ARCHIVE__UNREADABLE_EML';
 
     public static function notFound(): self
@@ -40,6 +41,16 @@ class MailArchiveException extends HttpException
             self::INVALID_UUID_CODE,
             'Parameter "{{parameter}}" is not a valid UUID',
             ['parameter' => $parameter],
+        );
+    }
+
+    public static function parameterInvalidReceiver(): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::INVALID_RECEIVER_CODE,
+            'Parameter "{{parameter}}" must be a non-empty list of valid e-mail addresses',
+            ['parameter' => 'receiver'],
         );
     }
 

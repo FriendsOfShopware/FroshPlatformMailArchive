@@ -5,20 +5,22 @@ class ApiClient extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    resendMail(mailId) {
+    resendMail(mailId, receiver = null) {
         const headers = this.getBasicHeaders({});
 
+        const data = {
+            mailId,
+        };
+
+        if (Array.isArray(receiver) && receiver.length > 0) {
+            data.receiver = receiver;
+        }
+
         return this.httpClient
-            .post(
-                `_action/${this.getApiBasePath()}/resend-mail`,
-                {
-                    mailId,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                }
-            )
+            .post(`_action/${this.getApiBasePath()}/resend-mail`, data, {
+                ...this.basicConfig,
+                headers,
+            })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });

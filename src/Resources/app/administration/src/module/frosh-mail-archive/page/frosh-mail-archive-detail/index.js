@@ -15,6 +15,8 @@ Component.register('frosh-mail-archive-detail', {
             downloadIsLoading: false,
             downloadIsSuccessful: false,
             resendCounter: 0,
+            showResendModal: false,
+            resendReceiver: [],
         };
     },
 
@@ -142,13 +144,25 @@ Component.register('frosh-mail-archive-detail', {
         downloadFinish() {
             this.downloadIsSuccessful = false;
         },
+        openResendModal() {
+            this.resendReceiver = Object.entries(this.archive.receiver).map(
+                ([mail, name]) => {
+                    return name ? `${name} <${mail}>` : mail;
+                }
+            );
+            this.showResendModal = true;
+        },
+        closeResendModal() {
+            this.showResendModal = false;
+        },
         resendMail() {
             this.resendIsLoading = true;
 
             this.froshMailArchiveService
-                .resendMail(this.archive.id)
+                .resendMail(this.archive.id, this.resendReceiver)
                 .then(() => {
                     this.resendIsSuccessful = true;
+                    this.showResendModal = false;
                     this.createNotificationSuccess({
                         title: this.$tc(
                             'frosh-mail-archive.detail.resend-success-notification.title'

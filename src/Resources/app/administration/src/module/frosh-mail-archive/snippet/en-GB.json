@@ -71,6 +71,13 @@
             "alert": {
                 "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
             },
+            "resend-modal": {
+                "title": "Resend mail",
+                "receiverLabel": "Recipients",
+                "receiverHelpText": "Adjust the recipients before resending. Use the format \"Name <mail{'@'}example.com>\" to include a name.",
+                "cancel": "Cancel",
+                "confirm": "Resend mail"
+            },
             "resend-success-notification": {
                 "message": "Mail dispatch has started.",
                 "title": "Mail Archive"
