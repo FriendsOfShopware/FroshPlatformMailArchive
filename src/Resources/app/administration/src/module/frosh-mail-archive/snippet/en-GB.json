@@ -87,5 +87,12 @@
                 "title": "Resend history"
             }
         }
+    },
+    "sw-privileges": {
+        "permissions": {
+            "frosh_mail_archive": {
+                "label": "Mail Archive"
+            }
+        }
     }
 }

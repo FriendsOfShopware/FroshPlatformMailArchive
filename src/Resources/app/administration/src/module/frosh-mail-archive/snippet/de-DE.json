@@ -87,5 +87,12 @@
                 "title": "Sendeverlauf"
             }
         }
+    },
+    "sw-privileges": {
+        "permissions": {
+            "frosh_mail_archive": {
+                "label": "Mail Archiv"
+            }
+        }
     }
 }
