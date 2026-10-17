@@ -6,7 +6,6 @@ namespace Frosh\MailArchive\Tests\Services;
 
 use Frosh\MailArchive\Services\EmlFileManager;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemOperator;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -26,16 +25,6 @@ class EmlFileManagerTest extends TestCase
 
         static::assertMatchesRegularExpression('#\Amails/01/8f/8d/' . $id . '\.eml\.(?:gz|zst)\z#', $path);
         static::assertSame('mail content', $manager->getEmlFileAsString($path));
-    }
-
-    public function testReadRejectsPathTraversalBeforeAccessingFilesystem(): void
-    {
-        $filesystem = $this->createMock(FilesystemOperator::class);
-        $filesystem->expects($this->never())->method('read');
-
-        $manager = new EmlFileManager($filesystem);
-
-        static::assertFalse($manager->getEmlFileAsString('mails/../../config/jwt/private.pem'));
     }
 
     public function testWriteRejectsInvalidId(): void

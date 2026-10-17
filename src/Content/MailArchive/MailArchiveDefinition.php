@@ -11,13 +11,14 @@ use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\EntityProtectionCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\SearchRanking;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\WriteProtected;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
@@ -51,37 +52,44 @@ class MailArchiveDefinition extends EntityDefinition
         ];
     }
 
+    protected function defineProtections(): EntityProtectionCollection
+    {
+        return new EntityProtectionCollection([
+            new WriteProtection(Context::SYSTEM_SCOPE),
+        ]);
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new JsonField('sender', 'sender'))->addFlags(new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new JsonField('receiver', 'receiver'))->addFlags(new Required(), new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new StringField('subject', 'subject', 998))->addFlags(new Required(), new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml(), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new StringField('eml_path', 'emlPath', 2048))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new StringField('transport_state', 'transportState'))->addFlags(new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            (new JsonField('sender', 'sender'))->addFlags(new Required()),
+            (new JsonField('receiver', 'receiver'))->addFlags(new Required(), new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
+            (new StringField('subject', 'subject', 998))->addFlags(new Required(), new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
+            (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml()),
+            (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING)),
+            new StringField('eml_path', 'emlPath', 2048),
+            (new StringField('transport_state', 'transportState'))->addFlags(new Required()),
 
             (new OneToManyAssociationField('attachments', MailArchiveAttachmentDefinition::class, 'mail_archive_id', 'id'))->addFlags(new CascadeDelete()),
 
-            (new FkField('salesChannelId', 'salesChannelId', SalesChannelDefinition::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            new FkField('salesChannelId', 'salesChannelId', SalesChannelDefinition::class),
             new ManyToOneAssociationField('salesChannel', 'salesChannelId', SalesChannelDefinition::class, 'id', true),
 
-            (new FkField('customerId', 'customerId', CustomerDefinition::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            new FkField('customerId', 'customerId', CustomerDefinition::class),
             new ManyToOneAssociationField('customer', 'customerId', CustomerDefinition::class, 'id', false),
 
-            (new FkField('order_id', 'orderId', OrderDefinition::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new ReferenceVersionField(OrderDefinition::class, 'order_version_id'))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            new FkField('order_id', 'orderId', OrderDefinition::class),
+            new ReferenceVersionField(OrderDefinition::class, 'order_version_id'),
             new ManyToOneAssociationField('order', 'order_id', OrderDefinition::class, 'id', false),
 
-            (new FkField('flow_id', 'flowId', FlowDefinition::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            new FkField('flow_id', 'flowId', FlowDefinition::class),
             new ManyToOneAssociationField('flow', 'flow_id', FlowDefinition::class, 'id', false),
 
-            (new FkField('mail_template_id', 'mailTemplateId', MailTemplateDefinition::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            new FkField('mail_template_id', 'mailTemplateId', MailTemplateDefinition::class),
             new ManyToOneAssociationField('mailTemplate', 'mail_template_id', MailTemplateDefinition::class, 'id', false),
 
-            (new FkField('source_mail_id', 'sourceMailId', self::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            new FkField('source_mail_id', 'sourceMailId', self::class),
             new ManyToOneAssociationField('sourceMail', 'source_mail_id', self::class, 'id', false),
             new OneToManyAssociationField('sourceMails', self::class, 'sourceMailId'),
         ]);

@@ -6,10 +6,11 @@ namespace Frosh\MailArchive\Content\MailArchive;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\EntityProtectionCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\WriteProtected;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
@@ -32,16 +33,23 @@ class MailArchiveAttachmentDefinition extends EntityDefinition
         return MailArchiveAttachmentEntity::class;
     }
 
+    protected function defineProtections(): EntityProtectionCollection
+    {
+        return new EntityProtectionCollection([
+            new WriteProtection(Context::SYSTEM_SCOPE),
+        ]);
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new FkField('mail_archive_id', 'mailArchiveId', MailArchiveDefinition::class))->addFlags(new WriteProtected(Context::SYSTEM_SCOPE)),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            new FkField('mail_archive_id', 'mailArchiveId', MailArchiveDefinition::class),
             new ManyToOneAssociationField('mailArchive', 'mail_archive_id', MailArchiveDefinition::class, 'id', false),
 
-            (new StringField('file_name', 'fileName'))->addFlags(new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new StringField('content_type', 'contentType'))->addFlags(new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
-            (new IntField('file_size', 'fileSize'))->addFlags(new Required(), new WriteProtected(Context::SYSTEM_SCOPE)),
+            (new StringField('file_name', 'fileName'))->addFlags(new Required()),
+            (new StringField('content_type', 'contentType'))->addFlags(new Required()),
+            (new IntField('file_size', 'fileSize'))->addFlags(new Required()),
         ]);
     }
 }

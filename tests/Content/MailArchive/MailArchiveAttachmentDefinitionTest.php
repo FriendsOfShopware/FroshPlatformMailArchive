@@ -8,9 +8,7 @@ use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentDefinition;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\AssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\WriteProtected;
-use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 
 /**
  * @internal
@@ -18,26 +16,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 #[CoversClass(MailArchiveAttachmentDefinition::class)]
 class MailArchiveAttachmentDefinitionTest extends TestCase
 {
-    public function testAllStoredAttachmentFieldsAreSystemWriteProtected(): void
+    public function testAttachmentEntityIsSystemWriteProtected(): void
     {
-        $definition = (new \ReflectionClass(TestableMailArchiveAttachmentDefinition::class))->newInstanceWithoutConstructor();
+        $definition = new MailArchiveAttachmentDefinition();
+        $writeProtection = $definition->getProtections()->get(WriteProtection::class);
 
-        foreach ($definition->definedFields() as $field) {
-            if ($field instanceof AssociationField) {
-                continue;
-            }
-
-            $writeProtected = $field->getFlag(WriteProtected::class);
-            static::assertInstanceOf(WriteProtected::class, $writeProtected, $field->getPropertyName());
-            static::assertTrue($writeProtected->isAllowed(Context::SYSTEM_SCOPE), $field->getPropertyName());
-        }
-    }
-}
-
-class TestableMailArchiveAttachmentDefinition extends MailArchiveAttachmentDefinition
-{
-    public function definedFields(): FieldCollection
-    {
-        return $this->defineFields();
+        static::assertInstanceOf(WriteProtection::class, $writeProtection);
+        static::assertSame([Context::SYSTEM_SCOPE], $writeProtection->getAllowedScopes());
     }
 }

@@ -10,7 +10,6 @@
             <label lang="de-DE">E-Mails älter als angegebene Tage automatisch löschen</label>
             <helpText>Archived emails are deleted after this many days. Use 0 to disable automatic deletion.</helpText>
             <helpText lang="de-DE">Archivierte E-Mails werden nach dieser Anzahl von Tagen gelöscht. Mit 0 wird das automatische Löschen deaktiviert.</helpText>
-            <defaultValue>365</defaultValue>
             <min>0</min>
         </input-field>
     </card>
