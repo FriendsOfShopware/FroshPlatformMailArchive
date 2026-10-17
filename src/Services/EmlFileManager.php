@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Services;
 
 use League\Flysystem\FilesystemOperator;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use ZBateson\MailMimeParser\IMessage;
 use ZBateson\MailMimeParser\MailMimeParser;
@@ -25,6 +26,10 @@ class EmlFileManager
      */
     public function writeFile(string $id, string $content): string
     {
+        if (!Uuid::isValid($id)) {
+            throw new \InvalidArgumentException('The mail archive ID must be a valid UUID.');
+        }
+
         if (\function_exists('zstd_compress')) {
             $content = \zstd_compress($content);
             $extension = '.' . self::COMPRESSION_EXT_ZSTD;

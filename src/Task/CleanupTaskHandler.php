@@ -36,7 +36,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
     {
         $days = $this->configService->getInt('FroshPlatformMailArchive.config.deleteMessageAfterDays');
 
-        if ($days === 0) {
+        if ($days <= 0) {
             return;
         }
 
@@ -61,7 +61,7 @@ class CleanupTaskHandler extends ScheduledTaskHandler
         }
 
         foreach ($result as $item) {
-            if (empty($item['eml_path']) || !\is_string($item['eml_path'])) {
+            if (!\is_string($item['eml_path']) || $item['eml_path'] === '') {
                 continue;
             }
 

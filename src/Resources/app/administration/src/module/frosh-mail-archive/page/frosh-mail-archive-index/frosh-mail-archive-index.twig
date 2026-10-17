@@ -57,6 +57,7 @@
                         deprecated
                     ></sw-icon>
                     <sw-button
+                        v-if="acl.can('frosh_mail_archive:resend')"
                         square
                         size="small"
                         variant="context"
@@ -82,6 +83,7 @@
                     {{ $tc('frosh-mail-archive.list.actions.showAction') }}
                 </sw-context-menu-item>
                 <sw-context-menu-item
+                    v-if="acl.can('frosh_mail_archive:resend')"
                     class="sw-entity-listing__context-menu-show-action"
                     @click="resendMail(item)"
                 >
@@ -91,7 +93,7 @@
 
             <template #bulk-additional="{ selectionCount }">
                 <a
-                    v-if="selectionCount > 0"
+                    v-if="selectionCount > 0 && acl.can('frosh_mail_archive:resend')"
                     class="link link-primary"
                     @click="onBulkResendClick"
                 >
