@@ -11,7 +11,7 @@ Shopware.Service('privileges').addPrivilegeMappingEntry({
             dependencies: [],
         },
         editor: {
-            privileges: ['frosh_mail_archive:update'],
+            privileges: ['frosh_mail_archive:resend'],
             dependencies: ['frosh_mail_archive.viewer'],
         },
     },

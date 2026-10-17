@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Services;
 
 use League\Flysystem\FilesystemOperator;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use ZBateson\MailMimeParser\IMessage;
 use ZBateson\MailMimeParser\MailMimeParser;
@@ -25,6 +26,10 @@ class EmlFileManager
      */
     public function writeFile(string $id, string $content): string
     {
+        if (!Uuid::isValid($id)) {
+            throw new \InvalidArgumentException('The mail archive ID must be a valid UUID.');
+        }
+
         if (\function_exists('zstd_compress')) {
             $content = \zstd_compress($content);
             $extension = '.' . self::COMPRESSION_EXT_ZSTD;
@@ -48,6 +53,10 @@ class EmlFileManager
 
     public function getEmlFileAsString(string $emlFilePath): false|string
     {
+        if (!$this->isValidEmlPath($emlFilePath)) {
+            return false;
+        }
+
         try {
             $extension = \pathinfo($emlFilePath, \PATHINFO_EXTENSION);
 
@@ -85,10 +94,34 @@ class EmlFileManager
 
     public function deleteEmlFile(string $emlFilePath): void
     {
+        if (!$this->isValidEmlPath($emlFilePath)) {
+            return;
+        }
+
         if (!$this->filesystem->fileExists($emlFilePath)) {
             return;
         }
 
         $this->filesystem->delete($emlFilePath);
+    }
+
+    private function isValidEmlPath(string $emlFilePath): bool
+    {
+        $matches = [];
+        $matchesPath = preg_match(
+            '#\Amails/(?:(?<first>[0-9a-f]{2})/(?<second>[0-9a-f]{2})/(?<third>[0-9a-f]{2})/)?(?<id>[0-9a-f]{32})\.eml\.(?:gz|zst)\z#i',
+            $emlFilePath,
+            $matches,
+        );
+
+        if ($matchesPath !== 1) {
+            return false;
+        }
+
+        if ($matches['first'] === '') {
+            return true;
+        }
+
+        return \strtolower($matches['first'] . $matches['second'] . $matches['third']) === \substr(\strtolower($matches['id']), 0, 6);
     }
 }

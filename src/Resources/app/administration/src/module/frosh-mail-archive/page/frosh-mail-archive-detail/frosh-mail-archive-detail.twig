@@ -13,6 +13,7 @@
             {{ $t('frosh-mail-archive.detail.toolbar.downloadEml') }}
         </sw-button-process>
         <sw-button-process
+            v-if="acl.can('frosh_mail_archive:resend')"
             :isLoading="resendIsLoading"
             :processSuccess="resendIsSuccessful"
             @click="openResendModal"
@@ -36,11 +37,7 @@
                 :title="$t('frosh-mail-archive.detail.metadata.title')"
                 position-identifier="frosh-mail-archive-metadata"
             >
-                <sw-container
-                    columns="1fr 1fr"
-                    gap="0px 15px"
-                    class="frosh-mail-archive__detail-metadata"
-                >
+                <div class="frosh-mail-archive__detail-metadata">
                     <sw-description-list>
                         <dt>
                             {{ $tc('frosh-mail-archive.detail.metadata.receiver') }}
@@ -129,13 +126,8 @@
                         </dd>
                         <dd v-else>-</dd>
                     </sw-description-list>
-                </sw-container>
+                </div>
             </sw-card>
-            <frosh-mail-resend-history
-                :key="resendKey"
-                :currentMailId="archive.id"
-                :sourceMailId="archive.sourceMailId ?? archive.id"
-            />
             <sw-card
                 :title="$t('frosh-mail-archive.detail.content.title')"
                 position-identifier="frosh-mail-archive-content"
@@ -143,6 +135,7 @@
                 <template v-if="archive.htmlText">
                     <h4>HTML</h4>
                     <iframe
+                        title="HTML"
                         :src="htmlText"
                         sandbox
                         frameborder="0"
@@ -152,6 +145,7 @@
                 <template v-if="archive.plainText">
                     <h4>Plain</h4>
                     <iframe
+                        title="Plain"
                         :src="plainText"
                         sandbox
                         frameborder="0"
@@ -179,6 +173,7 @@
                         </sw-alert>
                     </sw-card-section>
                     <sw-data-grid
+                        v-if="archive.attachments.length > 0"
                         :showSelection="false"
                         :dataSource="archive.attachments"
                         :columns="attachmentsColumns"
@@ -204,9 +199,14 @@
                     </sw-data-grid>
                 </template>
             </sw-card>
+            <frosh-mail-resend-history
+                :key="resendKey"
+                :currentMailId="archive.id"
+                :sourceMailId="archive.sourceMailId ?? archive.id"
+            />
         </sw-card-view>
         <sw-modal
-            v-if="showResendModal"
+            v-if="showResendModal && acl.can('frosh_mail_archive:resend')"
             :title="$t('frosh-mail-archive.detail.resend-modal.title')"
             @modal-close="closeResendModal"
         >
@@ -215,7 +215,6 @@
                 :label="$t('frosh-mail-archive.detail.resend-modal.receiverLabel')"
                 :help-text="$t('frosh-mail-archive.detail.resend-modal.receiverHelpText')"
             />
-
             <template #modal-footer>
                 <sw-button
                     deprecated

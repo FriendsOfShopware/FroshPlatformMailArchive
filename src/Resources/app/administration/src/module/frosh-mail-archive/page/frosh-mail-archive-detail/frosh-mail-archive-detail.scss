@@ -1,8 +1,13 @@
 .frosh-mail-archive-detail {
     iframe {
+        display: block;
         width: 100%;
-        height: 500px;
+        height: clamp(360px, 60vh, 720px);
         background-color: #fff;
+
+        + h4 {
+            margin-top: 24px;
+        }
     }
 
     pre {
@@ -15,11 +20,31 @@
 }
 
 .frosh-mail-archive__detail-metadata {
-    dt {
-        padding: 21px 4px 4px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 32px;
+
+    .sw-description-list {
+        min-width: 0;
+        margin: 0;
+
+        dt,
+        dd {
+            margin: 0;
+            border: 0;
+            overflow-wrap: anywhere;
+        }
+
+        dt {
+            padding: 0 0 4px;
+        }
+
+        dd {
+            padding: 0;
+        }
     }
 
-    dd {
-        padding: 1px 4px;
+    @media screen and (max-width: 800px) {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
