@@ -5,9 +5,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    uses: FriendsOfShopware/actions/.github/workflows/store-shopware-cli.yml@main
+    permissions:
+      contents: write # Required by the reusable workflow to publish the built extension.
+    uses: FriendsOfShopware/actions/.github/workflows/store-shopware-cli.yml@fe90fa6a5f7636cb600d0591629fd7435c6057db # main, 2026-10-17
     with:
       extensionName: ${{ github.event.repository.name }}
     secrets:

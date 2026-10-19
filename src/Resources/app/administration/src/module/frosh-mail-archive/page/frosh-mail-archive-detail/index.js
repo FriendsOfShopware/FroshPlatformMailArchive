@@ -2,10 +2,11 @@ const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 import template from './frosh-mail-archive-detail.twig';
 import './frosh-mail-archive-detail.scss';
+import { createPreviewDataUrl } from './preview-document.mjs';
 
 Component.register('frosh-mail-archive-detail', {
     template,
-    inject: ['repositoryFactory', 'froshMailArchiveService'],
+    inject: ['acl', 'repositoryFactory', 'froshMailArchiveService'],
 
     data() {
         return {
@@ -126,11 +127,7 @@ Component.register('frosh-mail-archive-detail', {
                 });
         },
         getContent(html) {
-            const binary = new TextEncoder().encode(html);
-            let result = '';
-            binary.forEach((b) => (result += String.fromCharCode(b)));
-
-            return 'data:text/html;charset=utf-8;base64,' + btoa(result);
+            return createPreviewDataUrl(html, this.$sanitize);
         },
         openCustomer() {
             this.$router.push({

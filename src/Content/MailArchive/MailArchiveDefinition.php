@@ -9,7 +9,10 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Flow\FlowDefinition;
 use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\EntityProtectionCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
@@ -49,13 +52,20 @@ class MailArchiveDefinition extends EntityDefinition
         ];
     }
 
+    protected function defineProtections(): EntityProtectionCollection
+    {
+        return new EntityProtectionCollection([
+            new WriteProtection(Context::SYSTEM_SCOPE),
+        ]);
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             (new JsonField('sender', 'sender'))->addFlags(new Required()),
-            (new JsonField('receiver', 'receiver'))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
-            (new StringField('subject', 'subject', 998))->addFlags(new Required())->addFlags(new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
+            (new JsonField('receiver', 'receiver'))->addFlags(new Required(), new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
+            (new StringField('subject', 'subject', 998))->addFlags(new Required(), new SearchRanking(SearchRanking::HIGH_SEARCH_RANKING)),
             (new LongTextField('plainText', 'plainText'))->addFlags(new AllowHtml()),
             (new LongTextField('htmlText', 'htmlText'))->addFlags(new AllowHtml(), new SearchRanking(SearchRanking::LOW_SEARCH_RANKING)),
             new StringField('eml_path', 'emlPath', 2048),

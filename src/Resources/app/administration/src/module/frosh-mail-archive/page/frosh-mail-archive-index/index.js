@@ -6,7 +6,7 @@ import './frosh-mail-archive-index.scss';
 
 Component.register('frosh-mail-archive-index', {
     template,
-    inject: ['repositoryFactory', 'froshMailArchiveService'],
+    inject: ['acl', 'repositoryFactory', 'froshMailArchiveService'],
     mixins: [Mixin.getByName('listing'), Mixin.getByName('notification')],
 
     metaInfo() {

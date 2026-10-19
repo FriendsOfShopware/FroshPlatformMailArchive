@@ -6,13 +6,23 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cs:
+    name: Check formatting
     if: github.event_name != 'schedule'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Run CS
         uses: shopware/github-actions/extension-verifier@main
@@ -20,6 +30,7 @@ jobs:
           action: format
 
   check:
+    name: Validate (${{ matrix.version-selection }})
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -27,7 +38,9 @@ jobs:
         version-selection: [ 'lowest', 'highest']
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Run Check
         uses: shopware/github-actions/extension-verifier@main

@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<config>
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
     <card>
         <title>Cleanup</title>
         <title lang="de-DE">Aufräumen</title>
@@ -7,8 +8,9 @@
             <name>deleteMessageAfterDays</name>
             <label>Automatically delete emails older than specified days</label>
             <label lang="de-DE">E-Mails älter als angegebene Tage automatisch löschen</label>
-            <placeholder>Use 0 to disable this</placeholder>
-            <placeholder lang="de-DE">Benutze 0 um dieses Feature zu deaktivieren</placeholder>
+            <helpText>Archived emails are deleted after this many days. Use 0 to disable automatic deletion.</helpText>
+            <helpText lang="de-DE">Archivierte E-Mails werden nach dieser Anzahl von Tagen gelöscht. Mit 0 wird das automatische Löschen deaktiviert.</helpText>
+            <min>0</min>
         </input-field>
     </card>
 </config>

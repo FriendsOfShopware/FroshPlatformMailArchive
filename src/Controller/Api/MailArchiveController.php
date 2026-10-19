@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Frosh\MailArchive\Controller\Api;
 
+use Frosh\MailArchive\Acl\MailArchivePrivileges;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
+use Frosh\MailArchive\Services\ResendRecipientOverride;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +33,7 @@ use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\Header\IHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 class MailArchiveController extends AbstractController
 {
     /**
@@ -44,10 +47,16 @@ class MailArchiveController extends AbstractController
         private readonly AbstractMailSender $mailSender,
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager,
+        private readonly ResendRecipientOverride $resendRecipientOverride,
     ) {
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/resend-mail',
+        name: 'api.action.frosh-mail-archive.resend-mail',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ, MailArchivePrivileges::RESEND]],
+        methods: [Request::METHOD_POST],
+    )]
     public function resend(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
@@ -81,22 +90,29 @@ class MailArchiveController extends AbstractController
         $receiver = $request->request->all()['receiver'] ?? null;
 
         if ($receiver !== null) {
-            $email->to(...$this->createReceiverAddresses($receiver));
+            $this->resendRecipientOverride->replace($email, $this->createReceiverAddresses($receiver));
         }
 
         $this->mailSender->send($email);
 
-        $this->froshMailArchiveRepository->update([[
-            'id' => $mailId,
-            'transportState' => MailSender::TRANSPORT_STATE_RESENT,
-        ]], $context);
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $systemContext) use ($mailId): void {
+            $this->froshMailArchiveRepository->update([[
+                'id' => $mailId,
+                'transportState' => MailSender::TRANSPORT_STATE_RESENT,
+            ]], $systemContext);
+        });
 
         return new JsonResponse([
             'success' => true,
         ]);
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/content')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/content',
+        name: 'api.action.frosh-mail-archive.content',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ]],
+        methods: [Request::METHOD_POST],
+    )]
     public function download(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
@@ -112,7 +128,7 @@ class MailArchiveController extends AbstractController
 
         $content = $this->getContent($mailArchive->getEmlPath());
 
-        if (empty($content)) {
+        if ($content === false || $content === '') {
             throw new \RuntimeException('Cannot read eml file or file is empty');
         }
 
@@ -133,7 +149,12 @@ class MailArchiveController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/attachment', name: 'api.action.frosh-mail-archive.attachment')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/attachment',
+        name: 'api.action.frosh-mail-archive.attachment',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ, MailArchivePrivileges::ATTACHMENT_READ]],
+        methods: [Request::METHOD_POST],
+    )]
     public function attachment(Request $request, Context $context): JsonResponse
     {
         $attachmentId = $request->request->getString('attachmentId');
@@ -163,7 +184,7 @@ class MailArchiveController extends AbstractController
 
         $message = $this->emlFileManager->getEmlAsMessage($emlPath);
 
-        if (empty($message)) {
+        if ($message === false) {
             throw new \RuntimeException('Cannot read eml file or file is empty');
         }
 
@@ -177,7 +198,7 @@ class MailArchiveController extends AbstractController
             }
         }
 
-        if (empty($content)) {
+        if ($content === null || $content === '') {
             throw new \RuntimeException('Cannot find attachment in eml file');
         }
 
@@ -256,7 +277,7 @@ class MailArchiveController extends AbstractController
     }
 
     /**
-     * @return Address[]
+     * @return non-empty-list<Address>
      */
     private function createReceiverAddresses(mixed $receiver): array
     {

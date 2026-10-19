@@ -4,10 +4,15 @@
 frosh-platform-mail-archive.css
 frosh-platform-mail-archive.js
 /vendor/
+/var/
 /src/Resources/public/
 /composer.lock
 .php-cs-fixer.cache
+/.phpunit.cache/
+/src/Resources/app/administration/.tmp/
 
 src/Resources/app/administration/src/.vite
 src/Resources/public
 
+/src/Resources/app/administration/node_modules/
+/.shopware/

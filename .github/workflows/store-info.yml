@@ -9,14 +9,24 @@ on:
       - 'composer.json'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   update-store-info:
+    name: Update Store Info
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - name: Install shopware-cli
-        uses: shopware/shopware-cli-action@v1
+        uses: shopware/shopware-cli-action@v3.0.0
       - name: Build
         shell: bash
         run: shopware-cli account producer extension info push .
