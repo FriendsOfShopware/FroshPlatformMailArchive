@@ -22,11 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Install shopware-cli
-        uses: shopware/shopware-cli-action@72d5fa2c934424f3b1360ccae288aa304b91a4c9 # v1.0.6
+        uses: shopware/shopware-cli-action@v3.0.0
       - name: Build
         shell: bash
         run: shopware-cli account producer extension info push .
