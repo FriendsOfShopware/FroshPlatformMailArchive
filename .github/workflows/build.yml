@@ -10,12 +10,14 @@ permissions:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
     permissions:
-      contents: write # Required by the reusable workflow to publish the built extension.
-    uses: FriendsOfShopware/actions/.github/workflows/store-shopware-cli.yml@fe90fa6a5f7636cb600d0591629fd7435c6057db # main, 2026-10-17
-    with:
-      extensionName: ${{ github.event.repository.name }}
-    secrets:
-      accountUser: ${{ secrets.ACCOUNT_USER }}
-      accountPassword: ${{ secrets.ACCOUNT_PASSWORD }}
-      ghToken: ${{ secrets.GITHUB_TOKEN }}
+      contents: write # Required to create the release tag and publish the built extension.
+    steps:
+      - name: Release Extension to Store
+        uses: shopware/github-actions/store-release@main
+        with:
+          extensionName: ${{ github.event.repository.name }}
+          clientId: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_ID }}
+          clientSecret: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_SECRET }}
+          ghToken: ${{ secrets.GITHUB_TOKEN }}

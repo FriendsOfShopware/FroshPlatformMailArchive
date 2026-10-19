@@ -6,7 +6,8 @@ workflows:
     '.github/workflows/administration.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-node@v6.5.0'
-    '.github/workflows/build.yml': []
+    '.github/workflows/build.yml':
+        - 'shopware/github-actions@main'
     '.github/workflows/code-style.yml':
         - 'actions/checkout@v7.0.1'
         - 'shopware/github-actions@main'
@@ -14,6 +15,11 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'shopware/shopware-cli-action@v3.0.0'
 dependencies:
+    'actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10':
+        ref: 'v6.0.3'
+        commit: 'sha1-df4cb1c069e1874edd31b4311f1884172cec0e10'
+        owner_id: 44036562
+        repo_id: 197814629
     'actions/checkout@v7.0.1':
         ref: 'v7.0.1'
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -24,12 +30,31 @@ dependencies:
         commit: 'sha1-249970729cb0ef3589644e2896645e5dc5ba9c38'
         owner_id: 44036562
         repo_id: 189476904
+    'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a':
+        ref: 'v7.0.1'
+        commit: 'sha1-043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+        owner_id: 44036562
+        repo_id: 192625955
+    'mukunku/tag-exists-action@5c39604fe8aef7e65acb6fbcf96ec580f7680313':
+        ref: 'v1.7.0'
+        commit: 'sha1-5c39604fe8aef7e65acb6fbcf96ec580f7680313'
+        owner_id: 4502154
+        repo_id: 258333286
+    'ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd':
+        ref: 'v1.21.0'
+        commit: 'sha1-339a81892b84b4eeb0f6e744e4574d79d0d9b8dd'
+        owner_id: 5712756
+        repo_id: 204020546
     'shopware/github-actions@main':
         ref: 'main'
         commit: 'sha1-0a5d7f50be4a8915d9234a32fe72e5bebb26c2fa'
         owner_id: 612628
         repo_id: 742404068
         uses:
+            - 'actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10'
+            - 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+            - 'mukunku/tag-exists-action@5c39604fe8aef7e65acb6fbcf96ec580f7680313'
+            - 'ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd'
             - 'shopware/shopware-cli-action@v3'
     'shopware/shopware-cli-action@v3':
         ref: 'v3'
