@@ -3,6 +3,9 @@
 # Docs: https://gh.io/actions-lockfile
 version: 'v0.0.3'
 workflows:
+    '.github/workflows/administration.yml':
+        - 'actions/checkout@v7.0.1'
+        - 'actions/setup-node@v6.5.0'
     '.github/workflows/build.yml': []
     '.github/workflows/code-style.yml':
         - 'actions/checkout@v7.0.1'
@@ -16,6 +19,11 @@ dependencies:
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
+    'actions/setup-node@v6.5.0':
+        ref: 'v6.5.0'
+        commit: 'sha1-249970729cb0ef3589644e2896645e5dc5ba9c38'
+        owner_id: 44036562
+        repo_id: 189476904
     'shopware/github-actions@main':
         ref: 'main'
         commit: 'sha1-0a5d7f50be4a8915d9234a32fe72e5bebb26c2fa'

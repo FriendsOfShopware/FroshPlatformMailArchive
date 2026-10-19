@@ -14,3 +14,5 @@ frosh-platform-mail-archive.js
 src/Resources/app/administration/src/.vite
 src/Resources/public
 
+/src/Resources/app/administration/node_modules/
+/.shopware/
