@@ -29,21 +29,13 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Exception\ExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use ZBateson\MailMimeParser\Header\AddressHeader;
+use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\Header\IHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
 
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 class MailArchiveController extends AbstractController
 {
-    private const RESEND_HEADER_ALLOWLIST = [
-        'from',
-        'to',
-        'cc',
-        'reply-to',
-        'sender',
-        'subject',
-    ];
-
     /**
      * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
      * @param EntityRepository<EntityCollection<MailArchiveAttachmentEntity>> $froshMailArchiveAttachmentRepository
@@ -241,11 +233,22 @@ class MailArchiveController extends AbstractController
         $email->text($message->getTextContent());
 
         foreach ($message->getAllHeaders() as $header) {
-            if (!\in_array(\strtolower($header->getName()), self::RESEND_HEADER_ALLOWLIST, true)) {
+            $headerValue = $this->getHeaderValue($header);
+
+            // skip multipart/ headers due to multiple content types breaking the resent email
+            if ($header->getName() === 'Content-Type' && \in_array($headerValue, ['multipart/alternative', 'multipart/mixed'], true)) {
                 continue;
             }
 
-            $email->getHeaders()->addHeader($header->getName(), $this->getHeaderValue($header));
+            if ($header->getName() === 'Return-Path') {
+                $headerValue = $this->determineReturnPath($headerValue);
+
+                if ($headerValue === null) {
+                    continue;
+                }
+            }
+
+            $email->getHeaders()->addHeader($header->getName(), $headerValue);
         }
 
         foreach ($message->getAllAttachmentParts() as $attachment) {
@@ -300,18 +303,25 @@ class MailArchiveController extends AbstractController
     }
 
     /**
-     * @return string|array<string|Address>|null
+     * @return string|array<string|Address>|\DateTimeImmutable|null
      */
-    private function getHeaderValue(IHeader $header): string|array|null
+    private function getHeaderValue(IHeader $header): string|array|\DateTimeImmutable|null
     {
         if ($header instanceof AddressHeader) {
             /** @var AddressPart[] $addressParts */
             $addressParts = $header->getParts();
 
-            return \array_map(
-                static fn (AddressPart $part) => new Address($part->getEmail(), $part->getName()),
-                $addressParts,
-            );
+            return \array_map(function (AddressPart $part) use ($header) {
+                if ($header->getName() === 'Return-Path') {
+                    return $part->getEmail();
+                }
+
+                return new Address($part->getEmail(), $part->getName());
+            }, $addressParts);
+        }
+
+        if ($header instanceof DateHeader) {
+            return $header->getDateTimeImmutable();
         }
 
         return $header->getValue();
@@ -336,5 +346,40 @@ class MailArchiveController extends AbstractController
         }
 
         return $this->emlFileManager->getEmlFileAsString($emlPath);
+    }
+
+    /**
+     * @param \DateTimeImmutable|array<string|Address>|string|null $headerValue
+     */
+    private function determineReturnPath(\DateTimeImmutable|array|string|null $headerValue): ?string
+    {
+        // Extract first item for return-path since Symfony/Mailer needs to be a string value here
+        if (\is_array($headerValue)) {
+            $headerValue = array_pop($headerValue);
+        }
+
+        // extract mail from: <"mail@example.com" <mail@example.com>>
+        // see https://github.com/symfony/symfony/pull/59796
+        if ($headerValue instanceof Address) {
+            return $headerValue->getEncodedAddress();
+        }
+
+        if (\is_string($headerValue)) {
+            $regex = '/[<"]([^<>"\s]+@[^<>"\s]+)[>"]/';
+            preg_match($regex, $headerValue, $matches);
+            if (isset($matches[1])) {
+                $headerValue = $matches[1];
+            }
+        }
+
+        if (\is_string($headerValue)) {
+            try {
+                return (new Address($headerValue))->getEncodedAddress();
+            } catch (\Throwable) {
+                // we don't care about invalid addresses
+            }
+        }
+
+        return null;
     }
 }
