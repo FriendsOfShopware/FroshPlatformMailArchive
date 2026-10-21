@@ -1,3 +1,7 @@
+# Unreleased
+
+* Fixed deleting a customer, order or flow when an archived mail references them ([#157](https://github.com/FriendsOfShopware/FroshPlatformMailArchive/issues/157))
+
 # 3.7.0
 
 * Added a "sent date from" and "sent date to" filter to the mail archive listing ([#151](https://github.com/FriendsOfShopware/FroshPlatformMailArchive/pull/151))

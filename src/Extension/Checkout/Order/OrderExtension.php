@@ -20,7 +20,7 @@ class OrderExtension extends EntityExtension
                 'froshMailArchive',
                 MailArchiveDefinition::class,
                 'order_id',
-            ))->addFlags(new SetNullOnDelete(false)),
+            ))->addFlags(new SetNullOnDelete(true)),
         );
     }
 
