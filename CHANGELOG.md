@@ -1,3 +1,6 @@
+# 3.7.1
+* Fixed Orders/Customers cannot be deleted due to foreign key error
+
 # 3.7.0
 
 * Added a "sent date from" and "sent date to" filter to the mail archive listing ([#151](https://github.com/FriendsOfShopware/FroshPlatformMailArchive/pull/151))
