@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Task;
 
 use Frosh\MailArchive\Messenger\CleanupMessage;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
@@ -20,8 +21,9 @@ class CleanupTaskHandler extends ScheduledTaskHandler
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         private readonly MessageBusInterface $messageBus,
+        LoggerInterface $exceptionLogger,
     ) {
-        parent::__construct($scheduledTaskRepository);
+        parent::__construct($scheduledTaskRepository, $exceptionLogger);
     }
 
     public function run(): void

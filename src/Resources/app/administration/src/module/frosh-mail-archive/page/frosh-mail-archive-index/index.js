@@ -1,20 +1,17 @@
-const {Component, Mixin} = Shopware;
-const {Criteria} = Shopware.Data;
+const { Component, Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
 const utils = Shopware.Utils;
 import template from './frosh-mail-archive-index.twig';
 import './frosh-mail-archive-index.scss';
 
 Component.register('frosh-mail-archive-index', {
     template,
-    inject: ['repositoryFactory', 'froshMailArchiveService'],
-    mixins: [
-        Mixin.getByName('listing'),
-        Mixin.getByName('notification'),
-    ],
+    inject: ['acl', 'repositoryFactory', 'froshMailArchiveService'],
+    mixins: [Mixin.getByName('listing'), Mixin.getByName('notification')],
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -30,10 +27,12 @@ Component.register('frosh-mail-archive-index', {
                 salesChannelId: null,
                 transportState: null,
                 customerId: null,
-                term: null
+                dateFrom: null,
+                dateTo: null,
+                term: null,
             },
             selectedItems: {},
-        }
+        };
     },
 
     computed: {
@@ -44,28 +43,28 @@ Component.register('frosh-mail-archive-index', {
                     dataIndex: 'createdAt',
                     label: 'frosh-mail-archive.list.columns.sentDate',
                     primary: true,
-                    routerLink: 'frosh.mail.archive.detail'
+                    routerLink: 'frosh.mail.archive.detail',
                 },
                 {
                     property: 'transportState',
                     dataIndex: 'transportState',
                     label: 'frosh-mail-archive.list.columns.transportState',
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'subject',
                     dataIndex: 'subject',
                     label: 'frosh-mail-archive.list.columns.subject',
                     allowResize: true,
-                    routerLink: 'frosh.mail.archive.detail'
+                    routerLink: 'frosh.mail.archive.detail',
                 },
                 {
                     property: 'receiver',
                     dataIndex: 'receiver',
                     label: 'frosh-mail-archive.list.columns.receiver',
-                    allowResize: true
+                    allowResize: true,
                 },
-            ]
+            ];
         },
         mailArchiveRepository() {
             return this.repositoryFactory.create('frosh_mail_archive');
@@ -92,12 +91,27 @@ Component.register('frosh-mail-archive-index', {
                     label: this.translateState('resent'),
                 },
             ];
-        }
+        },
     },
 
     methods: {
         translateState(state) {
             return this.$tc(`frosh-mail-archive.state.${state}`);
+        },
+
+        getDateBoundary(value, endOfDay) {
+            // A date-only string (YYYY-MM-DD) would be parsed as UTC, so append the time to parse it as local time
+            const date = new Date(
+                value.length === 10 ? `${value}T00:00:00` : value
+            );
+
+            if (endOfDay) {
+                date.setHours(23, 59, 59, 999);
+            } else {
+                date.setHours(0, 0, 0, 0);
+            }
+
+            return date.toISOString();
         },
 
         updateData(query) {
@@ -107,14 +121,15 @@ Component.register('frosh-mail-archive-index', {
         },
 
         saveFilters() {
-            this.updateRoute({
-                limit: this.limit,
-                page: this.page,
-                term: this.term,
-                sortBy: this.sortBy,
-                sortDirection: this.sortDirection,
-                naturalSorting: this.naturalSorting,
-            },
+            this.updateRoute(
+                {
+                    limit: this.limit,
+                    page: this.page,
+                    term: this.term,
+                    sortBy: this.sortBy,
+                    sortDirection: this.sortDirection,
+                    naturalSorting: this.naturalSorting,
+                },
                 this.filter
             );
         },
@@ -126,24 +141,54 @@ Component.register('frosh-mail-archive-index', {
             criteria.setTerm(this.term);
 
             if (this.filter.transportState) {
-                criteria.addFilter(Criteria.equals('transportState', this.filter.transportState));
+                criteria.addFilter(
+                    Criteria.equals(
+                        'transportState',
+                        this.filter.transportState
+                    )
+                );
             }
 
             if (this.filter.salesChannelId) {
-                criteria.addFilter(Criteria.equals('salesChannelId', this.filter.salesChannelId));
+                criteria.addFilter(
+                    Criteria.equals(
+                        'salesChannelId',
+                        this.filter.salesChannelId
+                    )
+                );
             }
 
             if (this.filter.customerId) {
-                criteria.addFilter(Criteria.equals('customerId', this.filter.customerId));
+                criteria.addFilter(
+                    Criteria.equals('customerId', this.filter.customerId)
+                );
+            }
+
+            const dateRange = {};
+
+            if (this.filter.dateFrom) {
+                dateRange.gte = this.getDateBoundary(
+                    this.filter.dateFrom,
+                    false
+                );
+            }
+
+            if (this.filter.dateTo) {
+                dateRange.lte = this.getDateBoundary(this.filter.dateTo, true);
+            }
+
+            if (Object.keys(dateRange).length > 0) {
+                criteria.addFilter(Criteria.range('createdAt', dateRange));
             }
 
             if (this.filter.term) {
                 criteria.setTerm(this.filter.term);
             }
 
-            criteria.addSorting(Criteria.sort('createdAt', 'DESC'))
+            criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
-            return this.mailArchiveRepository.search(criteria, Shopware.Context.api)
+            return this.mailArchiveRepository
+                .search(criteria, Shopware.Context.api)
                 .then((searchResult) => {
                     this.items = searchResult;
                     this.total = searchResult.total;
@@ -155,32 +200,46 @@ Component.register('frosh-mail-archive-index', {
         resendMail(item) {
             this.isLoading = true;
 
-            this.froshMailArchiveService.resendMail(item.id).then(async () => {
-                this.createNotificationSuccess({
-                    title: this.$tc('frosh-mail-archive.detail.resend-success-notification.title'),
-                    message: this.$tc('frosh-mail-archive.detail.resend-success-notification.message')
+            this.froshMailArchiveService
+                .resendMail(item.id)
+                .then(async () => {
+                    this.createNotificationSuccess({
+                        title: this.$tc(
+                            'frosh-mail-archive.detail.resend-success-notification.title'
+                        ),
+                        message: this.$tc(
+                            'frosh-mail-archive.detail.resend-success-notification.message'
+                        ),
+                    });
+                    await this.getList();
+                })
+                .catch(() => {
+                    this.createNotificationError({
+                        title: this.$tc(
+                            'frosh-mail-archive.detail.resend-error-notification.title'
+                        ),
+                        message: this.$tc(
+                            'frosh-mail-archive.detail.resend-error-notification.message'
+                        ),
+                    });
+                })
+                .finally(() => {
+                    this.isLoading = false;
                 });
-                await this.getList();
-            }).catch(() => {
-                this.createNotificationError({
-                    title: this.$tc('frosh-mail-archive.detail.resend-error-notification.title'),
-                    message: this.$tc('frosh-mail-archive.detail.resend-error-notification.message')
-                });
-            }).finally(() => {
-                this.isLoading = false;
-            });
         },
 
         onBulkResendClick() {
             const ids = Object.keys(this.selectedItems);
             if (ids.length === 0) {
-                return
+                return;
             }
             this.isLoading = true;
 
-            Promise.all(ids.map((id) => {
-                return this.froshMailArchiveService.resendMail(id);
-            })).finally(async () => {
+            Promise.all(
+                ids.map((id) => {
+                    return this.froshMailArchiveService.resendMail(id);
+                })
+            ).finally(async () => {
                 this.$refs.table?.resetSelection();
                 await this.getList();
                 this.isLoading = false;
@@ -194,10 +253,13 @@ Component.register('frosh-mail-archive-index', {
         resetFilter() {
             this.filter = {
                 salesChannelId: null,
+                transportState: null,
                 customerId: null,
-                term: null
+                dateFrom: null,
+                dateTo: null,
+                term: null,
             };
-        }
+        },
     },
 
     watch: {
@@ -205,7 +267,7 @@ Component.register('frosh-mail-archive-index', {
             deep: true,
             handler: utils.debounce(function () {
                 this.getList();
-            }, 400)
-        }
-    }
+            }, 400),
+        },
+    },
 });

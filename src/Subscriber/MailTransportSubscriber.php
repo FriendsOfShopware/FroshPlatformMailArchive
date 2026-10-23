@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Frosh\MailArchive\Subscriber;
 
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -15,15 +18,16 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\RawMessage;
 
-class MailTransportSubscriber implements EventSubscriberInterface
+readonly class MailTransportSubscriber implements EventSubscriberInterface
 {
     /**
      * @param EntityRepository<EntityCollection<MailArchiveEntity>> $froshMailArchiveRepository
      */
     public function __construct(
-        private readonly EntityRepository $froshMailArchiveRepository,
-        private readonly EmlFileManager   $emlFileManager,
-    ) {}
+        private EntityRepository $froshMailArchiveRepository,
+        private EmlFileManager $emlFileManager,
+    ) {
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -51,7 +55,7 @@ class MailTransportSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $context = Context::createDefaultContext();
+        $context = new Context(new SystemSource());
         $archiveId = $this->getArchiveIdByMessage($message);
 
         if (!$archiveId) {
@@ -60,35 +64,38 @@ class MailTransportSubscriber implements EventSubscriberInterface
 
         $this->emlFileManager->writeFile($archiveId, $message->toString());
 
-        $attachments = $this->getAttachments($message);
+        $attachments = $this->getAttachments($message, $archiveId);
         $this->froshMailArchiveRepository->update([[
             'id' => $archiveId,
             'transportState' => $newState,
             'attachments' => $attachments,
         ]], $context);
-
     }
 
     /**
-     * @param Email $message
-     * @return array<array{'fileName': string, 'contentType': string, 'fileSize': int}>
+     * @return array<array{'id': string, 'fileName': string, 'contentType': string, 'fileSize': int}>
      */
-    private function getAttachments(Email $message): array
+    private function getAttachments(Email $message, string $archiveId): array
     {
         $attachments = $message->getAttachments();
 
-        return array_map(static function (DataPart $attachment) {
-            return [
-                'fileName' => $attachment->getFilename() ?? "attachment",
-                'contentType' => $attachment->getContentType(),
-                'fileSize' => strlen($attachment->getBody()),
-            ];
-        }, $attachments);
+        // Deterministic IDs make repeated transport events update the same
+        // attachment records instead of inserting duplicates.
+        return array_map(static fn (DataPart $attachment, int $index) => [
+            'id' => md5($archiveId . ':' . $index),
+            'fileName' => $attachment->getFilename() ?? 'attachment',
+            'contentType' => $attachment->getContentType(),
+            'fileSize' => \strlen($attachment->getBody()),
+        ], $attachments, array_keys($attachments));
     }
 
     private function getArchiveIdByMessage(Email $message): ?string
     {
         $messageId = $message->getHeaders()->get(MailSender::FROSH_MESSAGE_ID_HEADER)?->getBody();
+
+        if (!\is_string($messageId)) {
+            $messageId = $message->getHeaders()->get(MailSender::LEGACY_FROSH_MESSAGE_ID_HEADER)?->getBody();
+        }
 
         if (\is_string($messageId)) {
             return $messageId;

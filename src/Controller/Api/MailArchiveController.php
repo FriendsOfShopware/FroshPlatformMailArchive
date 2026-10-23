@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Frosh\MailArchive\Controller\Api;
 
+use Frosh\MailArchive\Acl\MailArchivePrivileges;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveAttachmentEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
+use Frosh\MailArchive\Services\ResendRecipientOverride;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,13 +26,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mime\Exception\ExceptionInterface;
+use Symfony\Component\Routing\Attribute\Route;
 use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\Header\IHeader;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 class MailArchiveController extends AbstractController
 {
     /**
@@ -37,15 +41,59 @@ class MailArchiveController extends AbstractController
      * @param EntityRepository<EntityCollection<MailArchiveAttachmentEntity>> $froshMailArchiveAttachmentRepository
      */
     public function __construct(
-        private readonly EntityRepository   $froshMailArchiveRepository,
-        private readonly EntityRepository   $froshMailArchiveAttachmentRepository,
+        private readonly EntityRepository $froshMailArchiveRepository,
+        private readonly EntityRepository $froshMailArchiveAttachmentRepository,
         #[Autowire(service: MailSender::class)]
         private readonly AbstractMailSender $mailSender,
-        private readonly RequestStack       $requestStack,
-        private readonly EmlFileManager     $emlFileManager,
-    ) {}
+        private readonly RequestStack $requestStack,
+        private readonly EmlFileManager $emlFileManager,
+        private readonly ResendRecipientOverride $resendRecipientOverride,
+    ) {
+    }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/resend-mail', name: 'api.action.frosh-mail-archive.resend-mail')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/fetch-eml-headers',
+        name: 'api.action.frosh-mail-archive.fetch-eml-headers',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ]],
+        methods: [Request::METHOD_POST],
+    )]
+    public function fetchEmlHeaders(Request $request, Context $context): JsonResponse
+    {
+        $mailId = $request->request->get('mailId');
+
+        if (!\is_string($mailId)) {
+            throw MailArchiveException::parameterMissing('mailId');
+        }
+
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
+        if (!$mailArchive instanceof MailArchiveEntity) {
+            throw MailArchiveException::notFound();
+        }
+
+        $emlPath = $mailArchive->getEmlPath();
+        if ($emlPath === null) {
+            return new JsonResponse([]);
+        }
+
+        $emlMessage = $this->emlFileManager->getEmlAsMessage($emlPath);
+        if ($emlMessage === false) {
+            return new JsonResponse([]);
+        }
+
+        $headers = [];
+        foreach ($emlMessage->getAllHeaders() as $header) {
+            $headers[$header->getName()] = $header->getValue();
+        }
+
+        return new JsonResponse($headers);
+    }
+
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/resend-mail',
+        name: 'api.action.frosh-mail-archive.resend-mail',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ, MailArchivePrivileges::RESEND]],
+        methods: [Request::METHOD_POST],
+    )]
     public function resend(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
@@ -54,7 +102,7 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
@@ -68,7 +116,7 @@ class MailArchiveController extends AbstractController
 
         $email = new Email();
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath);
+        $isEml = $emlPath !== '' && $emlPath !== '0' && \is_string($emlPath);
 
         if ($isEml) {
             $this->enrichFromEml($emlPath, $email);
@@ -76,19 +124,32 @@ class MailArchiveController extends AbstractController
             $this->enrichFromDatabase($mailArchive, $email);
         }
 
+        $receiver = $request->request->all()['receiver'] ?? null;
+
+        if ($receiver !== null) {
+            $this->resendRecipientOverride->replace($email, $this->createReceiverAddresses($receiver));
+        }
+
         $this->mailSender->send($email);
 
-        $this->froshMailArchiveRepository->update([[
-            'id' => $mailId,
-            'transportState' => MailSender::TRANSPORT_STATE_RESENT,
-        ]], $context);
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $systemContext) use ($mailId): void {
+            $this->froshMailArchiveRepository->update([[
+                'id' => $mailId,
+                'transportState' => MailSender::TRANSPORT_STATE_RESENT,
+            ]], $systemContext);
+        });
 
         return new JsonResponse([
             'success' => true,
         ]);
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/content')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/content',
+        name: 'api.action.frosh-mail-archive.content',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ]],
+        methods: [Request::METHOD_POST],
+    )]
     public function download(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
@@ -97,20 +158,20 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
 
         $content = $this->getContent($mailArchive->getEmlPath());
 
-        if (empty($content)) {
+        if ($content === false || $content === '') {
             throw new \RuntimeException('Cannot read eml file or file is empty');
         }
 
         $fileNameParts = [];
 
-        if ($mailArchive->getCreatedAt() !== null) {
+        if ($mailArchive->getCreatedAt() instanceof \DateTimeInterface) {
             $fileNameParts[] = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s');
         }
 
@@ -125,7 +186,12 @@ class MailArchiveController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/attachment', name: 'api.action.frosh-mail-archive.attachment')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/attachment',
+        name: 'api.action.frosh-mail-archive.attachment',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ, MailArchivePrivileges::ATTACHMENT_READ]],
+        methods: [Request::METHOD_POST],
+    )]
     public function attachment(Request $request, Context $context): JsonResponse
     {
         $attachmentId = $request->request->getString('attachmentId');
@@ -136,7 +202,7 @@ class MailArchiveController extends AbstractController
         $criteria = new Criteria([$attachmentId]);
         $criteria->addAssociation('mailArchive');
 
-        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, $context)->first();
+        $attachment = $this->froshMailArchiveAttachmentRepository->search($criteria, $context)->getEntities()->first();
         if (!$attachment instanceof MailArchiveAttachmentEntity) {
             throw MailArchiveException::notFound();
         }
@@ -147,7 +213,7 @@ class MailArchiveController extends AbstractController
         }
 
         $emlPath = $mailArchive->getEmlPath();
-        $isEml = !empty($emlPath) && \is_string($emlPath);
+        $isEml = $emlPath !== '' && $emlPath !== '0' && \is_string($emlPath);
 
         if (!$isEml) {
             throw new \RuntimeException('Cannot read eml file or file is empty');
@@ -155,7 +221,7 @@ class MailArchiveController extends AbstractController
 
         $message = $this->emlFileManager->getEmlAsMessage($emlPath);
 
-        if (empty($message)) {
+        if ($message === false) {
             throw new \RuntimeException('Cannot read eml file or file is empty');
         }
 
@@ -169,13 +235,13 @@ class MailArchiveController extends AbstractController
             }
         }
 
-        if (empty($content)) {
+        if ($content === null || $content === '') {
             throw new \RuntimeException('Cannot find attachment in eml file');
         }
 
         $fileNameParts = [];
 
-        if ($mailArchive->getCreatedAt() !== null) {
+        if ($mailArchive->getCreatedAt() instanceof \DateTimeInterface) {
             $fileNameParts[] = $mailArchive->getCreatedAt()->format('Y-m-d_H-i-s');
         }
 
@@ -248,9 +314,35 @@ class MailArchiveController extends AbstractController
     }
 
     /**
+     * @return non-empty-list<Address>
+     */
+    private function createReceiverAddresses(mixed $receiver): array
+    {
+        if (!\is_array($receiver) || $receiver === []) {
+            throw MailArchiveException::parameterInvalidReceiver();
+        }
+
+        $addresses = [];
+
+        foreach ($receiver as $entry) {
+            if (!\is_string($entry) || \trim($entry) === '') {
+                throw MailArchiveException::parameterInvalidReceiver();
+            }
+
+            try {
+                $addresses[] = Address::create(\trim($entry));
+            } catch (ExceptionInterface) {
+                throw MailArchiveException::parameterInvalidReceiver();
+            }
+        }
+
+        return $addresses;
+    }
+
+    /**
      * @return string|array<string|Address>|\DateTimeImmutable|null
      */
-    private function getHeaderValue(IHeader $header): string|array|null|\DateTimeImmutable
+    private function getHeaderValue(IHeader $header): string|array|\DateTimeImmutable|null
     {
         if ($header instanceof AddressHeader) {
             /** @var AddressPart[] $addressParts */
@@ -286,7 +378,7 @@ class MailArchiveController extends AbstractController
 
     private function getContent(?string $emlPath): false|string
     {
-        if (empty($emlPath) || !\is_string($emlPath)) {
+        if ($emlPath === '' || $emlPath === '0' || !\is_string($emlPath)) {
             return false;
         }
 
@@ -299,7 +391,7 @@ class MailArchiveController extends AbstractController
     private function determineReturnPath(\DateTimeImmutable|array|string|null $headerValue): ?string
     {
         // Extract first item for return-path since Symfony/Mailer needs to be a string value here
-        if (is_array($headerValue)) {
+        if (\is_array($headerValue)) {
             $headerValue = array_pop($headerValue);
         }
 
@@ -309,7 +401,7 @@ class MailArchiveController extends AbstractController
             return $headerValue->getEncodedAddress();
         }
 
-        if (is_string($headerValue)) {
+        if (\is_string($headerValue)) {
             $regex = '/[<"]([^<>"\s]+@[^<>"\s]+)[>"]/';
             preg_match($regex, $headerValue, $matches);
             if (isset($matches[1])) {
@@ -317,7 +409,7 @@ class MailArchiveController extends AbstractController
             }
         }
 
-        if (is_string($headerValue)) {
+        if (\is_string($headerValue)) {
             try {
                 return (new Address($headerValue))->getEncodedAddress();
             } catch (\Throwable) {

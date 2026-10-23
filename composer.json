@@ -1,6 +1,6 @@
 {
     "name": "frosh/mail-platform-archive",
-    "version": "3.5.0",
+    "version": "3.7.1",
     "description": "Mail Archive",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -11,6 +11,11 @@
     "autoload": {
         "psr-4": {
             "Frosh\\MailArchive\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Frosh\\MailArchive\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -40,12 +45,24 @@
         }
     },
     "require": {
-        "shopware/core": "~6.6.0",
-        "zbateson/mail-mime-parser": "^2.4"
+        "shopware/core": "~6.6.0 || ~6.7.0",
+        "zbateson/mail-mime-parser": "^3.0.6"
+    },
+    "require-dev": {
+        "frosh/tools": ">2.1.3"
+    },
+    "conflict": {
+        "frosh/tools": "<2.1.3"
     },
     "config": {
         "allow-plugins": {
           "symfony/runtime": true
         }
+    },
+    "scripts": {
+        "format": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:0.19.1@sha256:8add38936a6f6fef890eb7d3419fb31fb6cc0acf712b1535ddbd39fec6b44616 extension format /ext",
+        "check": "docker run --rm -v $(pwd):/ext shopware/shopware-cli:0.19.1@sha256:8add38936a6f6fef890eb7d3419fb31fb6cc0acf712b1535ddbd39fec6b44616 extension validate /ext",
+        "phpunit": "../../../vendor/bin/phpunit -c phpunit.xml",
+        "test:admin": "npm --prefix src/Resources/app/administration run test:unit"
     }
 }

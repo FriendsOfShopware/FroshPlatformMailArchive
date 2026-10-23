@@ -16,7 +16,7 @@ class Migration1691326842Attachment extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('CREATE TABLE `frosh_mail_archive_attachment` (
+        $connection->executeStatement('CREATE TABLE IF NOT EXISTS `frosh_mail_archive_attachment` (
     `id` BINARY(16) NOT NULL,
     `mail_archive_id` BINARY(16) NULL,
     `file_name` VARCHAR(255) NOT NULL,
@@ -31,5 +31,7 @@ class Migration1691326842Attachment extends MigrationStep
 ');
     }
 
-    public function updateDestructive(Connection $connection): void {}
+    public function updateDestructive(Connection $connection): void
+    {
+    }
 }

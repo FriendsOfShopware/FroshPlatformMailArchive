@@ -19,13 +19,14 @@ class CleanupHandler
         private readonly SystemConfigService $configService,
         private readonly Connection $connection,
         private readonly EmlFileManager $emlFileManager,
-    ) {}
+    ) {
+    }
 
     public function __invoke(CleanupMessage $message): void
     {
         $days = $this->configService->getInt('FroshPlatformMailArchive.config.deleteMessageAfterDays');
 
-        if ($days === 0) {
+        if ($days <= 0) {
             return;
         }
 
@@ -50,7 +51,7 @@ class CleanupHandler
         }
 
         foreach ($result as $item) {
-            if (empty($item['eml_path']) || !\is_string($item['eml_path'])) {
+            if (!\is_string($item['eml_path']) || $item['eml_path'] === '') {
                 continue;
             }
 
