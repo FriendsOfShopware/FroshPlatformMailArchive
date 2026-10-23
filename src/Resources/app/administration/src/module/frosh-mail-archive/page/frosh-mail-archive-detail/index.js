@@ -11,6 +11,8 @@ Component.register('frosh-mail-archive-detail', {
     data() {
         return {
             archive: null,
+            emlHeaders: {},
+            mailLoadRequestId: 0,
             resendIsLoading: false,
             resendIsSuccessful: false,
             downloadIsLoading: false,
@@ -113,6 +115,11 @@ Component.register('frosh-mail-archive-detail', {
 
     methods: {
         loadMail() {
+            const archiveId = this.archiveId;
+            const requestId = ++this.mailLoadRequestId;
+            this.emlHeaders = {};
+            this.archive = null;
+
             const criteria = new Criteria();
             criteria.addAssociation('attachments');
             criteria.addAssociation('customer');
@@ -121,9 +128,33 @@ Component.register('frosh-mail-archive-detail', {
             criteria.addAssociation('mailTemplate.mailTemplateType');
 
             this.repository
-                .get(this.archiveId, Shopware.Context.api, criteria)
+                .get(archiveId, Shopware.Context.api, criteria)
                 .then((archive) => {
-                    this.archive = archive;
+                    if (
+                        requestId === this.mailLoadRequestId &&
+                        archiveId === this.archiveId
+                    ) {
+                        this.archive = archive;
+                    }
+                });
+
+            this.froshMailArchiveService
+                .fetchEmlHeaders(archiveId)
+                .then((headers) => {
+                    if (
+                        requestId === this.mailLoadRequestId &&
+                        archiveId === this.archiveId
+                    ) {
+                        this.emlHeaders = headers;
+                    }
+                })
+                .catch(() => {
+                    if (
+                        requestId === this.mailLoadRequestId &&
+                        archiveId === this.archiveId
+                    ) {
+                        this.emlHeaders = {};
+                    }
                 });
         },
         getContent(html) {

@@ -52,6 +52,43 @@ class MailArchiveController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/frosh-mail-archive/fetch-eml-headers',
+        name: 'api.action.frosh-mail-archive.fetch-eml-headers',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ]],
+        methods: [Request::METHOD_POST],
+    )]
+    public function fetchEmlHeaders(Request $request, Context $context): JsonResponse
+    {
+        $mailId = $request->request->get('mailId');
+
+        if (!\is_string($mailId)) {
+            throw MailArchiveException::parameterMissing('mailId');
+        }
+
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
+        if (!$mailArchive instanceof MailArchiveEntity) {
+            throw MailArchiveException::notFound();
+        }
+
+        $emlPath = $mailArchive->getEmlPath();
+        if ($emlPath === null) {
+            return new JsonResponse([]);
+        }
+
+        $emlMessage = $this->emlFileManager->getEmlAsMessage($emlPath);
+        if ($emlMessage === false) {
+            return new JsonResponse([]);
+        }
+
+        $headers = [];
+        foreach ($emlMessage->getAllHeaders() as $header) {
+            $headers[$header->getName()] = $header->getValue();
+        }
+
+        return new JsonResponse($headers);
+    }
+
+    #[Route(
         path: '/api/_action/frosh-mail-archive/resend-mail',
         name: 'api.action.frosh-mail-archive.resend-mail',
         defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ, MailArchivePrivileges::RESEND]],
