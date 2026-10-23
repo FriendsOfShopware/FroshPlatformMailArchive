@@ -31,6 +31,8 @@
                     "salesChannel": "Sales Channel",
                     "transportStateLabel": "State",
                     "transportStatePlaceholder": "Select state",
+                    "dateFrom": "Sent date from",
+                    "dateTo": "Sent date to",
                     "resetFilter": "Reset filter"
                 }
             }
@@ -46,11 +48,14 @@
                 "sentDate": "Sent date",
                 "sender": "Sender",
                 "receiver": "Recipients",
+                "cc": "CC",
+                "bcc": "BCC",
                 "subject": "Subject",
                 "salesChannel": "Sales Channel",
                 "customer": "Customer",
                 "order": "Order",
-                "flow": "Flow"
+                "flow": "Flow",
+                "mail-template": "Email template"
             },
             "content": {
                 "title": "Content"
@@ -68,6 +73,13 @@
             "alert": {
                 "transportFailed": "Mail delivery failed. Please check mailer settings and try again."
             },
+            "resend-modal": {
+                "title": "Resend mail",
+                "receiverLabel": "Recipients",
+                "receiverHelpText": "Adjust the recipients before resending. Use the format \"Name <mail{'@'}example.com>\" to include a name.",
+                "cancel": "Cancel",
+                "confirm": "Resend mail"
+            },
             "resend-success-notification": {
                 "message": "Mail dispatch has started.",
                 "title": "Mail Archive"
@@ -82,6 +94,13 @@
                 "column-state": "State",
                 "currently-selected": "this",
                 "title": "Resend history"
+            }
+        }
+    },
+    "sw-privileges": {
+        "permissions": {
+            "frosh_mail_archive": {
+                "label": "Mail Archive"
             }
         }
     }

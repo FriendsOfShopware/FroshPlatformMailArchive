@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Frosh\MailArchive\Services;
 
 use League\Flysystem\FilesystemOperator;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use ZBateson\MailMimeParser\IMessage;
 use ZBateson\MailMimeParser\MailMimeParser;
@@ -17,13 +18,18 @@ class EmlFileManager
     public function __construct(
         #[Autowire(service: 'frosh_platform_mail_archive.filesystem.private')]
         private readonly FilesystemOperator $filesystem,
-    ) {}
+    ) {
+    }
 
     /**
      * @return string Path to the eml file
      */
     public function writeFile(string $id, string $content): string
     {
+        if (!Uuid::isValid($id)) {
+            throw new \InvalidArgumentException('The mail archive ID must be a valid UUID.');
+        }
+
         if (\function_exists('zstd_compress')) {
             $content = \zstd_compress($content);
             $extension = '.' . self::COMPRESSION_EXT_ZSTD;
@@ -48,7 +54,7 @@ class EmlFileManager
     public function getEmlFileAsString(string $emlFilePath): false|string
     {
         try {
-            $extension = \pathinfo($emlFilePath, PATHINFO_EXTENSION);
+            $extension = \pathinfo($emlFilePath, \PATHINFO_EXTENSION);
 
             $content = $this->filesystem->read($emlFilePath);
 
@@ -72,7 +78,7 @@ class EmlFileManager
 
         $content = $this->getEmlFileAsString($emlFilePath);
 
-        if (empty($content)) {
+        if ($content === '' || $content === '0' || $content === false) {
             return false;
         }
 

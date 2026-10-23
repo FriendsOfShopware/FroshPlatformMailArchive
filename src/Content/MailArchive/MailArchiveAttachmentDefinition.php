@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Frosh\MailArchive\Content\MailArchive;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\EntityProtectionCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -28,6 +31,13 @@ class MailArchiveAttachmentDefinition extends EntityDefinition
     public function getEntityClass(): string
     {
         return MailArchiveAttachmentEntity::class;
+    }
+
+    protected function defineProtections(): EntityProtectionCollection
+    {
+        return new EntityProtectionCollection([
+            new WriteProtection(Context::SYSTEM_SCOPE),
+        ]);
     }
 
     protected function defineFields(): FieldCollection

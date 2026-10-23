@@ -31,6 +31,8 @@
                     "salesChannel": "Verkaufskanal",
                     "transportStateLabel": "Status",
                     "transportStatePlaceholder": "Status auswählen",
+                    "dateFrom": "Versanddatum von",
+                    "dateTo": "Versanddatum bis",
                     "resetFilter": "Filter zurücksetzen"
                 }
             }
@@ -46,11 +48,14 @@
                 "sentDate": "Versanddatum",
                 "sender": "Absender",
                 "receiver": "Empfänger",
+                "cc": "CC",
+                "bcc": "BCC",
                 "subject": "Betreff",
                 "salesChannel": "Verkaufskanal",
                 "customer": "Kunde",
                 "order": "Bestellung",
-                "flow": "Flow"
+                "flow": "Flow",
+                "mail-template": "E-Mail Template"
             },
             "content": {
                 "title": "Inhalt"
@@ -68,20 +73,34 @@
             "alert": {
                 "transportFailed": "E-Mail-Versand fehlgeschlagen. Bitte überprüfe deine Mailer-Einstellungen und versuche es erneut."
             },
+            "resend-modal": {
+                "title": "E-Mail erneut versenden",
+                "receiverLabel": "Empfänger",
+                "receiverHelpText": "Passe die Empfänger vor dem erneuten Versenden an. Nutze das Format \"Name <mail{'@'}example.com>\", um einen Namen anzugeben.",
+                "cancel": "Abbrechen",
+                "confirm": "E-Mail erneut versenden"
+            },
             "resend-success-notification": {
-              "message": "Der E-Mail-Versand wurde gestartet.",
-              "title": "Mail Archiv"
+                "message": "Der E-Mail-Versand wurde gestartet.",
+                "title": "Mail Archiv"
             },
             "resend-error-notification": {
-              "title": "Mail Archiv",
-              "message": "Fehler beim Senden der E-Mail"
+                "title": "Mail Archiv",
+                "message": "Fehler beim Senden der E-Mail"
             },
             "resend-grid": {
-              "navigate": "Anzeigen",
-              "column-created-at": "Gesendet am",
-              "column-state": "Status",
-              "currently-selected": "ausgewählt",
-              "title": "Sendeverlauf"
+                "navigate": "Anzeigen",
+                "column-created-at": "Gesendet am",
+                "column-state": "Status",
+                "currently-selected": "ausgewählt",
+                "title": "Sendeverlauf"
+            }
+        }
+    },
+    "sw-privileges": {
+        "permissions": {
+            "frosh_mail_archive": {
+                "label": "Mail Archiv"
             }
         }
     }

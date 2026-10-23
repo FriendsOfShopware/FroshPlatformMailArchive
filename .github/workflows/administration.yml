@@ -1,0 +1,68 @@
+name: Administration
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  administration-tests:
+    name: Tests (Shopware ${{ matrix.shopware }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shopware: '6.6'
+            administration_repository: shopware/administration
+            administration_ref: v6.6.10.23
+            administration_subdir: Resources/app/administration
+          - shopware: '6.7'
+            administration_repository: shopware/administration
+            administration_ref: v6.7.15.0
+            administration_subdir: Resources/app/administration
+          - shopware: 'trunk'
+            administration_repository: shopware/shopware
+            administration_ref: trunk
+            administration_subdir: src/Administration/Resources/app/administration
+    env:
+      SHOPWARE_ADMINISTRATION_PATH: ${{ github.workspace }}/.shopware/administration/${{ matrix.administration_subdir }}
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Checkout Shopware Administration
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+          repository: ${{ matrix.administration_repository }}
+          ref: ${{ matrix.administration_ref }}
+          path: .shopware/administration
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.5.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install plugin Administration dependencies
+        working-directory: src/Resources/app/administration
+        run: npm ci
+
+      - name: Install Shopware Administration dependencies
+        working-directory: .shopware/administration/${{ matrix.administration_subdir }}
+        run: npm ci --ignore-scripts
+
+      - name: Diagnose Shopware environment
+        working-directory: src/Resources/app/administration
+        run: npx vitest-shopware-admin-bridge doctor --json
+
+      - name: Run Administration tests
+        working-directory: src/Resources/app/administration
+        run: npm run test:unit
