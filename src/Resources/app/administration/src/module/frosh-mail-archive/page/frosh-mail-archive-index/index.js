@@ -235,15 +235,31 @@ Component.register('frosh-mail-archive-index', {
             }
             this.isLoading = true;
 
-            Promise.all(
-                ids.map((id) => {
-                    return this.froshMailArchiveService.resendMail(id);
+            return this.bulkResendFunc(ids)
+                .catch(() => {
+                    this.createNotificationError({
+                        title: this.$tc(
+                            'frosh-mail-archive.detail.resend-error-notification.title'
+                        ),
+                        message: this.$tc(
+                            'frosh-mail-archive.detail.resend-error-notification.message'
+                        ),
+                    });
                 })
-            ).finally(async () => {
-                this.$refs.table?.resetSelection();
-                await this.getList();
-                this.isLoading = false;
-            });
+                .finally(async () => {
+                    try {
+                        this.$refs.table?.resetSelection();
+                        await this.getList();
+                    } finally {
+                        this.isLoading = false;
+                    }
+                });
+        },
+
+        async bulkResendFunc(ids) {
+            for (const id of ids) {
+                await this.froshMailArchiveService.resendMail(id);
+            }
         },
 
         onSelectionChanged(selection) {
