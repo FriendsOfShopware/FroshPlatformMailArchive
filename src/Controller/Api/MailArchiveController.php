@@ -51,7 +51,12 @@ class MailArchiveController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/frosh-mail-archive/fetch-eml-headers', name: 'api.action.frosh-mail-archive.fetch-eml-headers')]
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/fetch-eml-headers',
+        name: 'api.action.frosh-mail-archive.fetch-eml-headers',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ]],
+        methods: [Request::METHOD_POST],
+    )]
     public function fetchEmlHeaders(Request $request, Context $context): JsonResponse
     {
         $mailId = $request->request->get('mailId');
@@ -60,17 +65,10 @@ class MailArchiveController extends AbstractController
             throw MailArchiveException::parameterMissing('mailId');
         }
 
-        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->first();
+        $mailArchive = $this->froshMailArchiveRepository->search(new Criteria([$mailId]), $context)->getEntities()->first();
         if (!$mailArchive instanceof MailArchiveEntity) {
             throw MailArchiveException::notFound();
         }
-
-        $mainRequest = $this->requestStack->getMainRequest();
-        if (!$mainRequest instanceof Request) {
-            throw new \RuntimeException('Cannot get mainRequest');
-        }
-
-        $mainRequest->attributes->set(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_ID, $mailArchive->getSalesChannelId());
 
         $emlPath = $mailArchive->getEmlPath();
         if ($emlPath === null) {
