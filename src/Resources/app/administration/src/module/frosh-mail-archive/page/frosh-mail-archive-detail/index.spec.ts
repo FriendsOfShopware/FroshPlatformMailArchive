@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     flushPromises,
     mountShopwareComponent,
 } from '@friendsofshopware/vitest-shopware-admin-bridge/test-utils';
+import enGB from '../../snippet/en-GB.json';
 import './index';
 
 async function mountDetail(fetchEmlHeaders: ReturnType<typeof vi.fn>) {
@@ -45,6 +46,10 @@ async function mountDetail(fetchEmlHeaders: ReturnType<typeof vi.fn>) {
 
 describe('mail detail header loading', () => {
     const wrappers: Awaited<ReturnType<typeof mountDetail>>[] = [];
+
+    beforeEach(() => {
+        Shopware.Locale.extend('en-GB', enGB);
+    });
 
     afterEach(() => {
         wrappers.splice(0).forEach((wrapper) => wrapper.unmount());
