@@ -1,7 +1,7 @@
-import './page/frosh-mail-archive-index/index';
-import './page/frosh-mail-archive-detail/index';
-import './component/frosh-mail-resend-history';
-import './acl';
+import './page/frosh-mail-archive-index/index.js';
+import './page/frosh-mail-archive-detail/index.js';
+import './component/frosh-mail-resend-history/index.js';
+import './acl/index.js';
 
 Shopware.Module.register('frosh-mail-archive', {
     type: 'plugin',
