@@ -13,7 +13,8 @@
                 "bulkResendAction": "Erneut versenden",
                 "bulkResendWarningTooltip": "Achtung: Manche MailProvider haben eine Begrenzung, wie viele Mails gleichzeitig versendet werden können.",
                 "resendAction": "E-Mail erneut versenden",
-                "showAction": "Anzeigen"
+                "showAction": "Anzeigen",
+                "deleteError": "Die E-Mail konnte nicht gelöscht werden."
             },
             "columns": {
                 "sentDate": "Versanddatum",

@@ -9,10 +9,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Flow\FlowDefinition;
 use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\EntityProtectionCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
@@ -50,13 +47,6 @@ class MailArchiveDefinition extends EntityDefinition
         return [
             'orderVersionId' => Defaults::LIVE_VERSION,
         ];
-    }
-
-    protected function defineProtections(): EntityProtectionCollection
-    {
-        return new EntityProtectionCollection([
-            new WriteProtection(Context::SYSTEM_SCOPE),
-        ]);
     }
 
     protected function defineFields(): FieldCollection

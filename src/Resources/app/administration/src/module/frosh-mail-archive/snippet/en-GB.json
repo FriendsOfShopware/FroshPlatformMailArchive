@@ -13,7 +13,8 @@
                 "bulkResendAction": "Resend",
                 "bulkResendWarningTooltip": "Attention: Some mail providers have a limit on how many emails can be sent at the same time.",
                 "resendAction": "Resend mail",
-                "showAction": "Show"
+                "showAction": "Show",
+                "deleteError": "The mail could not be deleted."
             },
             "columns": {
                 "sentDate": "Sent date",

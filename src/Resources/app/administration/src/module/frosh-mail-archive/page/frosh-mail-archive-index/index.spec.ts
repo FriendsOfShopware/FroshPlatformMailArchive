@@ -93,3 +93,35 @@ describe('mail archive bulk resend', () => {
         expect(page.isLoading).toBe(false);
     });
 });
+
+describe('mail archive delete errors', () => {
+    it('shows the api error detail when deletion fails', () => {
+        const page = createPage();
+
+        methods.onDeleteFailed.call(page, {
+            errorResponse: {
+                response: {
+                    data: {
+                        errors: [{ detail: 'Missing privilege' }],
+                    },
+                },
+            },
+        });
+
+        expect(page.createNotificationError).toHaveBeenCalledWith({
+            title: 'frosh-mail-archive.title',
+            message: 'Missing privilege',
+        });
+    });
+
+    it('shows a fallback message when the response has no detail', () => {
+        const page = createPage();
+
+        methods.onDeleteFailed.call(page, { errorResponse: {} });
+
+        expect(page.createNotificationError).toHaveBeenCalledWith({
+            title: 'frosh-mail-archive.title',
+            message: 'frosh-mail-archive.list.actions.deleteError',
+        });
+    });
+});
