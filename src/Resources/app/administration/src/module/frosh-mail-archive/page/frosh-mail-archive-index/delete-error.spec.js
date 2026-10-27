@@ -21,7 +21,11 @@ describe('mail archive delete error', () => {
     it('joins several api error details', () => {
         const detail = getDeleteErrorDetail({
             response: {
-                errors: [{ detail: 'First' }, { detail: 'Second' }, { detail: '' }],
+                errors: [
+                    { detail: 'First' },
+                    { detail: 'Second' },
+                    { detail: '' },
+                ],
             },
         });
 
@@ -31,6 +35,8 @@ describe('mail archive delete error', () => {
     it('returns null when the response has no readable detail', () => {
         expect(getDeleteErrorDetail(undefined)).toBeNull();
         expect(getDeleteErrorDetail({ response: { data: {} } })).toBeNull();
-        expect(getDeleteErrorDetail({ errors: [{ title: 'Forbidden' }] })).toBeNull();
+        expect(
+            getDeleteErrorDetail({ errors: [{ title: 'Forbidden' }] })
+        ).toBeNull();
     });
 });
