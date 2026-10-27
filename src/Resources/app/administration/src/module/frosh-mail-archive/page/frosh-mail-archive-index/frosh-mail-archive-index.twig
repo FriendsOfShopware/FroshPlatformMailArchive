@@ -28,7 +28,10 @@
             :columns="columns"
             :isLoading="isLoading"
             :repository="mailArchiveRepository"
+            :allowDelete="acl.can('frosh_mail_archive:delete')"
             @selection-change="onSelectionChanged"
+            @delete-item-failed="onDeleteFailed"
+            @delete-items-failed="onDeleteFailed"
         >
             <template #column-receiver="{ item }">
                 <span v-for="(element, index) in item.receiver">

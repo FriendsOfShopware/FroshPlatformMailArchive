@@ -12,4 +12,8 @@ if (!$classLoader instanceof ClassLoader) {
 $classLoader->addPsr4('Frosh\\MailArchive\\', \dirname(__DIR__) . '/src');
 $classLoader->addPsr4('Frosh\\MailArchive\\Tests\\', __DIR__);
 
+if (class_exists(\Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager::class)) {
+    \Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager::prepare($classLoader);
+}
+
 return $classLoader;

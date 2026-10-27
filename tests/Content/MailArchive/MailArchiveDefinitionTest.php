@@ -7,7 +7,6 @@ namespace Frosh\MailArchive\Tests\Content\MailArchive;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveDefinition;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtection;
 
 /**
@@ -16,12 +15,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityProtection\WriteProtectio
 #[CoversClass(MailArchiveDefinition::class)]
 class MailArchiveDefinitionTest extends TestCase
 {
-    public function testArchiveEntityIsSystemWriteProtected(): void
+    public function testArchiveEntityIsNotWriteProtected(): void
     {
         $definition = new MailArchiveDefinition();
-        $writeProtection = $definition->getProtections()->get(WriteProtection::class);
 
-        static::assertInstanceOf(WriteProtection::class, $writeProtection);
-        static::assertSame([Context::SYSTEM_SCOPE], $writeProtection->getAllowedScopes());
+        static::assertNull($definition->getProtections()->get(WriteProtection::class));
     }
 }

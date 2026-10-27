@@ -3,6 +3,7 @@ const { Criteria } = Shopware.Data;
 const utils = Shopware.Utils;
 import template from './frosh-mail-archive-index.twig';
 import './frosh-mail-archive-index.scss';
+import { getDeleteErrorDetail } from './delete-error.mjs';
 
 Component.register('frosh-mail-archive-index', {
     template,
@@ -264,6 +265,17 @@ Component.register('frosh-mail-archive-index', {
 
         onSelectionChanged(selection) {
             this.selectedItems = selection;
+        },
+
+        onDeleteFailed({ errorResponse }) {
+            const detail = getDeleteErrorDetail(errorResponse);
+
+            this.createNotificationError({
+                title: this.$tc('frosh-mail-archive.title'),
+                message:
+                    detail ??
+                    this.$tc('frosh-mail-archive.list.actions.deleteError'),
+            });
         },
 
         resetFilter() {

@@ -14,5 +14,12 @@ Shopware.Service('privileges').addPrivilegeMappingEntry({
             privileges: ['frosh_mail_archive:resend'],
             dependencies: ['frosh_mail_archive.viewer'],
         },
+        deleter: {
+            privileges: [
+                'frosh_mail_archive:delete',
+                'frosh_mail_archive_attachment:delete',
+            ],
+            dependencies: ['frosh_mail_archive.viewer'],
+        },
     },
 });
