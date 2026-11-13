@@ -101,7 +101,9 @@
             "tab": "Mail Archiv",
             "title": "Mail Archiv",
             "openFullArchive": "Gesamtes Mail Archiv öffnen",
-            "empty": "Keine archivierten E-Mails für diesen Kunden"
+            "empty": "Keine archivierten E-Mails für diesen Kunden",
+            "loadError": "Das Mail Archiv konnte nicht geladen werden.",
+            "retry": "Erneut versuchen"
         }
     },
     "sw-privileges": {

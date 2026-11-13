@@ -19,6 +19,7 @@ Component.register('frosh-mail-archive-customer-tab', {
         return {
             mails: null,
             isLoading: false,
+            loadFailed: false,
             page: 1,
             limit: 10,
         };
@@ -57,15 +58,27 @@ Component.register('frosh-mail-archive-customer-tab', {
 
         mailCriteria() {
             const criteria = new Criteria(this.page, this.limit);
-            criteria.addFilter(
-                Criteria.contains(
-                    'receiver',
-                    JSON.stringify(this.customer.email)
-                )
-            );
+            const customerFilters = [
+                Criteria.equals('customerId', this.customer.id),
+            ];
+
+            if (this.customer.email) {
+                customerFilters.push(
+                    Criteria.contains(
+                        'receiver',
+                        JSON.stringify(this.customer.email)
+                    )
+                );
+            }
+
+            criteria.addFilter(Criteria.multi('OR', customerFilters));
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
             return criteria;
+        },
+
+        customerIdentity() {
+            return JSON.stringify([this.customer.id, this.customer.email]);
         },
 
         fullArchiveRoute() {
@@ -81,7 +94,7 @@ Component.register('frosh-mail-archive-customer-tab', {
     },
 
     watch: {
-        'customer.email': {
+        customerIdentity: {
             immediate: true,
             handler() {
                 this.page = 1;
@@ -92,18 +105,16 @@ Component.register('frosh-mail-archive-customer-tab', {
 
     methods: {
         async loadMails() {
-            if (!this.customer.email) {
-                this.mails = null;
-
-                return;
-            }
-
             this.isLoading = true;
+            this.loadFailed = false;
 
             try {
                 this.mails = await this.mailArchiveRepository.search(
                     this.mailCriteria
                 );
+            } catch {
+                this.mails = null;
+                this.loadFailed = true;
             } finally {
                 this.isLoading = false;
             }

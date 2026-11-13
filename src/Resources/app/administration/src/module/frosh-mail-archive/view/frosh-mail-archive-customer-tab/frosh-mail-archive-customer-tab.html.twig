@@ -14,8 +14,24 @@
         </sw-button>
     </template>
 
+    <template v-if="loadFailed">
+        <sw-alert
+            variant="error"
+            deprecated
+        >
+            {{ $tc('frosh-mail-archive.customerTab.loadError') }}
+        </sw-alert>
+
+        <sw-button
+            size="small"
+            @click="loadMails"
+        >
+            {{ $tc('frosh-mail-archive.customerTab.retry') }}
+        </sw-button>
+    </template>
+
     <sw-entity-listing
-        v-if="mails && mails.total > 0"
+        v-else-if="mails && mails.total > 0"
         :items="mails"
         :columns="columns"
         :repository="mailArchiveRepository"
