@@ -1,0 +1,62 @@
+{% block frosh_mail_archive_customer_tab %}
+<sw-card
+    class="frosh-mail-archive-customer-tab"
+    :title="$tc('frosh-mail-archive.customerTab.title')"
+    :is-loading="isLoading"
+    position-identifier="frosh-mail-archive-customer-tab"
+>
+    <template #toolbar>
+        <sw-button
+            size="small"
+            :router-link="fullArchiveRoute"
+        >
+            {{ $tc('frosh-mail-archive.customerTab.openFullArchive') }}
+        </sw-button>
+    </template>
+
+    <sw-entity-listing
+        v-if="mails && mails.total > 0"
+        :items="mails"
+        :columns="columns"
+        :repository="mailArchiveRepository"
+        :is-loading="isLoading"
+        :show-selection="false"
+        :allow-inline-edit="false"
+        :allow-edit="false"
+        :allow-delete="false"
+        :full-page="false"
+        :disable-data-fetching="true"
+        @page-change="onPageChange"
+    >
+        <template #column-createdAt="{ item, column }">
+            <router-link :to="{ name: column.routerLink, params: { id: item.id } }">
+                {{ date(item.createdAt, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }}
+            </router-link>
+        </template>
+
+        <template #column-subject="{ item, column }">
+            <router-link :to="{ name: column.routerLink, params: { id: item.id } }">
+                {{ item.subject }}
+            </router-link>
+        </template>
+
+        <template #column-transportState="{ item }">
+            {{ translateState(item.transportState) }}
+        </template>
+
+        <template #detail-action="{ item }">
+            <sw-context-menu-item :router-link="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
+                {{ $tc('frosh-mail-archive.list.actions.showAction') }}
+            </sw-context-menu-item>
+        </template>
+
+        <template #delete-action></template>
+    </sw-entity-listing>
+
+    <sw-empty-state
+        v-else-if="mails"
+        :title="$tc('frosh-mail-archive.customerTab.empty')"
+        :absolute="false"
+    />
+</sw-card>
+{% endblock %}

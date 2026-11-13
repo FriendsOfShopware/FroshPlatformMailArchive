@@ -96,6 +96,12 @@
                 "currently-selected": "this",
                 "title": "Resend history"
             }
+        },
+        "customerTab": {
+            "tab": "Mail archive",
+            "title": "Mail archive",
+            "openFullArchive": "Open full mail archive",
+            "empty": "No archived e-mails for this customer"
         }
     },
     "sw-privileges": {

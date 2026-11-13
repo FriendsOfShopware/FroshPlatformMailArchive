@@ -96,6 +96,12 @@
                 "currently-selected": "ausgewählt",
                 "title": "Sendeverlauf"
             }
+        },
+        "customerTab": {
+            "tab": "Mail Archiv",
+            "title": "Mail Archiv",
+            "openFullArchive": "Gesamtes Mail Archiv öffnen",
+            "empty": "Keine archivierten E-Mails für diesen Kunden"
         }
     },
     "sw-privileges": {
