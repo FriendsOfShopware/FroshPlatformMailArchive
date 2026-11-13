@@ -192,10 +192,10 @@ Component.register('frosh-mail-archive-detail', {
                     this.resendIsSuccessful = true;
                     this.showResendModal = false;
                     this.createNotificationSuccess({
-                        title: this.$tc(
+                        title: this.$t(
                             'frosh-mail-archive.detail.resend-success-notification.title'
                         ),
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-mail-archive.detail.resend-success-notification.message'
                         ),
                     });
@@ -203,10 +203,10 @@ Component.register('frosh-mail-archive-detail', {
                 .catch(() => {
                     this.resendIsSuccessful = false;
                     this.createNotificationError({
-                        title: this.$tc(
+                        title: this.$t(
                             'frosh-mail-archive.detail.resend-error-notification.title'
                         ),
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-mail-archive.detail.resend-error-notification.message'
                         ),
                     });
