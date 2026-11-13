@@ -1,0 +1,12 @@
+{% block sw_customer_detail_content_tab_after %}
+    {% parent() %}
+
+    <sw-tabs-item
+        v-if="showMailArchiveTab"
+        class="frosh-mail-archive-customer-tab__tab"
+        :route="mailArchiveRoute"
+        :title="$tc('frosh-mail-archive.customerTab.tab')"
+    >
+        {{ $tc('frosh-mail-archive.customerTab.tab') }}
+    </sw-tabs-item>
+{% endblock %}
