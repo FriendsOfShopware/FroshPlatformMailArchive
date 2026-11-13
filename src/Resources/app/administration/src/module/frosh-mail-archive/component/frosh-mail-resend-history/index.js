@@ -20,14 +20,14 @@ Shopware.Component.register('frosh-mail-resend-history', {
             columns: [
                 {
                     property: 'createdAt',
-                    label: this.$tc(
+                    label: this.$t(
                         'frosh-mail-archive.detail.resend-grid.column-created-at'
                     ),
                     primary: true,
                 },
                 {
                     property: 'success',
-                    label: this.$tc(
+                    label: this.$t(
                         'frosh-mail-archive.detail.resend-grid.column-state'
                     ),
                     sortable: false,
@@ -51,7 +51,7 @@ Shopware.Component.register('frosh-mail-resend-history', {
     },
     methods: {
         translateState(state) {
-            return this.$tc(`frosh-mail-archive.state.${state}`);
+            return this.$t(`frosh-mail-archive.state.${state}`);
         },
         async loadMails() {
             const criteria = new Criteria();
