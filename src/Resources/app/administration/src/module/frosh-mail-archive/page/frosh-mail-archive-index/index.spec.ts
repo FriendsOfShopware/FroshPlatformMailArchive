@@ -13,7 +13,7 @@ function createPage(resendMail = vi.fn().mockResolvedValue(undefined)) {
         isLoading: false,
         froshMailArchiveService: { resendMail },
         $refs: { table: { resetSelection: vi.fn() } },
-        $tc: (key: string) => key,
+        $t: (key: string) => key,
         createNotificationError: vi.fn(),
         getList: vi.fn().mockResolvedValue(undefined),
         bulkResendFunc(ids: string[]) {
