@@ -10,7 +10,7 @@
             size="small"
             :router-link="fullArchiveRoute"
         >
-            {{ $tc('frosh-mail-archive.customerTab.openFullArchive') }}
+            {{ $t('frosh-mail-archive.customerTab.openFullArchive') }}
         </sw-button>
     </template>
 
@@ -19,14 +19,14 @@
             variant="error"
             deprecated
         >
-            {{ $tc('frosh-mail-archive.customerTab.loadError') }}
+            {{ $t('frosh-mail-archive.customerTab.loadError') }}
         </sw-alert>
 
         <sw-button
             size="small"
             @click="loadMails"
         >
-            {{ $tc('frosh-mail-archive.customerTab.retry') }}
+            {{ $t('frosh-mail-archive.customerTab.retry') }}
         </sw-button>
     </template>
 
@@ -62,7 +62,7 @@
 
         <template #detail-action="{ item }">
             <sw-context-menu-item :router-link="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }">
-                {{ $tc('frosh-mail-archive.list.actions.showAction') }}
+                {{ $t('frosh-mail-archive.list.actions.showAction') }}
             </sw-context-menu-item>
         </template>
 
