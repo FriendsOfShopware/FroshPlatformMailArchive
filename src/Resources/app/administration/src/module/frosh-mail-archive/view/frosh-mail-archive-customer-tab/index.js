@@ -127,7 +127,7 @@ Component.register('frosh-mail-archive-customer-tab', {
         },
 
         translateState(state) {
-            return this.$tc(`frosh-mail-archive.state.${state}`);
+            return this.$t(`frosh-mail-archive.state.${state}`);
         },
     },
 });
