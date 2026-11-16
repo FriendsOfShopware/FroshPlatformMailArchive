@@ -40,43 +40,43 @@
                 <div class="frosh-mail-archive__detail-metadata">
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.receiver') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.receiver') }}
                         </dt>
                         <dd>{{ receiverText }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.sender') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.sender') }}
                         </dt>
                         <dd>{{ senderText }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.subject') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.subject') }}
                         </dt>
                         <dd>{{ archive.subject }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.cc') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.cc') }}
                         </dt>
                         <dd>{{ emlHeaders.Cc ?? '-' }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.bcc') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.bcc') }}
                         </dt>
                         <dd>{{ emlHeaders.Bcc  ?? '-' }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.sentDate') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.sentDate') }}
                         </dt>
                         <dd>{{ createdAtDate }}</dd>
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.salesChannel') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.salesChannel') }}
                         </dt>
                         <dd v-if="archive.salesChannel">
                             {{ archive.salesChannel.name }}
@@ -85,7 +85,7 @@
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.customer') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.customer') }}
                         </dt>
                         <dd v-if="archive.customer">
                             <router-link
@@ -101,7 +101,7 @@
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.order') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.order') }}
                         </dt>
                         <dd v-if="archive.order">
                             <router-link
@@ -114,7 +114,7 @@
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.flow') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.flow') }}
                         </dt>
                         <dd v-if="archive.flow">
                             <router-link
@@ -127,7 +127,7 @@
                     </sw-description-list>
                     <sw-description-list>
                         <dt>
-                            {{ $tc('frosh-mail-archive.detail.metadata.mail-template') }}
+                            {{ $t('frosh-mail-archive.detail.metadata.mail-template') }}
                         </dt>
                         <dd v-if="archive.mailTemplateId">
                             <router-link

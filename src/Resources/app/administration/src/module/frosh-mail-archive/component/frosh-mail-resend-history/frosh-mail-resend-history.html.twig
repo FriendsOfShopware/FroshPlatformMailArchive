@@ -13,7 +13,7 @@
                 <template v-if="currentMailId === item.id">
                     {{ date(item.createdAt) }}
                     (
-                    {{ $tc('frosh-mail-archive.detail.resend-grid.currently-selected') }}
+                    {{ $t('frosh-mail-archive.detail.resend-grid.currently-selected') }}
                     )
                 </template>
                 <router-link
@@ -50,7 +50,7 @@
                     :disabled="currentMailId === item.id"
                     @click="navigateToDetailPage(item.id)"
                 >
-                    {{ $tc('frosh-mail-archive.detail.resend-grid.navigate') }}
+                    {{ $t('frosh-mail-archive.detail.resend-grid.navigate') }}
                 </sw-context-menu-item>
             </template>
         </sw-data-grid>

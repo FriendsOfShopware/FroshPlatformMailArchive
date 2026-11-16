@@ -97,7 +97,7 @@ Component.register('frosh-mail-archive-index', {
 
     methods: {
         translateState(state) {
-            return this.$tc(`frosh-mail-archive.state.${state}`);
+            return this.$t(`frosh-mail-archive.state.${state}`);
         },
 
         getDateBoundary(value, endOfDay) {
@@ -205,10 +205,10 @@ Component.register('frosh-mail-archive-index', {
                 .resendMail(item.id)
                 .then(async () => {
                     this.createNotificationSuccess({
-                        title: this.$tc(
+                        title: this.$t(
                             'frosh-mail-archive.detail.resend-success-notification.title'
                         ),
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-mail-archive.detail.resend-success-notification.message'
                         ),
                     });
@@ -216,10 +216,10 @@ Component.register('frosh-mail-archive-index', {
                 })
                 .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc(
+                        title: this.$t(
                             'frosh-mail-archive.detail.resend-error-notification.title'
                         ),
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-mail-archive.detail.resend-error-notification.message'
                         ),
                     });
@@ -239,10 +239,10 @@ Component.register('frosh-mail-archive-index', {
             return this.bulkResendFunc(ids)
                 .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc(
+                        title: this.$t(
                             'frosh-mail-archive.detail.resend-error-notification.title'
                         ),
-                        message: this.$tc(
+                        message: this.$t(
                             'frosh-mail-archive.detail.resend-error-notification.message'
                         ),
                     });
@@ -271,10 +271,10 @@ Component.register('frosh-mail-archive-index', {
             const detail = getDeleteErrorDetail(errorResponse);
 
             this.createNotificationError({
-                title: this.$tc('frosh-mail-archive.title'),
+                title: this.$t('frosh-mail-archive.title'),
                 message:
                     detail ??
-                    this.$tc('frosh-mail-archive.list.actions.deleteError'),
+                    this.$t('frosh-mail-archive.list.actions.deleteError'),
             });
         },
 

@@ -10,13 +10,13 @@
 
     <template #smart-bar-header>
         <h2>
-            {{ $tc('sw-settings.index.title') }}
+            {{ $t('sw-settings.index.title') }}
             <sw-icon
                 name="regular-chevron-right-xs"
                 size="16px"
                 deprecated
             />
-            {{ $tc('frosh-mail-archive.title') }}
+            {{ $t('frosh-mail-archive.title') }}
         </h2>
     </template>
 
@@ -83,14 +83,14 @@
                     class="sw-entity-listing__context-menu-show-action"
                     :routerLink="{ name: 'frosh.mail.archive.detail', params: { id: item.id } }"
                 >
-                    {{ $tc('frosh-mail-archive.list.actions.showAction') }}
+                    {{ $t('frosh-mail-archive.list.actions.showAction') }}
                 </sw-context-menu-item>
                 <sw-context-menu-item
                     v-if="acl.can('frosh_mail_archive:resend')"
                     class="sw-entity-listing__context-menu-show-action"
                     @click="resendMail(item)"
                 >
-                    {{ $tc('frosh-mail-archive.list.actions.resendAction') }}
+                    {{ $t('frosh-mail-archive.list.actions.resendAction') }}
                 </sw-context-menu-item>
             </template>
 
@@ -100,7 +100,7 @@
                     class="link link-primary"
                     @click="onBulkResendClick"
                 >
-                    {{ $tc('frosh-mail-archive.list.actions.bulkResendAction') }}
+                    {{ $t('frosh-mail-archive.list.actions.bulkResendAction') }}
                     <sw-icon
                         name="regular-exclamation-triangle"
                         color="orange"
@@ -174,7 +174,7 @@
                     @click="resetFilter"
                     deprecated
                 >
-                    {{ $tc('frosh-mail-archive.list.sidebar.filters.resetFilter') }}
+                    {{ $t('frosh-mail-archive.list.sidebar.filters.resetFilter') }}
                 </sw-button>
             </sw-sidebar-item>
         </sw-sidebar>
