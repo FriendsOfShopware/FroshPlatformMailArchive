@@ -1,7 +1,25 @@
-export function createPreviewDataUrl(html, sanitize) {
+function toOrigin(source) {
+    try {
+        const url = new URL(source);
+
+        return ['http:', 'https:'].includes(url.protocol) ? url.origin : null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * @param {string} html
+ * @param {Function} sanitize
+ * @param {string[]} imageSources origins the shop itself serves images from, everything else stays blocked
+ */
+export function createPreviewDataUrl(html, sanitize, imageSources = []) {
+    const imageOrigins = [...new Set(imageSources.map(toOrigin))].filter(
+        Boolean
+    );
     const policy = [
         "default-src 'none'",
-        'img-src data: cid:',
+        ['img-src data: cid:', ...imageOrigins].join(' '),
         "style-src 'unsafe-inline'",
         'font-src data:',
         "base-uri 'none'",

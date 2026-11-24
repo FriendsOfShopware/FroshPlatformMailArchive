@@ -24,6 +24,19 @@ class ApiClient extends ApiService {
             });
     }
 
+    fetchPreviewImageSources() {
+        const headers = this.getBasicHeaders({});
+
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/preview-image-sources`, {
+                ...this.basicConfig,
+                headers,
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response).sources ?? [];
+            });
+    }
+
     resendMail(mailId, receiver = null) {
         const headers = this.getBasicHeaders({});
 

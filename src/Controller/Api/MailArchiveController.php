@@ -10,6 +10,7 @@ use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Services\EmlFileManager;
 use Frosh\MailArchive\Services\MailSender;
+use Frosh\MailArchive\Services\PreviewImageSourceProvider;
 use Frosh\MailArchive\Services\ResendRecipientOverride;
 use Shopware\Core\Content\Mail\Service\AbstractMailSender;
 use Shopware\Core\Framework\Context;
@@ -48,7 +49,21 @@ class MailArchiveController extends AbstractController
         private readonly RequestStack $requestStack,
         private readonly EmlFileManager $emlFileManager,
         private readonly ResendRecipientOverride $resendRecipientOverride,
+        private readonly PreviewImageSourceProvider $previewImageSourceProvider,
     ) {
+    }
+
+    #[Route(
+        path: '/api/_action/frosh-mail-archive/preview-image-sources',
+        name: 'api.action.frosh-mail-archive.preview-image-sources',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => [MailArchivePrivileges::READ]],
+        methods: [Request::METHOD_GET],
+    )]
+    public function previewImageSources(Context $context): JsonResponse
+    {
+        return new JsonResponse([
+            'sources' => $this->previewImageSourceProvider->getSources($context),
+        ]);
     }
 
     #[Route(

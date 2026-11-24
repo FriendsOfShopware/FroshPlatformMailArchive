@@ -32,4 +32,36 @@ describe('mail archive preview document', () => {
         expect(document).toMatch(/default-src 'none'/);
         expect(document).toMatch(/navigate-to 'none'/);
     });
+
+    it('only allows images from the given shop origins', () => {
+        const dataUrl = createPreviewDataUrl(
+            '<img src="https://shop.example/media/logo.png">',
+            (html) => html,
+            [
+                'https://shop.example/en',
+                'https://shop.example/de',
+                'http://cdn.example:8080/media',
+                'default.headless0',
+                'javascript:alert(1)',
+                'https://evil.example"; script-src *',
+            ]
+        );
+        const document = Buffer.from(dataUrl.split(',')[1], 'base64').toString(
+            'utf8'
+        );
+
+        expect(document).toContain(
+            'img-src data: cid: https://shop.example http://cdn.example:8080;'
+        );
+        expect(document).not.toContain('evil.example"');
+    });
+
+    it('blocks remote images when no shop origin is known', () => {
+        const dataUrl = createPreviewDataUrl('', (html) => html);
+        const document = Buffer.from(dataUrl.split(',')[1], 'base64').toString(
+            'utf8'
+        );
+
+        expect(document).toContain('img-src data: cid:;');
+    });
 });
