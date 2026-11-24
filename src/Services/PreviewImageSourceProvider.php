@@ -35,7 +35,10 @@ final class PreviewImageSourceProvider
     {
         $urls = [$this->publicFilesystemUrl, $this->appUrl];
 
-        foreach ($this->salesChannelDomainRepository->search(new Criteria(), $context)->getEntities() as $domain) {
+        $criteria = new Criteria();
+        $domains = $this->salesChannelDomainRepository->search($criteria, $context)->getEntities();
+
+        foreach ($domains as $domain) {
             $urls[] = $domain->getUrl();
         }
 
