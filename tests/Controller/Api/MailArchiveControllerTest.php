@@ -9,6 +9,7 @@ use Frosh\MailArchive\Content\MailArchive\MailArchiveEntity;
 use Frosh\MailArchive\Content\MailArchive\MailArchiveException;
 use Frosh\MailArchive\Controller\Api\MailArchiveController;
 use Frosh\MailArchive\Services\EmlFileManager;
+use Frosh\MailArchive\Services\PreviewImageSourceProvider;
 use Frosh\MailArchive\Services\ResendRecipientOverride;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -113,6 +114,30 @@ class MailArchiveControllerTest extends TestCase
         );
     }
 
+    public function testPreviewImageSourcesReturnsShopOrigins(): void
+    {
+        $controller = new MailArchiveController(
+            new StaticEntityRepository([]),
+            new StaticEntityRepository([]),
+            $this->createStub(AbstractMailSender::class),
+            new RequestStack(),
+            $this->createStub(EmlFileManager::class),
+            new ResendRecipientOverride(),
+            new PreviewImageSourceProvider(
+                new StaticEntityRepository([new EntityCollection()]),
+                'https://cdn.example/media',
+                'https://shop.example',
+            ),
+        );
+
+        $response = $controller->previewImageSources(Context::createDefaultContext());
+
+        static::assertSame(
+            '{"sources":["https:\\/\\/cdn.example","https:\\/\\/shop.example"]}',
+            $response->getContent(),
+        );
+    }
+
     /**
      * @param list<MailArchiveEntity> $archives
      */
@@ -125,6 +150,7 @@ class MailArchiveControllerTest extends TestCase
             new RequestStack(),
             $fileManager,
             new ResendRecipientOverride(),
+            new PreviewImageSourceProvider(new StaticEntityRepository([]), '', ''),
         );
     }
 
@@ -168,6 +194,7 @@ class MailArchiveControllerTest extends TestCase
             $requestStack,
             $fileManager,
             new ResendRecipientOverride(),
+            new PreviewImageSourceProvider(new StaticEntityRepository([]), '', ''),
         );
 
         $controller->resend($request, Context::createDefaultContext());

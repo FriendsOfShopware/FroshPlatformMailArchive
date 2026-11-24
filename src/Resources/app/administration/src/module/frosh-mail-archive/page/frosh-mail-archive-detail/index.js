@@ -13,6 +13,7 @@ Component.register('frosh-mail-archive-detail', {
             archive: null,
             emlHeaders: {},
             mailLoadRequestId: 0,
+            previewImageSources: [],
             resendIsLoading: false,
             resendIsSuccessful: false,
             downloadIsLoading: false,
@@ -33,6 +34,7 @@ Component.register('frosh-mail-archive-detail', {
     mixins: [Mixin.getByName('notification')],
 
     created() {
+        this.loadPreviewImageSources();
         this.loadMail();
     },
     watch: {
@@ -157,8 +159,22 @@ Component.register('frosh-mail-archive-detail', {
                     }
                 });
         },
+        loadPreviewImageSources() {
+            this.froshMailArchiveService
+                .fetchPreviewImageSources()
+                .then((sources) => {
+                    this.previewImageSources = sources;
+                })
+                .catch(() => {
+                    this.previewImageSources = [];
+                });
+        },
         getContent(html) {
-            return createPreviewDataUrl(html, this.$sanitize);
+            return createPreviewDataUrl(
+                html,
+                this.$sanitize,
+                this.previewImageSources
+            );
         },
         openCustomer() {
             this.$router.push({

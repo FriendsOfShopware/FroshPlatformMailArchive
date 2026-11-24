@@ -6,12 +6,18 @@ import {
 import enGB from '../../snippet/en-GB.json';
 import './index';
 
-async function mountDetail(fetchEmlHeaders: ReturnType<typeof vi.fn>) {
+async function mountDetail(
+    fetchEmlHeaders: ReturnType<typeof vi.fn>,
+    fetchPreviewImageSources = vi.fn().mockResolvedValue([])
+) {
     return mountShopwareComponent('frosh-mail-archive-detail', {
         props: { archiveId: 'first' },
         global: {
             provide: {
-                froshMailArchiveService: { fetchEmlHeaders },
+                froshMailArchiveService: {
+                    fetchEmlHeaders,
+                    fetchPreviewImageSources,
+                },
                 repositoryFactory: {
                     create: () => ({
                         get: vi.fn(async (id: string) => ({
@@ -20,6 +26,7 @@ async function mountDetail(fetchEmlHeaders: ReturnType<typeof vi.fn>) {
                             sender: {},
                             receiver: {},
                             attachments: [],
+                            htmlText: '<p>Hello</p>',
                             createdAt: '2026-10-23T10:00:00+00:00',
                         })),
                     }),
@@ -147,5 +154,33 @@ describe('mail detail header loading', () => {
         expect(wrapper.text()).toContain('Message first');
         expect(wrapper.text()).toContain('current@example.com');
         expect(wrapper.text()).not.toContain('outdated@example.com');
+    });
+
+    it('allows images from the shop origins in the preview', async () => {
+        const wrapper = await mountDetail(
+            vi.fn().mockResolvedValue({}),
+            vi.fn().mockResolvedValue(['https://shop.example'])
+        );
+        wrappers.push(wrapper);
+        await flushPromises();
+
+        const source = wrapper.find('iframe[title="HTML"]').attributes('src');
+
+        expect(atob(source.split(',')[1])).toContain(
+            'img-src data: cid: https://shop.example;'
+        );
+    });
+
+    it('keeps remote images blocked when the shop origins cannot be loaded', async () => {
+        const wrapper = await mountDetail(
+            vi.fn().mockResolvedValue({}),
+            vi.fn().mockRejectedValue(new Error('Cannot load sources'))
+        );
+        wrappers.push(wrapper);
+        await flushPromises();
+
+        const source = wrapper.find('iframe[title="HTML"]').attributes('src');
+
+        expect(atob(source.split(',')[1])).toContain('img-src data: cid:;');
     });
 });
