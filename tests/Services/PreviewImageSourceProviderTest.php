@@ -32,6 +32,16 @@ class PreviewImageSourceProviderTest extends TestCase
         );
     }
 
+    public function testConvertsInternationalDomainNamesToAscii(): void
+    {
+        $provider = $this->createProvider(['https://Bücher.example/de'], 'https://médias.example:8443/media', 'https://xn--bcher-kva.example');
+
+        static::assertSame(
+            ['https://xn--mdias-bsa.example:8443', 'https://xn--bcher-kva.example'],
+            $provider->getSources(Context::createDefaultContext()),
+        );
+    }
+
     public function testSkipsUnconfiguredAndUnsafeUrls(): void
     {
         $provider = $this->createProvider(['javascript://shop.example', 'https://evil.example;script-src'], '', null);

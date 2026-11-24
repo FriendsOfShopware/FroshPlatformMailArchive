@@ -66,10 +66,11 @@ final class PreviewImageSourceProvider
         }
 
         $scheme = strtolower($parts['scheme']);
-        $host = strtolower($parts['host']);
+        // international domain names are only valid in their ASCII form inside a content security policy
+        $host = idn_to_ascii($parts['host'], \IDNA_DEFAULT, \INTL_IDNA_VARIANT_UTS46);
 
         // headless domains like "default.headless0" have no scheme and are skipped above
-        if (!\in_array($scheme, ['http', 'https'], true) || preg_match('/^[a-z0-9.-]+$/', $host) !== 1) {
+        if (!\in_array($scheme, ['http', 'https'], true) || $host === false || preg_match('/^[a-z0-9.-]+$/', $host) !== 1) {
             return null;
         }
 
