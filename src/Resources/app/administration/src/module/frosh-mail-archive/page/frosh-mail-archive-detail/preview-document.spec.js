@@ -26,11 +26,45 @@ describe('mail archive preview document', () => {
             'object',
         ]);
         expect(sanitizerConfiguration.FORBID_ATTR).toEqual(['srcset']);
+        expect(sanitizerConfiguration.WHOLE_DOCUMENT).toBe(true);
         expect(document.indexOf('Content-Security-Policy')).toBeLessThan(
             document.indexOf('tracker.example')
         );
         expect(document).toMatch(/default-src 'none'/);
-        expect(document).toMatch(/navigate-to 'none'/);
+        expect(document).not.toContain('navigate-to');
+    });
+
+    it('keeps styles and body attributes of a full mail', () => {
+        const dataUrl = createPreviewDataUrl(
+            '<!doctype html><html><head><meta http-equiv="refresh" content="0; url=https://tracker.example">' +
+                '<style>.badge { display: inline-block; }</style></head>' +
+                '<body style="background-color: #eeeeee" onload="alert(1)">' +
+                '<a class="badge" style="display: inline-block; border-radius: 4px">Badge</a>' +
+                '<script>alert(1)</script></body></html>',
+            Shopware.Helper.SanitizerHelper.sanitize
+        );
+        const preview = new DOMParser().parseFromString(
+            Buffer.from(dataUrl.split(',')[1], 'base64').toString('utf8'),
+            'text/html'
+        );
+        const policies = preview.querySelectorAll('meta');
+
+        expect(policies).toHaveLength(1);
+        expect(policies[0].getAttribute('content')).toContain(
+            "default-src 'none'"
+        );
+        expect(preview.head.contains(policies[0])).toBe(true);
+        expect(preview.querySelector('style').textContent).toContain(
+            'display: inline-block'
+        );
+        expect(preview.body.getAttribute('style')).toContain(
+            'background-color'
+        );
+        expect(preview.querySelector('.badge').getAttribute('style')).toContain(
+            'border-radius'
+        );
+        expect(preview.body.hasAttribute('onload')).toBe(false);
+        expect(preview.querySelector('script')).toBeNull();
     });
 
     it('only allows images from the given shop origins', () => {
