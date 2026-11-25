@@ -26,11 +26,12 @@ describe('mail archive preview document', () => {
             'object',
         ]);
         expect(sanitizerConfiguration.FORBID_ATTR).toEqual(['srcset']);
+        expect(sanitizerConfiguration.WHOLE_DOCUMENT).toBe(true);
         expect(document.indexOf('Content-Security-Policy')).toBeLessThan(
             document.indexOf('tracker.example')
         );
         expect(document).toMatch(/default-src 'none'/);
-        expect(document).toMatch(/navigate-to 'none'/);
+        expect(document).not.toContain('navigate-to');
     });
 
     it('only allows images from the given shop origins', () => {

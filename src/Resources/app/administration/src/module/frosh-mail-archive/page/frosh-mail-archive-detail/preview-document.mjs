@@ -24,11 +24,11 @@ export function createPreviewDataUrl(html, sanitize, imageSources = []) {
         'font-src data:',
         "base-uri 'none'",
         "form-action 'none'",
-        "navigate-to 'none'",
     ].join('; ');
     const content = sanitize(html, {
         FORBID_TAGS: ['base', 'embed', 'form', 'iframe', 'meta', 'object'],
         FORBID_ATTR: ['srcset'],
+        WHOLE_DOCUMENT: true,
     });
     const preview = `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>${content}</body></html>`;
     const binary = new TextEncoder().encode(preview);
